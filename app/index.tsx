@@ -1,7 +1,18 @@
-import { StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { useRouter } from "expo-router";
+import { Text, TextInput, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import styles from "../app/style";
 
 const Index = () => {
+
+  const router = useRouter();
+  
+  const handleSignUp = () => {
+    router.push('/src/signup/signup');
+  }
+
+  const signupTxt = {text: "SignUp", onPress: handleSignUp};
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
@@ -21,33 +32,25 @@ const Index = () => {
 
         </View>
 
-        <TouchableOpacity>
+        <TouchableOpacity >
           <Text style={styles.forgetPassword}>Forgot Password?</Text>
         </TouchableOpacity>
       </View>
 
       <View>
-        <TouchableOpacity style={styles.button}>
+        <TouchableOpacity style={styles.button} onPress={() => {}}>
           <Text style={styles.buttonText}>Login</Text>
         </TouchableOpacity>
       </View>
 
-      <View>
-        <Text>Don't have an account? <Text style={styles.signUpText}>Sign Up</Text></Text>
+      <View style={{marginTop: 20, flexDirection: 'row', alignItems: 'center'}}>
+        <Text>Don't have an account? 
+          <TouchableOpacity onPress={signupTxt.onPress}>
+            <Text style={styles.signUpText}> {signupTxt.text}</Text>
+          </TouchableOpacity>
+        </Text>
       </View>
     </SafeAreaView>
   );
 }
 export default Index;
-
-const styles = StyleSheet.create({
-  container: { flex: 1, padding: 16, alignItems: "center", backgroundColor: "#F5F5F5" },
-  header: { alignItems: "center", marginBottom: 32 },
-  title: { fontSize: 38, fontWeight: "bold", marginBottom: 16, color: "#FF8800" },
-  subTitle: { fontSize: 20, color: "#666", marginBottom: 32, alignItems: "center", textAlign: "center" },
-  input: { borderWidth: 1, borderColor: "#ccc", borderRadius: 4, padding: 12, marginBottom: 12, width: 300, color: "#CCCCCC" },
-  forgetPassword: { textAlign: "right", color: "#FF8800", marginBottom: 32 },
-  button: { backgroundColor: "#FF8800", padding: 12, borderRadius: 4, width: 300, marginTop: 16 },
-  buttonText: { color: "#fff", elevation: 1, fontSize: 16, textAlign: "center" },
-  signUpText: { textAlign: "center", marginTop: 16, color: "#FF8800" }
-});
