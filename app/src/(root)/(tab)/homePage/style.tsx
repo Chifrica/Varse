@@ -18,7 +18,6 @@ const styles = StyleSheet.create({
         fontSize: 24,
         height: 30,
         fontWeight: "bold",
-
     },
     headerGasCart: {
         flexDirection: "row",

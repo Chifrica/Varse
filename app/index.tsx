@@ -22,12 +22,12 @@ const Index = () => {
 
       <View>
         <View>
-          <Text>Email Address</Text>
+          <Text style={styles.inputTxt}>Email Address</Text>
           <TextInput placeholder="you@example.com" style={styles.input} />
         </View>
 
         <View>
-          <Text>Password</Text>
+          <Text style={styles.inputTxt}>Password</Text>
           <TextInput placeholder="********" secureTextEntry={true} style={styles.input} />
 
         </View>
@@ -43,10 +43,10 @@ const Index = () => {
         </TouchableOpacity>
       </View>
 
-      <View style={{marginTop: 20, flexDirection: 'row', alignItems: 'center'}}>
-        <Text>Don't have an account? 
+      <View style={{marginTop: 15, flexDirection: 'row', alignItems: 'center'}}>
+        <Text style={styles.signUpTxt1}>Don't have an account? 
           <TouchableOpacity onPress={signupTxt.onPress}>
-            <Text style={styles.signUpText}> {signupTxt.text}</Text>
+            <Text style={styles.signUpText2}> {signupTxt.text}</Text>
           </TouchableOpacity>
         </Text>
       </View>
