@@ -1,113 +1,101 @@
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import React from 'react';
-import { FlatList, Image, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { FlatList, Image, StyleSheet, Text, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { categories, featuredShops, trendingProducts } from './data';
 
 const Home = () => {
+    const renderHeader = () => (
+        <>
+            {/* Header */}
+            <View style={styles.header}>
+                <Text style={styles.headerTitle}>Varse Market</Text>
+                <View style={styles.headerGasCart}>
+                    <View style={styles.headerGas}>
+                        <Image
+                            style={{ width: 18, height: 18, marginRight: 5, tintColor: '#FFFFFF' }}
+                            source={{ uri: 'https://cdn-icons-png.flaticon.com/128/5771/5771077.png' }}
+                        />
+                        <Text style={styles.headerGasCartTxt}>Refill Gas</Text>
+                    </View>
+                    <FontAwesome name="shopping-cart" size={24} color="black" style={{ marginLeft: 15 }} />
+                </View>
+            </View>
+
+            {/* Search Box */}
+            <View style={styles.searchContainer}>
+                <FontAwesome name="search" size={18} color="#999" style={styles.searchIcon} />
+                <TextInput
+                    style={styles.searchInput}
+                    placeholder="Search for products or shops"
+                    placeholderTextColor="#999"
+                />
+            </View>
+
+            {/* Categories */}
+            <Text style={styles.sectionTitle}>Categories</Text>
+            <FlatList
+                data={categories}
+                renderItem={({ item }) => (
+                    <View style={styles.categoryProducts}>
+                        <Image source={{ uri: item.image }} style={styles.categoryProductsImage} />
+                        <Text style={styles.categoryProductsTxt}>{item.name}</Text>
+                    </View>
+                )}
+                keyExtractor={item => item.id}
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={{ paddingVertical: 10 }}
+            />
+
+            {/* Featured Shops */}
+            <Text style={styles.sectionTitle}>Featured Shops</Text>
+            <FlatList
+                data={featuredShops}
+                renderItem={({ item }) => (
+                    <View style={styles.featuredShopsProducts}>
+                        <Image source={{ uri: item.image }} style={styles.featuredShopsProductsImage} />
+                        <Text style={styles.featuredShopsProductsTxt}>{item.name}</Text>
+                        <Text style={styles.featuredShopsProductsReview}>{item.review}</Text>
+                    </View>
+                )}
+                keyExtractor={item => item.id}
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={{ paddingVertical: 10 }}
+            />
+
+            {/* Trending Products Title */}
+            <Text style={styles.sectionTitle}>Trending Products</Text>
+        </>
+    );
+
     return (
         <SafeAreaView style={styles.container}>
-            <ScrollView
-                style={styles.scrollView}
-                showsVerticalScrollIndicator={false}
-            >
-                {/* Header */}
-                <View style={styles.header}>
-                    <Text style={styles.headerTitle}>Varse Market</Text>
-                    <View style={styles.headerGasCart}>
-                        <View style={styles.headerGas}>
-                            <Image
-                                style={{ width: 18, height: 18, marginRight: 5, tintColor: '#FFFFFF' }}
-                                source={{ uri: 'https://cdn-icons-png.flaticon.com/128/5771/5771077.png' }}
-                            />
-                            <Text style={styles.headerGasCartTxt}>Refill Gas</Text>
-                        </View>
-                        <FontAwesome name="shopping-cart" size={24} color="black" style={{ marginLeft: 15 }} />
+            <FlatList
+                data={trendingProducts}
+                renderItem={({ item }) => (
+                    <View style={styles.trendingProducts}>
+                        <Image
+                            source={{ uri: item.image }}
+                            style={styles.trendingProductsImage}
+                        />
+                        <Text style={styles.trendingProductsTxt}>{item.name}</Text>
+                        <Text style={styles.trendingProductsPrice}>{item.price}</Text>
+                        <Text style={styles.trendingProductsReview}>{item.shop}</Text>
                     </View>
-                </View>
-
-                {/* Search Box */}
-                <View style={styles.searchContainer}>
-                    <FontAwesome name="search" size={18} color="#999" style={styles.searchIcon} />
-                    <TextInput
-                        style={styles.searchInput}
-                        placeholder="Search for products or shops"
-                        placeholderTextColor="#999"
-                    />
-                </View>
-
-                {/* Categories */}
-                <View>
-                    <Text style={styles.sectionTitle}>Categories</Text>
-
-                    <FlatList
-                        data={categories}
-                        renderItem={({ item }) => (
-                            <View style={styles.categoryProducts}>
-                                <Image
-                                    source={{ uri: item.image }}
-                                    style={styles.categoryProductsImage}
-                                />
-                                <Text style={styles.categoryProductsTxt}>{item.name}</Text>
-                            </View>
-                        )}
-                        keyExtractor={item => item.id}
-                        horizontal
-                        showsHorizontalScrollIndicator={false}
-                    />
-                </View>
-
-                {/* Featured Shops */}
-                <View>
-                    <Text style={styles.sectionTitle}>Featured Shops</Text>
-
-                    <FlatList
-                        data={featuredShops}
-                        renderItem={({ item }) => (
-                            <View style={styles.featuredShopsProducts}>
-                                <Image
-                                    source={{ uri: item.image }}
-                                    style={styles.featuredShopsProductsImage}
-                                />
-                                <Text style={styles.featuredShopsProductsTxt}>{item.name}</Text>
-                                <Text style={styles.featuredShopsProductsReview}>{item.review}</Text>
-                            </View>
-                        )}
-                        keyExtractor={item => item.id}
-                        horizontal
-                        showsHorizontalScrollIndicator={false}
-                    />
-
-
-                </View>
-
-                {/* Trending Products */}
-                <View>
-                    <Text style={styles.sectionTitle}>Trending Products</Text>
-
-                    <FlatList
-                        data={trendingProducts}
-                        renderItem={({ item }) => (
-                            <View style={styles.trendingProducts}>
-                                <Image
-                                    source={{ uri: item.image }}
-                                    style={styles.trendingProductsImage}
-                                />
-                                <Text style={styles.trendingProductsTxt}>{item.name}</Text>
-                                <Text style={styles.trendingProductsPrice}>{item.price}</Text>
-                                <Text style={styles.trendingProductsReview}>{item.shop}</Text>
-                            </View>
-                        )}
-                        keyExtractor={(item) => item.id}
-                        numColumns={2}
-                        // columnWrapperStyle={{ justifyContent: "space-between", marginBottom: 15 }} // ✅ spacing between items
-                        contentContainerStyle={{ paddingVertical: 10 }}
-                    />
-                </View>
-            </ScrollView>
+                )}
+                keyExtractor={(item) => item.id}
+                numColumns={2}
+                columnWrapperStyle={{ justifyContent: "space-between" }}
+                contentContainerStyle={{ paddingHorizontal: 15 }}
+                ListHeaderComponent={renderHeader}
+                showsVerticalScrollIndicator={false}
+            />
         </SafeAreaView>
     );
 };
+
 
 export default Home;
 
@@ -231,12 +219,13 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.1,
         shadowRadius: 4,
         elevation: 3, 
-        marginBottom: 15,
+        marginBottom: 10,
         marginRight: 15,
+        marginTop: 10,
     },
 
     trendingProductsImage: {
-        resizeMode: "contain",
+        // resizeMode: "contain",
         borderRadius: 10,
         marginBottom: 8,
         width: "100%",        
