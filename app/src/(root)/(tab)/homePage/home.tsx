@@ -1,7 +1,8 @@
-import Fontawesome from '@expo/vector-icons/FontAwesome';
+import FontAwesome from '@expo/vector-icons/FontAwesome';
 import React from 'react';
-import { Image, ScrollView, Text, TextInput, View } from 'react-native';
+import { FlatList, Image, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { categories, featuredShops } from './data';
 
 const Home = () => {
     return (
@@ -16,113 +17,182 @@ const Home = () => {
                     <View style={styles.headerGasCart}>
                         <View style={styles.headerGas}>
                             <Image 
-                                style={{ width: 18, height: 18, marginRight: 10, }}
-                                source={{uri: 'https://cdn-icons-png.flaticon.com/128/5771/5771077.png'}}
+                                style={{ width: 18, height: 18, marginRight: 5, tintColor: '#FFFFFF' }}
+                                source={{ uri: 'https://cdn-icons-png.flaticon.com/128/5771/5771077.png' }}
                             />
-                            <Text>Refill Gas</Text>
+                            <Text style={styles.headerGasCartTxt}>Refill Gas</Text>
                         </View>
-                        <Fontawesome name="shopping-cart" size={24} color="black" style={{ marginLeft: 15 }} />
+                        <FontAwesome name="shopping-cart" size={24} color="black" style={{ marginLeft: 15 }} />
                     </View>
                 </View>
 
-                {/* Search */}
-                <View style={styles.search}>
+                {/* Search Box */}
+                <View style={styles.searchContainer}>
+                    <FontAwesome name="search" size={18} color="#999" style={styles.searchIcon} />
                     <TextInput
-                        placeholder='Search for products or shops'
+                        style={styles.searchInput}
+                        placeholder="Search for products or shops"
+                        placeholderTextColor="#999"
                     />
                 </View>
 
-                 {/* Images */}
-                <View>
-                    <Image />
-                </View> 
-
                 {/* Categories */}
                 <View>
-                    <Text>Categories</Text>
+                    <Text style={styles.sectionTitle}>Categories</Text>
 
-                    <View style={styles.category}>
-                        <View style={styles.categoryProducts}>
-                            <Image 
-                                style={styles.categoryProductsImage}
-                            />
-                            <Text style={styles.categoryProductsTxt}>Food</Text>
-                        </View>
+                    <FlatList 
+                        data={categories}
+                        renderItem={({ item }) => (
+                            <View style={styles.categoryProducts}>
+                                <Image 
+                                    source={{ uri: item.image }}
+                                    style={styles.categoryProductsImage} 
+                                />
+                                <Text style={styles.categoryProductsTxt}>{item.name}</Text>
+                            </View>
+                        )}
+                        keyExtractor={item => item.id}
+                        horizontal
+                        showsHorizontalScrollIndicator={false}
+                    />
+                </View>
 
-                        <View style={styles.categoryProducts}>
-                            <Image 
-                                style={styles.categoryProductsImage}
-                            />
-                            <Text style={styles.categoryProductsTxt}>Fashion</Text>
-                        </View>
+                {/* Featured Shops */}
+                <View>
+                    <Text style={styles.sectionTitle}>Featured Shops</Text>
 
-                        <View style={styles.categoryProducts}>
-                            <Image 
-                                style={styles.categoryProductsImage}
-                            />
-                            <Text style={styles.categoryProductsTxt}>Shoes</Text>
-                        </View>
-                    </View> 
+                    <FlatList 
+                        data={featuredShops}
+                        renderItem={({ item }) => (
+                            <View style={styles.featuredShopsProducts}>
+                                <Image 
+                                    source={{ uri: item.image }}
+                                    style={styles.featuredShopsProductsImage} 
+                                />
+                                <Text style={styles.featuredShopsProductsTxt}>{item.name}</Text>
+                                <Text style={styles.featuredShopsProductsReview}>{item.review}</Text>
+                            </View>
+                        )}
+                        keyExtractor={item => item.id}
+                        horizontal
+                        showsHorizontalScrollIndicator={false}
+                    />
                 </View>
 
             </ScrollView>
         </SafeAreaView>
-    )
-}
+    );
+};
 
 export default Home;
-
-import { StyleSheet } from "react-native";
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-		backgroundColor: "#FFFFFF",
-	},
-	scrollView: {
-		flex: 1,
-		paddingHorizontal: 15,
-	},
+        backgroundColor: "#FFFFFF",
+    },
+    scrollView: {
+        flex: 1,
+        paddingHorizontal: 15,
+    },
     header: {
         flexDirection: "row",
         justifyContent: "space-between",
-        top: 10,
+        marginTop: 10,
     },
     headerTitle: {
         fontSize: 24,
-        height: 30,
         fontWeight: "bold",
     },
     headerGasCart: {
         flexDirection: "row",
-        justifyContent: "space-around",
+        alignItems: "center",
+    },
+    headerGasCartTxt: {
+        fontSize: 16,
+        fontWeight: "600",
+        marginLeft: 5,
+        color: "#FFFFFF"
     },
     headerGas: {
         flexDirection: "row",
-        justifyContent: "space-between",
         borderRadius: 50,
         backgroundColor: "#FF8800",
-        paddingRight: 10,
-        paddingLeft: 10,
+        paddingHorizontal: 10,
         alignItems: "center",
         height: 30,
     },
-    search: {
-        borderRadius: 50,
+        // Search Box Styles
+    searchContainer: {
+        position: "relative",
+        marginTop: 20,
     },
+    searchIcon: {
+        position: "absolute",
+        top: 10,
+        left: 15,
+        zIndex: 1,
+    },
+    searchInput: {
+        borderRadius: 50,
+        backgroundColor: "#F0F0F0",
+        height: 40,
+        paddingLeft: 40, 
+        fontSize: 16,
+    },
+
+    sectionTitle: {
+        marginTop: 25,
+        fontSize: 20,
+        fontWeight: "600",
+    },
+        // Category Styles
     category: {
-        flexDirection: "row"
+        flexDirection: "row",
+        marginTop: 10,
+        gap: 20,
     },
     categoryProducts: {
-        
+        alignItems: "center",
+        marginRight: 20,
+        marginTop: 15,
     },
     categoryProductsImage: {
-        borderRadius: 100
+        width: 70,
+        height: 70,
+        borderRadius: 100,
+        backgroundColor: "#f5f5f5",
+        marginBottom: 5,
     },
     categoryProductsTxt: {
-        fontSize: 18,
-        fontWeight: 600
+        fontSize: 16,
+        fontWeight: "600",
     },
-    featuredShops: {},
-    trendingProducts: {},
-})
+    // Featured Shops Styles
+    featuredShops: {
+        flexDirection: "row",
+        marginTop: 10,
+        gap: 20,
+    },
+    featuredShopsProducts: {
+        alignItems: "center",
+        marginRight: 20,
+        marginTop: 15,
+    },
+    featuredShopsProductsImage: {
+        width: 70,
+        height: 70,
+        borderRadius: 100,
+        backgroundColor: "#f5f5f5",
+        marginBottom: 5,
+    },
+    featuredShopsProductsTxt: {
+        fontSize: 16,
+        fontWeight: "600",
+    },
+    featuredShopsProductsReview: {
+        fontSize: 12,
+        color: "#777",
+        marginTop: 2,
+    },
+});
