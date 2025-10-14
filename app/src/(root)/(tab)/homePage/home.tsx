@@ -1,15 +1,21 @@
 import FontAwesome from '@expo/vector-icons/FontAwesome';
+import { useRouter } from 'expo-router';
 import React, { useEffect, useRef, useState } from 'react';
-import { Dimensions, FlatList, Image, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Dimensions, FlatList, Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { cardImages, categories, featuredShops, trendingProducts } from './data';
 
 const width = Dimensions.get('window').width; // You can use Dimensions.get('window').width for dynamic width
 const Home = () => {
     const [searchQuery, setSearchQuery] = useState('');
-
     const [currentIndex, setCurrentIndex] = useState(0);
     const flatListRef = useRef(null);
+
+    const router = useRouter();
+
+    const handleGasClick = () => {
+        router.push("/src/(root)/product/refillGas");
+    }
 
     // Auto slide every 5 seconds
     useEffect(() => {
@@ -50,13 +56,13 @@ const Home = () => {
                     <View style={styles.header}>
                         <Text style={styles.headerTitle}>Varse Market</Text>
                         <View style={styles.headerGasCart}>
-                            <View style={styles.headerGas}>
+                            <TouchableOpacity style={styles.headerGas} onPress={handleGasClick}>
                                 <Image
                                     style={{ width: 18, height: 18, marginRight: 5, tintColor: '#FFFFFF' }}
                                     source={{ uri: 'https://cdn-icons-png.flaticon.com/128/5771/5771077.png' }}
                                 />
                                 <Text style={styles.headerGasCartTxt}>Refill Gas</Text>
-                            </View>
+                            </TouchableOpacity>
                             <FontAwesome name="shopping-cart" size={24} color="black" style={{ marginLeft: 15 }} />
                         </View>
                     </View>
