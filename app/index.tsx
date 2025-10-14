@@ -1,17 +1,29 @@
 import { useRouter } from "expo-router";
-import { Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import styles from "../app/style";
+import styles from "./src/signin/style";
 
 const Index = () => {
 
   const router = useRouter();
   
-  const handleSignUp = () => {
-    router.push('/src/signup/signup');
+  const handleSignIn = () => {
+    router.push('/src/signin/index');
   }
 
-  const signupTxt = {text: "SignUp", onPress: handleSignUp};
+  const handleSignInAsBuyer = () => {
+    router.push('/src/signin/index');
+  }
+
+  const handleSignInAsRider = () => {
+    // router.push('/src/(root)/(tab)/riderHome/riderHome');
+  }
+
+  const handleSignInAsVendor = () => {
+    // router.push('/src/(root)/(tab)/vendorHome/vendorHome');
+  }
+
+  const signinTxt = {text: "SignIn", onPress: handleSignIn};
 
   return (
     <SafeAreaView style={styles.container}>
@@ -21,34 +33,21 @@ const Index = () => {
       </View>
 
       <View>
-        <View>
-          <Text style={styles.inputTxt}>Email Address</Text>
-          <TextInput placeholder="you@example.com" style={styles.input} />
-        </View>
+        <TouchableOpacity style={styles.button} onPress={handleSignInAsBuyer}>
+          <Text style={styles.buttonText}>Login as Buyer</Text>
+        </TouchableOpacity>
+      </View>
 
-        <View>
-          <Text style={styles.inputTxt}>Password</Text>
-          <TextInput placeholder="********" secureTextEntry={true} style={styles.input} />
-
-        </View>
-
-        <TouchableOpacity >
-          <Text style={styles.forgetPassword}>Forgot Password?</Text>
+      <View>
+        <TouchableOpacity style={styles.button} onPress={handleSignInAsRider}>
+          <Text style={styles.buttonText}>Login as Rider</Text>
         </TouchableOpacity>
       </View>
 
       <View>
         <TouchableOpacity style={styles.button} onPress={() => {}}>
-          <Text style={styles.buttonText}>Login</Text>
+          <Text style={styles.buttonText}>Login as Vendor</Text>
         </TouchableOpacity>
-      </View>
-
-      <View style={{marginTop: 15, flexDirection: 'row', alignItems: 'center'}}>
-        <Text style={styles.signUpTxt1}>Don't have an account? 
-          <TouchableOpacity onPress={signupTxt.onPress}>
-            <Text style={styles.signUpText2}> {signupTxt.text}</Text>
-          </TouchableOpacity>
-        </Text>
       </View>
     </SafeAreaView>
   );
