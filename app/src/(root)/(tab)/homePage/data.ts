@@ -81,3 +81,38 @@ export const featuredShops = [
         review: '4.9 - 200 reviews'
     },
 ]
+
+export const trendingProducts = [
+    {
+        id: '1',
+        name: 'Product 1',
+        image:
+            'https://cdn-icons-png.flaticon.com/128/3075/3075977.png',
+        price: '$29.99',
+        shop: 'Shop C8'
+    },
+    {
+        id: '2',
+        name: 'Product 2',
+        image:
+            'https://cdn-icons-png.flaticon.com/128/3075/3075977.png',
+        price: '$39.99',
+        shop: 'Shop A1'
+    },
+    {
+        id: '3',
+        name: 'Product 3',
+        image:
+            'https://cdn-icons-png.flaticon.com/128/3075/3075977.png',
+        price: '$49.99',
+        shop: 'Shop A2'
+    },
+    {
+        id: '4',
+        name: 'Product 4',
+        image:
+            'https://cdn-icons-png.flaticon.com/128/3075/3075977.png',
+        price: '$49.99',
+        shop: 'Shop A2'
+    },
+]

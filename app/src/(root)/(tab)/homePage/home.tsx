@@ -2,12 +2,12 @@ import FontAwesome from '@expo/vector-icons/FontAwesome';
 import React from 'react';
 import { FlatList, Image, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { categories, featuredShops } from './data';
+import { categories, featuredShops, trendingProducts } from './data';
 
 const Home = () => {
     return (
         <SafeAreaView style={styles.container}>
-            <ScrollView 
+            <ScrollView
                 style={styles.scrollView}
                 showsVerticalScrollIndicator={false}
             >
@@ -16,7 +16,7 @@ const Home = () => {
                     <Text style={styles.headerTitle}>Varse Market</Text>
                     <View style={styles.headerGasCart}>
                         <View style={styles.headerGas}>
-                            <Image 
+                            <Image
                                 style={{ width: 18, height: 18, marginRight: 5, tintColor: '#FFFFFF' }}
                                 source={{ uri: 'https://cdn-icons-png.flaticon.com/128/5771/5771077.png' }}
                             />
@@ -40,13 +40,13 @@ const Home = () => {
                 <View>
                     <Text style={styles.sectionTitle}>Categories</Text>
 
-                    <FlatList 
+                    <FlatList
                         data={categories}
                         renderItem={({ item }) => (
                             <View style={styles.categoryProducts}>
-                                <Image 
+                                <Image
                                     source={{ uri: item.image }}
-                                    style={styles.categoryProductsImage} 
+                                    style={styles.categoryProductsImage}
                                 />
                                 <Text style={styles.categoryProductsTxt}>{item.name}</Text>
                             </View>
@@ -61,13 +61,13 @@ const Home = () => {
                 <View>
                     <Text style={styles.sectionTitle}>Featured Shops</Text>
 
-                    <FlatList 
+                    <FlatList
                         data={featuredShops}
                         renderItem={({ item }) => (
                             <View style={styles.featuredShopsProducts}>
-                                <Image 
+                                <Image
                                     source={{ uri: item.image }}
-                                    style={styles.featuredShopsProductsImage} 
+                                    style={styles.featuredShopsProductsImage}
                                 />
                                 <Text style={styles.featuredShopsProductsTxt}>{item.name}</Text>
                                 <Text style={styles.featuredShopsProductsReview}>{item.review}</Text>
@@ -77,8 +77,33 @@ const Home = () => {
                         horizontal
                         showsHorizontalScrollIndicator={false}
                     />
+
+
                 </View>
 
+                {/* Trending Products */}
+                <View>
+                    <Text style={styles.sectionTitle}>Trending Products</Text>
+
+                    <FlatList
+                        data={trendingProducts}
+                        renderItem={({ item }) => (
+                            <View style={styles.trendingProducts}>
+                                <Image
+                                    source={{ uri: item.image }}
+                                    style={styles.trendingProductsImage}
+                                />
+                                <Text style={styles.trendingProductsTxt}>{item.name}</Text>
+                                <Text style={styles.trendingProductsPrice}>{item.price}</Text>
+                                <Text style={styles.trendingProductsReview}>{item.shop}</Text>
+                            </View>
+                        )}
+                        keyExtractor={(item) => item.id}
+                        numColumns={2}
+                        // columnWrapperStyle={{ justifyContent: "space-between", marginBottom: 15 }} // ✅ spacing between items
+                        contentContainerStyle={{ paddingVertical: 10 }}
+                    />
+                </View>
             </ScrollView>
         </SafeAreaView>
     );
@@ -122,7 +147,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
         height: 30,
     },
-        // Search Box Styles
+    // Search Box Styles
     searchContainer: {
         position: "relative",
         marginTop: 20,
@@ -137,7 +162,7 @@ const styles = StyleSheet.create({
         borderRadius: 50,
         backgroundColor: "#F0F0F0",
         height: 40,
-        paddingLeft: 40, 
+        paddingLeft: 40,
         fontSize: 16,
     },
 
@@ -146,7 +171,7 @@ const styles = StyleSheet.create({
         fontSize: 20,
         fontWeight: "600",
     },
-        // Category Styles
+    // Category Styles
     category: {
         flexDirection: "row",
         marginTop: 10,
@@ -195,4 +220,47 @@ const styles = StyleSheet.create({
         color: "#777",
         marginTop: 2,
     },
+    // Trending Products Styles
+    trendingProducts: {
+        backgroundColor: "#fff",
+        borderRadius: 10,
+        padding: 10,
+        alignItems: "center",
+        width: "48%", // 
+        shadowColor: "#000",
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+        elevation: 3, 
+        marginBottom: 15,
+        marginRight: 15,
+    },
+
+    trendingProductsImage: {
+        resizeMode: "contain",
+        borderRadius: 10,
+        marginBottom: 8,
+        width: "100%",        
+        height: 120, 
+    },
+
+    trendingProductsTxt: {
+        fontSize: 16,
+        fontWeight: "600",
+        color: "#333",
+        textAlign: "center",
+    },
+
+    trendingProductsReview: {
+        fontSize: 13,
+        color: "#777",
+        textAlign: "center",
+    },
+
+    trendingProductsPrice: {
+        fontSize: 15,
+        fontWeight: "700",
+        color: "#E58945",
+        marginTop: 5,
+    },
+
 });
