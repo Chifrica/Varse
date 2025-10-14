@@ -1,103 +1,190 @@
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import React from 'react';
-import { FlatList, Image, StyleSheet, Text, TextInput, View } from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import { Dimensions, FlatList, Image, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { categories, featuredShops, trendingProducts } from './data';
+import { cardImages, categories, featuredShops, trendingProducts } from './data';
 
+const width = Dimensions.get('window').width; // You can use Dimensions.get('window').width for dynamic width
 const Home = () => {
-    const renderHeader = () => (
-        <>
-            {/* Header */}
-            <View style={styles.header}>
-                <Text style={styles.headerTitle}>Varse Market</Text>
-                <View style={styles.headerGasCart}>
-                    <View style={styles.headerGas}>
-                        <Image
-                            style={{ width: 18, height: 18, marginRight: 5, tintColor: '#FFFFFF' }}
-                            source={{ uri: 'https://cdn-icons-png.flaticon.com/128/5771/5771077.png' }}
-                        />
-                        <Text style={styles.headerGasCartTxt}>Refill Gas</Text>
-                    </View>
-                    <FontAwesome name="shopping-cart" size={24} color="black" style={{ marginLeft: 15 }} />
-                </View>
-            </View>
+    const [searchQuery, setSearchQuery] = useState('');
 
-            {/* Search Box */}
-            <View style={styles.searchContainer}>
-                <FontAwesome name="search" size={18} color="#999" style={styles.searchIcon} />
-                <TextInput
-                    style={styles.searchInput}
-                    placeholder="Search for products or shops"
-                    placeholderTextColor="#999"
-                />
-            </View>
+    const [currentIndex, setCurrentIndex] = useState(0);
+    const flatListRef = useRef(null);
 
-            {/* Categories */}
-            <Text style={styles.sectionTitle}>Categories</Text>
-            <FlatList
-                data={categories}
-                renderItem={({ item }) => (
-                    <View style={styles.categoryProducts}>
-                        <Image source={{ uri: item.image }} style={styles.categoryProductsImage} />
-                        <Text style={styles.categoryProductsTxt}>{item.name}</Text>
-                    </View>
-                )}
-                keyExtractor={item => item.id}
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                contentContainerStyle={{ paddingVertical: 10 }}
-            />
+    // Auto slide every 5 seconds
+    useEffect(() => {
+        const interval = setInterval(() => {
+            const nextIndex = (currentIndex + 1) % cardImages.length;
+            setCurrentIndex(nextIndex);
+            flatListRef.current?.scrollToIndex({ index: nextIndex, animated: true });
+        }, 5000);
+        return () => clearInterval(interval);
+    }, [currentIndex]);
 
-            {/* Featured Shops */}
-            <Text style={styles.sectionTitle}>Featured Shops</Text>
-            <FlatList
-                data={featuredShops}
-                renderItem={({ item }) => (
-                    <View style={styles.featuredShopsProducts}>
-                        <Image source={{ uri: item.image }} style={styles.featuredShopsProductsImage} />
-                        <Text style={styles.featuredShopsProductsTxt}>{item.name}</Text>
-                        <Text style={styles.featuredShopsProductsReview}>{item.review}</Text>
-                    </View>
-                )}
-                keyExtractor={item => item.id}
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                contentContainerStyle={{ paddingVertical: 10 }}
-            />
-
-            {/* Trending Products Title */}
-            <Text style={styles.sectionTitle}>Trending Products</Text>
-        </>
+    // Filtered data based on search input
+    const filteredCategories = categories.filter(item =>
+        item.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
+    const filteredShops = featuredShops.filter(item =>
+        item.name.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+    const filteredProducts = trendingProducts.filter(item =>
+        item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        item.shop.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
+    // Combine everything into a single scrollable list
+    const sections = [
+        { key: 'header' },
+        { key: 'search' },
+        { key: 'cardUp' },
+        { key: 'categories' },
+        { key: 'featured' },
+        { key: 'trending' },
+    ];
+
+    const renderSection = ({ item }) => {
+        switch (item.key) {
+            case 'header':
+                return (
+                    <View style={styles.header}>
+                        <Text style={styles.headerTitle}>Varse Market</Text>
+                        <View style={styles.headerGasCart}>
+                            <View style={styles.headerGas}>
+                                <Image
+                                    style={{ width: 18, height: 18, marginRight: 5, tintColor: '#FFFFFF' }}
+                                    source={{ uri: 'https://cdn-icons-png.flaticon.com/128/5771/5771077.png' }}
+                                />
+                                <Text style={styles.headerGasCartTxt}>Refill Gas</Text>
+                            </View>
+                            <FontAwesome name="shopping-cart" size={24} color="black" style={{ marginLeft: 15 }} />
+                        </View>
+                    </View>
+                );
+
+            case 'search':
+                return (
+                    <View style={styles.searchContainer}>
+                        <FontAwesome name="search" size={18} color="#999" style={styles.searchIcon} />
+                        <TextInput
+                            style={styles.searchInput}
+                            placeholder="Search for products, shops, or categories"
+                            placeholderTextColor="#999"
+                            value={searchQuery}
+                            onChangeText={setSearchQuery}
+                        />
+                    </View>
+                );
+
+            case 'cardUp':
+                return (
+                    <View style={{ marginTop: 20 }}>
+                        <FlatList
+                            ref={flatListRef}
+                            data={cardImages}
+                            horizontal
+                            pagingEnabled
+                            keyExtractor={(item) => item.id}
+                            showsHorizontalScrollIndicator={false}
+                            renderItem={({ item }) => (
+                                <Image
+                                    source={{ uri: item.uri }}
+                                    style={{
+                                        width: width - 30,
+                                        height: 200,
+                                        borderRadius: 10,
+                                        marginRight: 10,
+                                        // resizeMode: 'cover',
+                                    }}
+                                />
+                            )}
+                        />
+                    </View>
+                );
+
+            case 'categories':
+                return (
+                    <View>
+                        <Text style={styles.sectionTitle}>Categories</Text>
+                        <FlatList
+                            data={filteredCategories}
+                            renderItem={({ item }) => (
+                                <View style={styles.categoryProducts}>
+                                    <Image source={{ uri: item.image }} style={styles.categoryProductsImage} />
+                                    <Text style={styles.categoryProductsTxt}>{item.name}</Text>
+                                </View>
+                            )}
+                            keyExtractor={item => item.id}
+                            horizontal
+                            showsHorizontalScrollIndicator={false}
+                        />
+                    </View>
+                );
+
+            case 'featured':
+                return (
+                    <View>
+                        <Text style={styles.sectionTitle}>Featured Shops</Text>
+                        <FlatList
+                            data={filteredShops}
+                            renderItem={({ item }) => (
+                                <View style={styles.featuredShopsProducts}>
+                                    <Image source={{ uri: item.image }} style={styles.featuredShopsProductsImage} />
+                                    <Text style={styles.featuredShopsProductsTxt}>{item.name}</Text>
+                                    <Text style={styles.featuredShopsProductsReview}>{item.review}</Text>
+                                </View>
+                            )}
+                            keyExtractor={item => item.id}
+                            horizontal
+                            showsHorizontalScrollIndicator={false}
+                        />
+                    </View>
+                );
+
+            case 'trending':
+                return (
+                    <View>
+                        <Text style={styles.sectionTitle}>Trending Products</Text>
+                        <FlatList
+                            data={filteredProducts}
+                            renderItem={({ item }) => (
+                                <View style={styles.trendingProducts}>
+                                    <Image source={{ uri: item.image }} style={styles.trendingProductsImage} />
+                                    <Text style={styles.trendingProductsTxt}>{item.name}</Text>
+                                    <Text style={styles.trendingProductsPrice}>{item.price}</Text>
+                                    <Text style={styles.trendingProductsReview}>{item.shop}</Text>
+                                </View>
+                            )}
+                            keyExtractor={item => item.id}
+                            numColumns={2}
+                            columnWrapperStyle={{ justifyContent: "space-between" }}
+                            scrollEnabled={true} // ✅ prevent nested scroll
+                        />
+                    </View>
+                );
+
+            default:
+                return null;
+        }
+    };
 
     return (
         <SafeAreaView style={styles.container}>
-            <FlatList
-                data={trendingProducts}
-                renderItem={({ item }) => (
-                    <View style={styles.trendingProducts}>
-                        <Image
-                            source={{ uri: item.image }}
-                            style={styles.trendingProductsImage}
-                        />
-                        <Text style={styles.trendingProductsTxt}>{item.name}</Text>
-                        <Text style={styles.trendingProductsPrice}>{item.price}</Text>
-                        <Text style={styles.trendingProductsReview}>{item.shop}</Text>
-                    </View>
-                )}
-                keyExtractor={(item) => item.id}
-                numColumns={2}
-                columnWrapperStyle={{ justifyContent: "space-between" }}
-                contentContainerStyle={{ paddingHorizontal: 15 }}
-                ListHeaderComponent={renderHeader}
-                showsVerticalScrollIndicator={false}
-            />
+            <ScrollView showsVerticalScrollIndicator={false}>
+                <FlatList
+                    data={sections}
+                    renderItem={renderSection}
+                    keyExtractor={item => item.key}
+                    contentContainerStyle={styles.scrollView}
+                // showsVerticalScrollIndicator={false}
+                />
+            </ScrollView>
         </SafeAreaView>
     );
 };
 
-
 export default Home;
+
 
 const styles = StyleSheet.create({
     container: {
@@ -218,7 +305,7 @@ const styles = StyleSheet.create({
         shadowColor: "#000",
         shadowOpacity: 0.1,
         shadowRadius: 4,
-        elevation: 3, 
+        elevation: 3,
         marginBottom: 10,
         marginRight: 15,
         marginTop: 10,
@@ -228,8 +315,8 @@ const styles = StyleSheet.create({
         // resizeMode: "contain",
         borderRadius: 10,
         marginBottom: 8,
-        width: "100%",        
-        height: 120, 
+        width: "100%",
+        height: 120,
     },
 
     trendingProductsTxt: {
