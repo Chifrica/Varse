@@ -6,13 +6,9 @@ import styles from "./src/signin/style";
 const Index = () => {
 
   const router = useRouter();
-  
-  const handleSignIn = () => {
-    router.push('/src/signin/index');
-  }
 
   const handleSignInAsBuyer = () => {
-    router.push('/src/signin/index');
+    router.push('/src/signin/signin');
   }
 
   const handleSignInAsRider = () => {
@@ -20,10 +16,8 @@ const Index = () => {
   }
 
   const handleSignInAsVendor = () => {
-    // router.push('/src/(root)/(tab)/vendorHome/vendorHome');
+    router.push('/vendor/signin/signin');
   }
-
-  const signinTxt = {text: "SignIn", onPress: handleSignIn};
 
   return (
     <SafeAreaView style={styles.container}>
@@ -45,7 +39,7 @@ const Index = () => {
       </View>
 
       <View>
-        <TouchableOpacity style={styles.button} onPress={() => {}}>
+        <TouchableOpacity style={styles.button} onPress={handleSignInAsVendor}>
           <Text style={styles.buttonText}>Login as Vendor</Text>
         </TouchableOpacity>
       </View>
