@@ -2,19 +2,24 @@ import { StyleSheet } from "react-native";
 const styles = StyleSheet.create({
     container: { flex: 1, padding: 16, alignItems: "center", backgroundColor: "#F5F5F5", justifyContent: "center" },
     header: { alignItems: "center", marginBottom: 10 },
-    title: { fontSize: 38, fontWeight: "bold", marginBottom: 16, color: "#000" },
+    title: { 
+        fontSize: 38, 
+        fontWeight: "bold", 
+        marginBottom: 16, 
+        color: "#000" 
+    },
     subTitle: { fontSize: 20, color: "#999", marginBottom: 32, alignItems: "center", textAlign: "center", fontWeight: "900" },
     input: {
         borderWidth: 1,
         borderColor: "#ccc",
-        borderRadius: 8, // slightly more rounded for modern look
+        borderRadius: 8, 
         paddingVertical: 14,
         paddingHorizontal: 16,
         marginBottom: 16,
-        width: "280%", // 🔥 expands input width to almost full screen
+        width: "280%", 
         alignSelf: "center",
-        fontSize: 18, // 🔥 increases both text and placeholder font size
-        color: "#333", // input text color
+        fontSize: 18,
+        color: "#333",
     },
     inputTxt: {
         fontSize: 18,
@@ -70,8 +75,7 @@ const styles = StyleSheet.create({
         backgroundColor: "#FFFFFF",
         justifyContent: "center",
         alignItems: "center",
-        // elevation: 0.5, // adds subtle shadow on Android
-        shadowColor: "#000", // adds subtle shadow on iOS
+        shadowColor: "#000",
         shadowOpacity: 0.1,
         shadowRadius: 4,
         shadowOffset: { width: 0, height: 2 },

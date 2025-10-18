@@ -10,36 +10,38 @@ const styles = StyleSheet.create({
     },
     header: {
         alignItems: "center", 
-        marginBottom: 32
+        marginBottom: 10
     },
     title: {
         fontSize: 38, 
-        fontWeight: "bold", 
+        fontWeight: "900", 
         marginBottom: 16, 
-        color: "#FF8800"
+        color: "#000",
     },
     subTitle: {
         fontSize: 20, 
-        color: "#666", 
+        color: "#999", 
         marginBottom: 32, 
         alignItems: "center", 
         textAlign: "center"
     },
     input: {
-        borderWidth: 1,
+         borderWidth: 1,
         borderColor: "#ccc",
-        borderRadius: 4,
-        elevation: 0,
-        padding: 12,
-        marginBottom: 12,
-        width: 300,
-        color: "#CCCCCC"
+        borderRadius: 8, 
+        paddingVertical: 14,
+        paddingHorizontal: 16,
+        marginBottom: 16,
+        width: "250%",
+        alignSelf: "center",
+        fontSize: 18,
+        color: "#333",
     },
     button: {
         backgroundColor: "#FF8800",
         padding: 12,
         borderRadius: 4,
-        width: 300,
+        width: 380,
         marginTop: 16
     },
     buttonText: {
@@ -54,7 +56,38 @@ const styles = StyleSheet.create({
     loginText2: {
         color: "#FF8800",
         fontSize: 18
-    }
+    },
+    horizontalLine: {
+        flex: 1,
+        height: 1,
+        backgroundColor: "#FF8800",
+    },
+    orTxt: {
+        marginHorizontal: 10,
+        fontSize: 16,
+        fontWeight: "600",
+        color: "#555",
+    },
+    socialIcons: {
+        flexDirection: "row",
+        justifyContent: "center",
+        gap: 20,
+        marginVertical: 20,
+    },
+    iconBox: {
+        width: 55,
+        height: 55,
+        borderRadius: 12,
+        borderWidth: 1.5,
+        borderColor: "#E0E0E0",
+        backgroundColor: "#FFFFFF",
+        justifyContent: "center",
+        alignItems: "center",
+        shadowColor: "#000",
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+        shadowOffset: { width: 0, height: 2 },
+    },
 });
 
 export default styles;
