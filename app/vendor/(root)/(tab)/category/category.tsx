@@ -1,12 +1,14 @@
 import FontAwesome from '@expo/vector-icons/FontAwesome'
 import React, { useState } from 'react'
-import { FlatList, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { FlatList, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { foodData, header } from '../category/data'
 
 const Category = () => {
 
-  const [selectedId, setSelectedId] = useState('1');
+  // const [selectedId, setSelectedId] = useState('1');
+  const [selectedCategory, setSelectedCategory] = useState('food');
+  const filteredData = foodData.filter(item => item.category === selectedCategory);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -24,35 +26,37 @@ const Category = () => {
           contentContainerStyle={{ paddingHorizontal: 10 }}
           renderItem={({ item }) => {
 
-            const isSelected = item.id === selectedId;
+            // const isSelected = item.id === selectedId;
+            const isSelectedCategory = item.category === selectedCategory
 
             return (
               <TouchableOpacity
-                onPress={() => setSelectedId(item.id)}
+                // onPress={() => setSelectedId(item.id)}
+                onPress={() => setSelectedCategory(item.category)}
                 style={{
                   alignItems: "center",
                   marginRight: 20,
-                  paddingBottom: 3, // spacing before underline
+                  paddingBottom: 3,
                 }}
               >
                 <Text
                   style={{
-                    color: isSelected ? "#FF8800" : "#333",
-                    fontWeight: isSelected ? "bold" : "700",
+                    color: isSelectedCategory ? "#FF8800" : "#333",
+                    fontWeight: isSelectedCategory ? "bold" : "700",
                     fontSize: 16,
                   }}
                 >
                   {item.title}
                 </Text>
 
-                {isSelected && (
+                {isSelectedCategory && (
                   <View
                     style={{
                       borderBottomWidth: 1.5,
                       borderStyle: "solid",
                       borderColor: "#FF8800",
-                      width: "100%", // same width as text
-                      marginTop: 3, // small space between text and underline
+                      width: "100%",
+                      marginTop: 3,
                     }}
                   />
                 )}
@@ -70,25 +74,34 @@ const Category = () => {
           }}
         />
 
-      <View style={styles.filtersContainer}>
-        <Text style={styles.filterText}>Food</Text>
-        <View style={styles.filterIconContainer}>
-          <FontAwesome name="filter" size={20} color="#FF8800" />
-          <Text style={styles.filterIconContainerTxt}>Filters</Text>
-        </View>
-      </View>
-
-      <FlatList
-        data={foodData}
-        renderItem={({ item }) => (
-          <View>
-            <Text>{item.name}</Text>
+        <View style={styles.filtersContainer}>
+          <Text style={styles.filterText}>{selectedCategory.charAt(0).toUpperCase() + selectedCategory.slice(1)}</Text>
+          <View style={styles.filterIconContainer}>
+            <FontAwesome name="filter" size={20} color="#FF8800" />
+            <Text style={styles.filterIconContainerTxt}>Filters</Text>
           </View>
-        )}
-        keyExtractor={item => item.id}
-        numColumns={2}
-      />
-    </ScrollView>
+        </View>
+
+        <FlatList
+          data={filteredData}
+          renderItem={({ item }) => (
+            <View style={styles.foodDataBody}>
+              <Image
+                source={{ uri: item.uri }}
+                style={styles.image}
+              />
+              <View style={styles.textContainer}>
+                <Text style={styles.name}>{item.name}</Text>
+                <Text style={styles.price}>{item.price}</Text>
+              </View>
+            </View>
+          )}
+          keyExtractor={item => item.id}
+          numColumns={2}
+          contentContainerStyle={{ padding: 10 }}
+          columnWrapperStyle={{ justifyContent: "space-between" }}
+        />
+      </ScrollView>
     </SafeAreaView >
   )
 }
@@ -146,5 +159,57 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
     color: '#FF8800'
+  },
+  card: {
+    backgroundColor: "#fff",
+    borderRadius: 12,
+    elevation: 4,
+    shadowColor: "#000", 
+    shadowOpacity: 0.15,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 4,
+    width: "48%", 
+    marginBottom: 15,
+    overflow: "hidden", 
+  },
+  image: {
+    width: "100%",
+    height: 130,
+    resizeMode: "cover",
+    shadowColor: "#000",
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+    borderRadius: 10,
+  },
+  textContainer: {
+    // padding: 10,
+    // alignItems: "center",
+  },
+  name: {
+    marginTop: 10,
+    fontSize: 20,
+    fontWeight: "600",
+    color: "#333",
+  },
+  price: {
+    fontSize: 15,
+    color: "#FF8800",
+    fontWeight: "700",
+    marginTop: 4,
+  },
+  foodDataBody: {
+    // backgroundColor: "#fff",
+    borderRadius: 10,
+    padding: 10,
+    alignItems: "center",
+    width: "48%", // 
+    shadowColor: "#000",
+    // shadowOpacity: 0.1,
+    shadowRadius: 4,
+    // elevation: 3,
+    marginBottom: 10,
+    marginRight: 15,
+    marginTop: 10,
   }
 })

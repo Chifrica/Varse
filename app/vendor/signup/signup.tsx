@@ -20,21 +20,17 @@ const SignUp = () => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.title}>Varse Market</Text>
-        <Text style={styles.subTitle}>{`Join us and start shopping!`}</Text>
+        <Text style={styles.title}>Welcome to Varse Vendor</Text>
+        <Text style={styles.subTitle}>{`Your Marketplace, Your Control`}</Text>
       </View>
 
       <View>
         <View>
-          <TextInput placeholder="Full Name" style={styles.input} />
+          <TextInput placeholder="Enter Email" style={styles.input} />
         </View>
 
         <View>
-          <TextInput placeholder="Email Address" style={styles.input} />
-        </View>
-
-        <View>
-          <TextInput placeholder="Password" secureTextEntry={true} style={styles.input} />
+          <TextInput placeholder="Enter Password" secureTextEntry={true} style={styles.input} />
         </View>
 
         <View>
