@@ -12,8 +12,12 @@ const Index = () => {
     router.push('/vendor/signup/signup');
   }
 
-  const signupTxt = { text: "SignUp", onPress: handleSignUp };
+  const handleKYC = () => {
+    router.push('/vendor/signup/kycRegistration/kyc')
+  }
 
+  const signupTxt = { text: "SignUp", onPress: handleSignUp };
+ 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
@@ -64,7 +68,7 @@ const Index = () => {
         </TouchableOpacity>
       </View>
       <View>
-        <TouchableOpacity style={styles.button} onPress={() => { }}>
+        <TouchableOpacity style={styles.button} onPress={handleKYC}>
           <Text style={styles.buttonText}>Sign in</Text>
         </TouchableOpacity>
       </View>

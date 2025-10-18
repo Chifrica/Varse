@@ -1,14 +1,30 @@
 import { StyleSheet } from "react-native";
 const styles = StyleSheet.create({
-    container: { flex: 1, padding: 16, alignItems: "center", backgroundColor: "#F5F5F5", justifyContent: "center" },
-    header: { alignItems: "center", marginBottom: 10 },
+    container: { 
+        flex: 1, 
+        padding: 16, 
+        alignItems: "center", 
+        backgroundColor: "#F5F5F5", 
+        justifyContent: "center" 
+    },
+    header: { 
+        alignItems: "center", 
+        marginBottom: 10 
+    },
     title: { 
         fontSize: 38, 
         fontWeight: "bold", 
         marginBottom: 16, 
         color: "#000" 
     },
-    subTitle: { fontSize: 20, color: "#999", marginBottom: 32, alignItems: "center", textAlign: "center", fontWeight: "900" },
+    subTitle: { 
+        fontSize: 20, 
+        color: "#999", 
+        marginBottom: 32, 
+        alignItems: "center", 
+        textAlign: "center", 
+        fontWeight: "900" 
+    },
     input: {
         borderWidth: 1,
         borderColor: "#ccc",

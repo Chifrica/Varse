@@ -1,22 +1,48 @@
 import FontAwesome from "@expo/vector-icons/FontAwesome";
+import Checkbox from "expo-checkbox";
 import { useRouter } from "expo-router";
-import { Image, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { useState } from "react";
+import { Alert, Image, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import styles from "./style";
 
 const SignUp = () => {
 
-    const router = useRouter();
+  const router = useRouter();
 
-    const handleLogin = () => {
-        // router.push('/vendor/(root)/(tab)/homePage/home');
+  // Form states
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [isChecked, setChecked] = useState(false);
+
+  const handleRegister = () => {
+    if (!email || !password || !confirmPassword) {
+      Alert.alert("Error", "All fields are required.");
+      return;
     }
 
-    const handleRegister = () => {
-        router.push('/vendor/(root)/(tab)/homePage/home');
+    if (password !== confirmPassword) {
+      Alert.alert("Error", "Passwords do not match.");
+      return;
     }
 
-    const loginTxt = { text: "  Login", onPress: handleLogin };
+    if (!isChecked) {
+      Alert.alert("Error", "You must agree to the Terms and Privacy Policy.");
+      return;
+    }
+    router.push("/vendor/(root)/(tab)/homePage/home");
+  };
+
+  const handleLogin = () => {
+    // router.push('/vendor/(root)/(tab)/homePage/home');
+  }
+
+  // const handleRegister = () => {
+  //   router.push('/vendor/(root)/(tab)/homePage/home');
+  // }
+
+  const loginTxt = { text: "  Login", onPress: handleLogin };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -28,26 +54,43 @@ const SignUp = () => {
 
       <View>
         <View>
-          <TextInput placeholder="Enter Email"  style={styles.input} />
+          <TextInput 
+            placeholder="Enter Email" 
+            style={styles.input} 
+            value={email}
+            onChangeText={setEmail}
+          />
         </View>
 
         <View>
-          <TextInput placeholder="Enter Password" secureTextEntry={true} style={styles.input} />
+          <TextInput 
+          placeholder="Enter Password" 
+          secureTextEntry={true} 
+          style={styles.input} 
+          value={password}
+          onChangeText={setPassword}
+          />
         </View>
 
         <View>
-          <TextInput placeholder="Confirm Password" secureTextEntry={true} style={styles.input} />
+          <TextInput 
+          placeholder="Confirm Password" 
+          secureTextEntry={true} 
+          style={styles.input} 
+          value={confirmPassword}
+          onChangeText={setConfirmPassword}
+          />
         </View>
       </View>
 
       <View style={{ flexDirection: "row", alignItems: "center", marginVertical: 20, width: "90%" }}>
-          <View style={styles.horizontalLine} />
-          <Text style={styles.orTxt}>
-            OR
-          </Text>
-          <View
-            style={styles.horizontalLine} />
-        </View>
+        <View style={styles.horizontalLine} />
+        <Text style={styles.orTxt}>
+          OR
+        </Text>
+        <View
+          style={styles.horizontalLine} />
+      </View>
 
       <Text style={{ fontSize: 18, color: '#666', fontWeight: '700' }}>Log in with</Text>
 
@@ -65,18 +108,22 @@ const SignUp = () => {
         </TouchableOpacity>
       </View>
 
+      <View style={styles.agreementContainer}>
+        <Checkbox
+          value={isChecked}
+          onValueChange={setChecked}
+          color={isChecked ? "#FF8800" : undefined}
+        />
+        <Text style={styles.agreementText}>
+          {"  "}I agree to the{" "}
+          <Text style={styles.linkText}>Terms and Privacy Policy</Text>
+        </Text>
+      </View>
+
       <View>
         <TouchableOpacity style={styles.button} onPress={handleRegister}>
           <Text style={styles.buttonText}>Register</Text>
         </TouchableOpacity>
-      </View>
-
-      <View style={{marginTop: 20, flexDirection: 'row', alignItems: 'center'}}>
-        <Text style={styles.loginText1}>Already have an account?  
-            <TouchableOpacity onPress={loginTxt.onPress}> 
-                <Text style={styles.loginText2}>{loginTxt.text}</Text> 
-            </TouchableOpacity>
-        </Text>
       </View>
     </SafeAreaView>
   );

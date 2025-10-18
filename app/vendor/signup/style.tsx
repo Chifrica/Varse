@@ -2,37 +2,37 @@ import { StyleSheet } from "react-native";
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1, 
-        padding: 16, 
-        alignItems: "center", 
-        backgroundColor: "#F5F5F5", 
+        flex: 1,
+        padding: 16,
+        alignItems: "center",
+        backgroundColor: "#F5F5F5",
         justifyContent: "center"
     },
     header: {
-        alignItems: "center", 
+        alignItems: "center",
         marginBottom: 10
     },
     title: {
-        fontSize: 38, 
-        fontWeight: "900", 
-        marginBottom: 16, 
+        fontSize: 38,
+        fontWeight: "900",
+        marginBottom: 16,
         color: "#000",
     },
     subTitle: {
-        fontSize: 20, 
-        color: "#999", 
-        marginBottom: 32, 
-        alignItems: "center", 
+        fontSize: 20,
+        color: "#999",
+        marginBottom: 32,
+        alignItems: "center",
         textAlign: "center"
     },
     input: {
-         borderWidth: 1,
+        borderWidth: 1,
         borderColor: "#ccc",
-        borderRadius: 8, 
+        borderRadius: 8,
         paddingVertical: 14,
         paddingHorizontal: 16,
         marginBottom: 16,
-        width: "250%",
+        width: 350,
         alignSelf: "center",
         fontSize: 18,
         color: "#333",
@@ -41,13 +41,13 @@ const styles = StyleSheet.create({
         backgroundColor: "#FF8800",
         padding: 12,
         borderRadius: 4,
-        width: 380,
+        width: 350,
         marginTop: 16
     },
     buttonText: {
         color: "#fff",
         elevation: 1,
-        fontSize: 16,
+        fontSize: 24,
         textAlign: "center"
     },
     loginText1: {
@@ -87,6 +87,30 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.1,
         shadowRadius: 4,
         shadowOffset: { width: 0, height: 2 },
+    }, agreementContainer: {
+        flexDirection: "row",
+        alignItems: "center",
+        marginTop: 10,
+        marginBottom: 16,
+        width: "90%", // aligns with your inputs & button
+        alignSelf: "center",
+    },
+    checkboxPlaceholder: {
+        width: 20,
+        height: 20,
+        borderRadius: 4,
+        borderWidth: 1.5,
+        borderColor: "#FF8800",
+        marginRight: 10,
+    },
+    agreementText: {
+        fontSize: 16,
+        color: "#333",
+        flexShrink: 1,
+    },
+    linkText: {
+        color: "#FF8800", // default orange
+        fontWeight: "600",
     },
 });
 
