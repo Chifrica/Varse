@@ -131,3 +131,11 @@ export const trendingProducts = [
         shop: 'Shop A2'
     },
 ]
+
+export const categoriesItems = [
+    { id: 1, name: "Beverages", icon: require("../../../../../assets/icons/logo.png") },
+    { id: 2, name: "Snacks", icon: require("../../../../../assets/icons/logo.png") },
+    { id: 3, name: "Desserts", icon: require("../../../../../assets/icons/logo.png") },
+    { id: 4, name: "Fruits", icon: require("../../../../../assets/icons/logo.png") },
+    { id: 5, name: "Meals", icon: require("../../../../../assets/icons/logo.png") },
+  ];
