@@ -9,10 +9,9 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { categoriesItems } from "./data";
+import { categoriesItems, popularItems } from "./data";
 
 const Home = () => {
-
   return (
     <SafeAreaView style={styles.container}>
       {/* Header Section */}
@@ -58,7 +57,11 @@ const Home = () => {
 
       {/* Category Section */}
       <Text style={styles.sectionTitle}>Category</Text>
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.categoryScroll}>
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        style={styles.categoryScroll}
+      >
         {categoriesItems.map((item) => (
           <View key={item.id} style={styles.categoryItem}>
             <View style={styles.categoryCircle}>
@@ -71,6 +74,28 @@ const Home = () => {
 
       {/* Popular Section */}
       <Text style={styles.sectionTitle}>Popular</Text>
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        style={styles.popularScroll}
+      >
+        {popularItems.map((item) => (
+          <View key={item.id} style={styles.popularCard}>
+            <Image source={item.image} style={styles.popularImage} />
+            <View style={styles.popularInfo}>
+              <Text style={styles.popularName}>{item.name}</Text>
+              <Text style={styles.popularDescription}>{item.description}</Text>
+              <View style={styles.popularBottom}>
+                <Text style={styles.popularPrice}>₦{item.price}</Text>
+                <View style={styles.ratingWrapper}>
+                  <Ionicons name="star" size={14} color="#FFA500" />
+                  {/* <Text style={styles.ratingText}>{item.rate.}</Text> */}
+                </View>
+              </View>
+            </View>
+          </View>
+        ))}
+      </ScrollView>
     </SafeAreaView>
   );
 };
@@ -195,8 +220,64 @@ const styles = StyleSheet.create({
   },
   categoryText: {
     marginTop: 6,
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: "500",
     color: "#000",
+  },
+
+  /* POPULAR */
+  popularScroll: {
+    marginTop: 10,
+  },
+  popularCard: {
+    backgroundColor: "#F9F9F9",
+    borderRadius: 16,
+    marginRight: 16,
+    width: 160,
+    shadowColor: "#000",
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    elevation: 3,
+  },
+  popularImage: {
+    width: "100%",
+    height: 110,
+    borderTopLeftRadius: 16,
+    borderTopRightRadius: 16,
+    resizeMode: "cover",
+  },
+  popularInfo: {
+    padding: 10,
+  },
+  popularName: {
+    fontSize: 16,
+    fontWeight: "700",
+    color: "#000",
+  },
+  popularDescription: {
+    fontSize: 13,
+    color: "#555",
+    marginVertical: 4,
+  },
+  popularBottom: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginTop: 4,
+  },
+  popularPrice: {
+    fontSize: 15,
+    fontWeight: "700",
+    color: "#FF6A00",
+  },
+  ratingWrapper: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  ratingText: {
+    fontSize: 13,
+    fontWeight: "500",
+    marginLeft: 4,
+    color: "#555",
   },
 });

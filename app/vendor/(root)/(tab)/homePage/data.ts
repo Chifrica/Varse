@@ -1,3 +1,4 @@
+
 export const cardImages = [
     {
         id: '1',
@@ -138,4 +139,33 @@ export const categoriesItems = [
     { id: 3, name: "Desserts", icon: require("../../../../../assets/icons/logo.png") },
     { id: 4, name: "Fruits", icon: require("../../../../../assets/icons/logo.png") },
     { id: 5, name: "Meals", icon: require("../../../../../assets/icons/logo.png") },
-  ];
+];
+
+export const popularItems = [
+    {
+        id: 1,
+        name: "Cheese Burger",
+        image: require("../../../../../assets/images/android-icon-background.png"),
+        price: "$5.99",
+    },
+    {
+        id: 2,
+        name: "Veggie Pizza",
+        image: require("../../../../../assets/images/android-icon-background.png"),
+        price: "$5.99",
+    },
+    {
+        id: 3,
+        name: "Chocolate Cake",
+        image: require("../../../../../assets/images/android-icon-background.png"),
+        price: "$5.99",
+    },
+    {
+        id: 4,
+        name: "Fried Chicken",
+        image: require("../../../../../assets/images/android-icon-background.png"),
+        price: "$5.99",
+        description: "(1,029)",
+        rate: { name: "star", size: 14, color: "gold" },
+    }
+]
