@@ -14,87 +14,164 @@ import { categoriesItems, popularItems } from "./data";
 const Home = () => {
   return (
     <SafeAreaView style={styles.container}>
-      {/* Header Section */}
-      <View style={styles.header}>
-        <View style={styles.headerLeft}>
+      <ScrollView showsVerticalScrollIndicator={false}>
+        {/* Header Section */}
+        <View style={styles.header}>
+          <View style={styles.headerLeft}>
+            <Image
+              source={require("../../../../../assets/icons/logo.png")}
+              style={styles.headerImage}
+            />
+            <Text style={styles.headerName}>Hi Ahmed</Text>
+          </View>
+
+          <View style={styles.headerIcons}>
+            <View style={styles.iconWrapper}>
+              <Ionicons name="cart-outline" size={20} color="#fff" />
+            </View>
+            <View style={styles.iconWrapper}>
+              <Ionicons name="notifications-outline" size={20} color="#fff" />
+            </View>
+          </View>
+        </View>
+
+        {/* Promo Banner */}
+        <View style={styles.promoContainer}>
+          <View style={styles.textContainer}>
+            <Text style={styles.title}>
+              {`Order meals from your \nfavorite campus spots`}
+            </Text>
+            <Text style={styles.subtitle}>
+              Enjoy <Text style={styles.highlight}>our offer</Text> now
+            </Text>
+
+            <TouchableOpacity style={styles.button}>
+              <Text style={styles.buttonText}>Shop Now</Text>
+            </TouchableOpacity>
+          </View>
+
           <Image
             source={require("../../../../../assets/icons/logo.png")}
-            style={styles.headerImage}
+            style={styles.image}
           />
-          <Text style={styles.headerName}>Hi Ahmed</Text>
         </View>
 
-        <View style={styles.headerIcons}>
-          <View style={styles.iconWrapper}>
-            <Ionicons name="cart-outline" size={20} color="#fff" />
-          </View>
-          <View style={styles.iconWrapper}>
-            <Ionicons name="notifications-outline" size={20} color="#fff" />
-          </View>
-        </View>
-      </View>
-
-      {/* Promo Banner */}
-      <View style={styles.promoContainer}>
-        <View style={styles.textContainer}>
-          <Text style={styles.title}>
-            {`Order meals from your \nfavorite campus spots`}
-          </Text>
-          <Text style={styles.subtitle}>
-            Enjoy <Text style={styles.highlight}>our offer</Text> now
-          </Text>
-
-          <TouchableOpacity style={styles.button}>
-            <Text style={styles.buttonText}>Shop Now</Text>
-          </TouchableOpacity>
-        </View>
-
-        <Image
-          source={require("../../../../../assets/icons/logo.png")}
-          style={styles.image}
-        />
-      </View>
-
-      {/* Category Section */}
-      <Text style={styles.sectionTitle}>Category</Text>
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        style={styles.categoryScroll}
-      >
-        {categoriesItems.map((item) => (
-          <View key={item.id} style={styles.categoryItem}>
-            <View style={styles.categoryCircle}>
-              <Image source={item.icon} style={styles.categoryIcon} />
+        {/* Category Section */}
+        <Text style={styles.sectionTitle}>Category</Text>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          style={styles.categoryScroll}
+        >
+          {categoriesItems.map((item) => (
+            <View key={item.id} style={styles.categoryItem}>
+              <View style={styles.categoryCircle}>
+                <Image source={item.icon} style={styles.categoryIcon} />
+              </View>
+              <Text style={styles.categoryText}>{item.name}</Text>
             </View>
-            <Text style={styles.categoryText}>{item.name}</Text>
-          </View>
-        ))}
-      </ScrollView>
+          ))}
+        </ScrollView>
 
-      {/* Popular Section */}
-      <Text style={styles.sectionTitle}>Popular</Text>
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        style={styles.popularScroll}
-      >
-        {popularItems.map((item) => (
-          <View key={item.id} style={styles.popularCard}>
-            <Image source={item.image} style={styles.popularImage} />
-            <View style={styles.popularInfo}>
-              <Text style={styles.popularName}>{item.name}</Text>
-              <Text style={styles.popularDescription}>{item.description}</Text>
-              <View style={styles.popularBottom}>
-                <Text style={styles.popularPrice}>₦{item.price}</Text>
-                <View style={styles.ratingWrapper}>
-                  <Ionicons name="star" size={14} color="#FFA500" />
-                  {/* <Text style={styles.ratingText}>{item.rate.}</Text> */}
+        {/* Popular Section */}
+        <Text style={styles.sectionTitle}>Popular</Text>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          style={styles.popularScroll}
+        >
+          {popularItems.map((item) => (
+            <View key={item.id} style={styles.popularCard}>
+              <Image source={item.image} style={styles.popularImage} />
+              <View style={styles.popularInfo}>
+                <Text style={styles.popularName}>{item.name}</Text>
+                <View style={styles.popularBottom}>
+                  <View style={styles.ratingWrapper}>
+                    <Ionicons name="star" size={14} color="#FFA500" />
+                    {/* <Text style={styles.ratingText}>{item.rate.}</Text> */}
+                    <Text style={styles.popularDescription}>{item.description}</Text>
+                  </View>
+                  <Text style={styles.popularPrice}>₦{item.price}</Text>
                 </View>
               </View>
             </View>
-          </View>
-        ))}
+          ))}
+        </ScrollView>
+
+        {/* Fashion Section */}
+        <Text style={styles.sectionTitle}>Fashion</Text>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          style={styles.popularScroll}
+        >
+          {popularItems.map((item) => (
+            <View key={item.id} style={styles.popularCard}>
+              <Image source={item.image} style={styles.popularImage} />
+              <View style={styles.popularInfo}>
+                <Text style={styles.popularName}>{item.name}</Text>
+                <View style={styles.popularBottom}>
+                  <View style={styles.ratingWrapper}>
+                    <Ionicons name="star" size={14} color="#FFA500" />
+                    {/* <Text style={styles.ratingText}>{item.rate.}</Text> */}
+                    <Text style={styles.popularDescription}>{item.description}</Text>
+                  </View>
+                  <Text style={styles.popularPrice}>₦{item.price}</Text>
+                </View>
+              </View>
+            </View>
+          ))}
+        </ScrollView>
+
+        {/* Electronics Section */}
+        <Text style={styles.sectionTitle}>Electronics</Text>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          style={styles.popularScroll}
+        >
+          {popularItems.map((item) => (
+            <View key={item.id} style={styles.popularCard}>
+              <Image source={item.image} style={styles.popularImage} />
+              <View style={styles.popularInfo}>
+                <Text style={styles.popularName}>{item.name}</Text>
+                <View style={styles.popularBottom}>
+                  <View style={styles.ratingWrapper}>
+                    <Ionicons name="star" size={14} color="#FFA500" />
+                    {/* <Text style={styles.ratingText}>{item.rate.}</Text> */}
+                    <Text style={styles.popularDescription}>{item.description}</Text>
+                  </View>
+                  <Text style={styles.popularPrice}>₦{item.price}</Text>
+                </View>
+              </View>
+            </View>
+          ))}
+        </ScrollView>
+
+        {/* Clothing Section */}
+        <Text style={styles.sectionTitle}>Clothing</Text>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          style={styles.popularScroll}
+        >
+          {popularItems.map((item) => (
+            <View key={item.id} style={styles.popularCard}>
+              <Image source={item.image} style={styles.popularImage} />
+              <View style={styles.popularInfo}>
+                <Text style={styles.popularName}>{item.name}</Text>
+                <View style={styles.popularBottom}>
+                  <View style={styles.ratingWrapper}>
+                    <Ionicons name="star" size={14} color="#FFA500" />
+                    {/* <Text style={styles.ratingText}>{item.rate.}</Text> */}
+                    <Text style={styles.popularDescription}>{item.description}</Text>
+                  </View>
+                  <Text style={styles.popularPrice}>₦{item.price}</Text>
+                </View>
+              </View>
+            </View>
+          ))}
+        </ScrollView>
       </ScrollView>
     </SafeAreaView>
   );
@@ -233,6 +310,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#F9F9F9",
     borderRadius: 16,
     marginRight: 16,
+    marginBottom: 20,
     width: 160,
     shadowColor: "#000",
     shadowOpacity: 0.1,
@@ -255,27 +333,28 @@ const styles = StyleSheet.create({
     color: "#000",
   },
   popularDescription: {
-    fontSize: 13,
+    fontSize: 18,
     color: "#555",
     marginVertical: 4,
   },
   popularBottom: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
+    // flexDirection: "row",
+    // justifyContent: "space-between",
+    // alignItems: "center",
     marginTop: 4,
   },
   popularPrice: {
-    fontSize: 15,
+    fontSize: 18,
     fontWeight: "700",
     color: "#FF6A00",
   },
   ratingWrapper: {
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "space-between"
   },
   ratingText: {
-    fontSize: 13,
+    fontSize: 18,
     fontWeight: "500",
     marginLeft: 4,
     color: "#555",

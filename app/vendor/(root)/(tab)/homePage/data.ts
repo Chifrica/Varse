@@ -145,27 +145,33 @@ export const popularItems = [
     {
         id: 1,
         name: "Cheese Burger",
-        image: require("../../../../../assets/images/android-icon-background.png"),
+        image:{uri: "https://img.freepik.com/free-photo/delicious-burger-with-fresh-ingredients_144627-23948.jpg"},
         price: "$5.99",
+        description: " 4.8  (1,029)",
+        rate: { name: "star", size: 14, color: "gold" },
     },
     {
         id: 2,
         name: "Veggie Pizza",
-        image: require("../../../../../assets/images/android-icon-background.png"),
+        image: { uri: "https://img.freepik.com/free-photo/delicious-burger-with-fresh-ingredients_144627-23948.jpg" },
         price: "$5.99",
+        description: " 4.8  (1,029)",
+        rate: { name: "star", size: 14, color: "gold" },
     },
     {
         id: 3,
         name: "Chocolate Cake",
-        image: require("../../../../../assets/images/android-icon-background.png"),
+        image: { uri: "https://img.freepik.com/free-photo/delicious-burger-with-fresh-ingredients_144627-23948.jpg" },
         price: "$5.99",
+        description: " 4.8  (1,029)",
+        rate: { name: "star", size: 14, color: "gold" },
     },
     {
         id: 4,
         name: "Fried Chicken",
-        image: require("../../../../../assets/images/android-icon-background.png"),
+        image: { uri: "https://img.freepik.com/free-photo/delicious-burger-with-fresh-ingredients_144627-23948.jpg" },
         price: "$5.99",
-        description: "(1,029)",
+        description: " 4.8  (1,029)",
         rate: { name: "star", size: 14, color: "gold" },
     }
 ]
