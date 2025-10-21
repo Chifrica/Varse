@@ -1,14 +1,14 @@
 import { useRouter } from "expo-router";
 import { Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import styles from "./src/signin/style";
+import styles from "./style";
 
 const Index = () => {
 
   const router = useRouter();
 
   const handleSignInAsBuyer = () => {
-    router.push('/src/signin/signin');
+    router.push('/buyer/signin/signin');
   }
 
   const handleSignInAsRider = () => {

@@ -8,7 +8,7 @@ const Index = () => {
   const router = useRouter();
   
   const handleSignUp = () => {
-    router.push('/src/signup/signup');
+    router.push('/buyer/signup/signup');
   }
 
   const signupTxt = {text: "SignUp", onPress: handleSignUp};

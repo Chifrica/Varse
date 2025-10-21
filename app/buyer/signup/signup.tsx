@@ -12,7 +12,7 @@ const SignUp = () => {
     }
 
     const handleRegister = () => {
-        router.push('/src/(root)/(tab)/homePage/home');
+        router.push('/buyer/(root)/(tab)/homePage/home');
     }
 
     const loginTxt = { text: "  Login", onPress: handleLogin };

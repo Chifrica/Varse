@@ -48,6 +48,16 @@ const AppLayout = () => {
       />
 
       <Tabs.Screen
+        name="search/search"
+        options={{
+          title: "Search",
+          tabBarIcon: ({ color }) => (
+            <FontAwesome name="search" size={22} color={color} />
+          ),
+        }}
+      />
+
+      <Tabs.Screen
         name="order/order"
         options={{
           title: "Order",
