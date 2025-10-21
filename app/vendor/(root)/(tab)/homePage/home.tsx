@@ -1,12 +1,323 @@
-import React from 'react'
-import { Text, View } from 'react-native'
+import { Ionicons } from "@expo/vector-icons";
+import React from "react";
+import { Image, ScrollView, StyleSheet, Text, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
-const home = () => {
+const Home = () => {
   return (
-    <View>
-      <Text>home</Text>
-    </View>
-  )
-}
+    <SafeAreaView style={styles.container}>
+      <ScrollView showsVerticalScrollIndicator={false}>
+        {/* Header */}
+        <View style={styles.header}>
+          <Image
+            source={require("../../../../../assets/icons/logo.png")}
+            style={styles.logo}
+          />
+          <View>
+            <Text style={styles.greeting}>Hi Joshua 👋</Text>
+            <Text style={styles.subGreeting}>Welcome back!</Text>
+          </View>
+        </View>
 
-export default home
+        {/* Dashboard Section */}
+        <View style={styles.dashboard}>
+          <View style={styles.card}>
+            <Ionicons name="cash-outline" size={26} color="#FF8800" />
+            <View>
+              <Text style={styles.cardTitle}>
+                Total Sales
+                <Text style={styles.cardValue}>{`    1`}</Text>
+              </Text>
+
+            </View>
+          </View>
+
+          <View style={styles.card}>
+            <Ionicons name="cart-outline" size={26} color="#FF8800" />
+            <View>
+              <Text style={styles.cardTitle}>
+                Pending Orders
+                <Text style={styles.cardValue}>{`    14`}</Text>
+              </Text>
+            </View>
+          </View>
+
+          <View style={styles.card}>
+            <Ionicons name="cube-outline" size={26} color="#FF8800" />
+            <View>
+              <Text style={styles.cardTitle}>
+                Active Products
+                <Text style={styles.cardValue}>{`    10`}</Text>
+              </Text>
+            </View>
+          </View>
+
+          <View style={styles.card}>
+            <Ionicons name="wallet-outline" size={26} color="#FF8800" />
+            <View>
+              <Text style={styles.cardTitle}>
+                Wallet Balance    
+                <Text style={styles.cardValue}>{`    $5`}</Text>
+              </Text>
+            </View>
+          </View>
+        </View>
+
+        {/* Actions Row */}
+        <View style={styles.actionsRow}>
+          <View style={styles.actionItem}>
+            <View style={styles.iconWrapper}>
+              <Ionicons name="add" size={26} color="#FF8800" />
+            </View>
+            <Text style={styles.actionText}>Add New Product</Text>
+          </View>
+
+          <View style={styles.actionItem}>
+            <View style={styles.iconWrapper}>
+              <Ionicons name="wallet-outline" size={26} color="#FF8800" />
+            </View>
+            <Text style={styles.actionText}>Withdraw Earnings</Text>
+          </View>
+
+          <View style={styles.actionItem}>
+            <View style={styles.iconWrapper}>
+              <Ionicons name="list-outline" size={26} color="#FF8800" />
+            </View>
+            <Text style={styles.actionText}>View Orders</Text>
+          </View>
+        </View>
+
+        {/* Recent Orders */}
+        <View style={styles.recentHeader}>
+          <Text style={styles.recentTitle}>Recent Orders</Text>
+          <Text style={styles.seeAll}>See all</Text>
+        </View>
+
+        <View style={styles.recentOrders}>
+          <View style={styles.tableHeader}>
+            <Text style={styles.tableHeaderText}>Description</Text>
+            <Text style={styles.tableHeaderText}>Status</Text>
+          </View>
+
+          {/* Divider */}
+          <View style={styles.divider} />
+
+          {/* Order Items */}
+          <View style={styles.orderCard}>
+            <View>
+              <Text style={styles.orderTitle}>
+                3 Medium size Jollof Rice Bowl
+              </Text>
+              <Text style={styles.orderDetails}>
+                Order ID: #12345ABC | Date: 2023-09-15
+              </Text>
+            </View>
+            <Text style={styles.approved}>Approved</Text>
+          </View>
+
+          <View style={styles.orderCard}>
+            <View>
+              <Text style={styles.orderTitle}>1 Large Tote Bag</Text>
+              <Text style={styles.orderDetails}>
+                Order ID: #67890XYZ | Date: 2023-09-16
+              </Text>
+            </View>
+            <Text style={styles.pending}>Pending</Text>
+          </View>
+
+          <View style={styles.orderCard}>
+            <View>
+              <Text style={styles.orderTitle}>10 HP Laptops</Text>
+              <Text style={styles.orderDetails}>
+                Order ID: #24680LMN | Date: 2023-09-17
+              </Text>
+            </View>
+            <Text style={styles.declined}>Declined</Text>
+          </View>
+
+          <View style={styles.orderCard}>
+            <View>
+              <Text style={styles.orderTitle}>10 HP Laptops</Text>
+              <Text style={styles.orderDetails}>
+                Order ID: #24680LMN | Date: 2023-09-17
+              </Text>
+            </View>
+            <Text style={styles.declined}>Declined</Text>
+          </View>
+        </View>
+      </ScrollView>
+    </SafeAreaView>
+  );
+};
+
+export default Home;
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 16,
+  },
+
+  // Header
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 50,
+  },
+  logo: {
+    width: 40,
+    height: 40,
+    marginRight: 10,
+  },
+  greeting: {
+    fontSize: 18,
+    fontWeight: "600",
+    color: "#000",
+  },
+  subGreeting: {
+    fontSize: 14,
+    color: "#666",
+  },
+
+  // Dashboard
+  dashboard: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "space-between",
+  },
+  card: {
+    width: "47%",
+    backgroundColor: "#FFF5E5",
+    borderRadius: 12,
+    paddingVertical: 14,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+    marginBottom: 16,
+    shadowColor: "#000",
+    shadowOpacity: 0.08,
+    shadowRadius: 3,
+    elevation: 2,
+    paddingHorizontal: 10,
+  },
+  cardTitle: {
+    fontSize: 14,
+    color: "#333",
+    fontWeight: "600",
+  },
+  cardValue: {
+    fontSize: 16,
+    fontWeight: "700",
+    color: "#FF8800",
+    marginLeft: 4,
+    paddingLeft: 10
+  },
+
+  // Actions Row
+  actionsRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 25,
+    paddingHorizontal: 5,
+  },
+  actionItem: {
+    alignItems: "center",
+    flex: 1,
+  },
+  iconWrapper: {
+    width: 55,
+    height: 55,
+    backgroundColor: "#fff",
+    borderRadius: 30,
+    justifyContent: "center",
+    alignItems: "center",
+    elevation: 4,
+    shadowColor: "#000",
+    shadowOpacity: 0.15,
+    shadowRadius: 4,
+    marginBottom: 6,
+  },
+  actionText: {
+    fontSize: 14,
+    fontWeight: "700",
+    color: "#333",
+    textAlign: "center",
+  },
+
+  // Recent Orders
+  recentOrders: {
+    marginTop: 20,
+    borderRadius: 20,
+    padding: 8,
+    borderWidth: 0.5,
+    borderColor: "#888",
+    backgroundColor: "#fff",
+  },
+  recentHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 50,
+  },
+  recentTitle: {
+    fontSize: 20,
+    fontWeight: "700",
+    color: "#000",
+  },
+  seeAll: {
+    fontSize: 20,
+    color: "#FF8800",
+    fontWeight: "500",
+  },
+  tableHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingHorizontal: 10,
+    paddingTop: 10,
+  },
+  tableHeaderText: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#444",
+  },
+  divider: {
+    height: 1,
+    backgroundColor: "#eee",
+    marginVertical: 10,
+  },
+  orderCard: {
+    backgroundColor: "#fff",
+    borderWidth: 1,
+    borderColor: "#ddd",
+    borderRadius: 10,
+    padding: 14,
+    marginBottom: 10,
+    shadowColor: "#000",
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  orderTitle: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#333",
+  },
+  orderDetails: {
+    fontSize: 14,
+    color: "#777",
+    marginTop: 4,
+  },
+  approved: {
+    color: "green",
+    fontWeight: "700",
+  },
+  pending: {
+    color: "#FF8800",
+    fontWeight: "700",
+  },
+  declined: {
+    color: "red",
+    fontWeight: "700",
+  },
+});
