@@ -1,9 +1,16 @@
 import { Ionicons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
 import React from "react";
-import { Image, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const Home = () => {
+
+  const router = useRouter();
+
+  const handleAddProduct = () => {
+    router.push("/vendor/(root)/src/product/myProduct");
+  }
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false}>
@@ -28,7 +35,6 @@ const Home = () => {
                 Total Sales
                 <Text style={styles.cardValue}>{`    1`}</Text>
               </Text>
-
             </View>
           </View>
 
@@ -66,9 +72,9 @@ const Home = () => {
         {/* Actions Row */}
         <View style={styles.actionsRow}>
           <View style={styles.actionItem}>
-            <View style={styles.iconWrapper}>
+            <TouchableOpacity style={styles.iconWrapper} onPress={handleAddProduct}>
               <Ionicons name="add" size={26} color="#FF8800" />
-            </View>
+            </TouchableOpacity>
             <Text style={styles.actionText}>Add New Product</Text>
           </View>
 
