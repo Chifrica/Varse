@@ -28,6 +28,7 @@ const AppLayout = () => {
           bottom: 0,
           left: 0,
           right: 0,
+          backgroundColor: "#fff",
         },
         sceneStyle: {
           backgroundColor: "#fff", 
