@@ -20,6 +20,10 @@ const AddProduct = () => {
     router.back();
   };
 
+  const handleProductSummary = () => {
+    router.navigate("/vendor/(root)/src/product/productSummary");
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false}>
@@ -127,6 +131,18 @@ const AddProduct = () => {
             />
           </View>
         </View>
+
+        <TouchableOpacity style={{ backgroundColor: "#FF8800", padding: 12, borderRadius: 8, alignItems: "center" }} onPress={handleProductSummary}>
+          <Text style={{ color: "#fff", fontSize: 20, fontWeight: "600" }}>
+            Save Product
+          </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={{ borderWidth: 1, borderColor: "#FF8800", padding: 12, borderRadius: 8, alignItems: "center", marginTop: 10 }} onPress={() => {}}>
+          <Text style={{ color: "#FF8800", fontSize: 20, fontWeight: "600" }}>
+            Cancel
+          </Text>
+        </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
   );
@@ -192,14 +208,7 @@ const styles = StyleSheet.create({
 
   // Product Card
   card: {
-    backgroundColor: "#eee",
-    borderRadius: 12,
-    padding: 16,
-    elevation: 3,
-    shadowColor: "#000",
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    marginBottom: 50,
+    marginBottom: 20,
   },
 
   inputGroup: {
