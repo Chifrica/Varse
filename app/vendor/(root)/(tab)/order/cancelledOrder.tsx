@@ -30,7 +30,7 @@ const CancelledOrder = () => {
                                 <Text>Medium Sized Box</Text>
                                 <Text>Order ID: #VAR123ABC</Text>
                             </View>
-                            <Text>Pending</Text>
+                            <Text>Canelled</Text>
                             <Ionicons name="chevron-forward-outline" size={20} color="#000" />
                         </View>
 
@@ -40,7 +40,7 @@ const CancelledOrder = () => {
                                 <Text>Medium Sized Box</Text>
                                 <Text>Order ID: #VAR123ABC</Text>
                             </View>
-                            <Text>Pending</Text>
+                            <Text>Canelled</Text>
                             <Ionicons name="chevron-forward-outline" size={20} color="#000" />
                         </View>
                     </View>
