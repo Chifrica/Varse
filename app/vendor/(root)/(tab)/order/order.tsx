@@ -22,6 +22,10 @@ const Order = () => {
     router.back();
   };
 
+  const handleOderReview = () => {
+    router.navigate("/vendor/(root)/src/order/orderReview")
+  }
+
   const stats = [
     { label: "Completed", value: 600, color: "#22C55E" },
     { label: "Pending", value: 3, color: "#F59E0B" },
@@ -107,12 +111,12 @@ const Order = () => {
           <Text style={styles.recentOrdersTitle}>Recent Orders</Text>
 
           {[
-            { status: "Completed", color: "#22C55E" },
+            { status: "Completed", color: "#22C55E", onPress: handleOderReview },
             { status: "In Progress", color: "#3B82F6" },
             { status: "Cancelled", color: "#EF4444" },
             { status: "Pending", color: "#F59E0B" },
           ].map((order, index) => (
-            <View key={index} style={styles.orderCard}>
+            <TouchableOpacity onPress={order.onPress} key={index} style={styles.orderCard}>
               <View style={styles.orderRow}>
                 <Image
                   source={{
@@ -133,7 +137,7 @@ const Order = () => {
                   color="#000"
                 />
               </View>
-            </View>
+            </TouchableOpacity>
           ))}
         </View>
       </ScrollView>
