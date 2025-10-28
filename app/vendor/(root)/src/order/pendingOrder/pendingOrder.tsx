@@ -13,7 +13,7 @@ const PendingOrder = () => {
     }
 
     return (
-        <SafeAreaView>
+        <SafeAreaView style={styles.container}>
             <ScrollView>
                 <View style={styles.header}>
                     <TouchableOpacity onPress={handleBackArrow}>
@@ -23,25 +23,37 @@ const PendingOrder = () => {
                 </View>
 
                 <View>
-                    <View>
+                    <View style={styles.items}>
                         <Image />
                         <View>
-                            <Text>Medium Sized Box</Text>
-                            <Text>Order ID: #VAR123ABC</Text>
+                            <Text style={styles.productName}>Medium Sized Box</Text>
+                            <Text style={styles.orderId}>Order ID: #VAR123ABC</Text>
                         </View>
-                        <Text>Pending</Text>
+                        <Text style={styles.orderStatus}>Pending</Text>
                         <Ionicons name="chevron-forward-outline" size={20} color="#000" />
                     </View>
 
-                    <View>
+                    <View style={styles.items}>
                         <Image />
                         <View>
-                            <Text>Medium Sized Box</Text>
-                            <Text>Order ID: #VAR123ABC</Text>
+                            <Text style={styles.productName}>Medium Sized Box</Text>
+                            <Text style={styles.orderId}>Order ID: #VAR123ABC</Text>
                         </View>
-                        <Text>Pending</Text>
+                        <Text style={styles.orderStatus}>Pending</Text>
                         <Ionicons name="chevron-forward-outline" size={20} color="#000" />
                     </View>
+
+                    <View style={styles.items}>
+                        <Image />
+                        <View>
+                            <Text style={styles.productName}>Medium Sized Box</Text>
+                            <Text style={styles.orderId}>Order ID: #VAR123ABC</Text>
+                        </View>
+                        <Text style={styles.orderStatus}>Pending</Text>
+                        <Ionicons name="chevron-forward-outline" size={20} color="#000" />
+                    </View>
+
+                    
                 </View>
             </ScrollView>
         </SafeAreaView>
@@ -69,4 +81,25 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     marginLeft: 100,
   },
+  items: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+        marginBottom: 16,
+        borderRadius: 10,
+        padding: 10,
+        backgroundColor: "#fff",
+    },
+    productName: {
+        fontSize: 20,
+        fontWeight: "600",
+    },
+    orderId: {
+        color: "#555",
+        fontSize: 16,
+    },
+    orderStatus: {
+        fontWeight: "600",
+        color: "#F59E0B",
+    },
 })
