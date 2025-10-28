@@ -26,11 +26,27 @@ const Order = () => {
     router.navigate("/vendor/(root)/src/order/orderReview")
   }
 
+  const handleCancelledOrder = () => {
+    router.navigate("/vendor/(root)/src/order/cancelOrder/cancelledOrder")
+  }
+
+  const handleCompletedOrder = () => {
+    router.navigate("/vendor/(root)/src/order/completedOrder/completedOrder")
+  }
+
+  const handleInProgressOrder = () => {
+    router.navigate("/vendor/(root)/src/order/inProgressOrder/inProgressOrder")
+  }
+
+  const handlePendingOrder = () => {
+    router.navigate("/vendor/(root)/src/order/pendingOrder/pendingOrder")
+  }
+
   const stats = [
-    { label: "Completed", value: 600, color: "#22C55E" },
-    { label: "Pending", value: 3, color: "#F59E0B" },
-    { label: "In Progress", value: 2, color: "#3B82F6" },
-    { label: "Cancelled", value: 2, color: "#EF4444" },
+    { label: "Completed", value: 600, color: "#22C55E", onPress: handleCompletedOrder },
+    { label: "Pending", value: 3, color: "#F59E0B", onPress: handlePendingOrder },
+    { label: "In Progress", value: 2, color: "#3B82F6", onPress: handleInProgressOrder },
+    { label: "Cancelled", value: 2, color: "#EF4444", onPress: handleCancelledOrder },
   ];
 
   return (
@@ -47,14 +63,14 @@ const Order = () => {
         {/* Stats */}
         <View style={styles.statsGrid}>
           {stats.map((item, index) => (
-            <View key={index} style={[styles.statBox]}>
+            <TouchableOpacity key={index} style={[styles.statBox]} onPress={item.onPress}>
               <Text style={[styles.statLabel, { color: item.color }]}>
                 {item.label}
               </Text>
               <Text style={[styles.statValue, { color: item.color }]}>
                 {item.value}
               </Text>
-            </View>
+            </TouchableOpacity>
           ))}
         </View>
 

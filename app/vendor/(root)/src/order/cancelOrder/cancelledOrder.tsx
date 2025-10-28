@@ -13,13 +13,13 @@ const CancelledOrder = () => {
     }
 
     return (
-        <SafeAreaView>
+        <SafeAreaView style={styles.container}>
             <ScrollView>
                 <View style={styles.header}>
                     <TouchableOpacity onPress={handleBackArrow}>
                         <Ionicons name="arrow-back-outline" size={24} color="#000" />
                     </TouchableOpacity>
-                    <Text style={styles.title}>Pending Orders</Text>
+                    <Text style={styles.title}>Cancelled Orders</Text>
                 </View>
 
                 <View>
