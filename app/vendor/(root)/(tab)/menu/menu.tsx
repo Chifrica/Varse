@@ -1,4 +1,5 @@
 import { Ionicons } from "@expo/vector-icons";
+import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
   Animated,
@@ -25,9 +26,13 @@ const Menu = () => {
     }).start();
   }, []);
 
+  const handleProfile = () => {
+    router.navigate("/vendor/src/profile/myProfile")
+  }
+
   const menuItems = [
-    { icon: "cart-outline", label: "My Orders" },
-    { icon: "person-outline", label: "Profile" },
+    { icon: "cart-outline", label: "My Orders"  },
+    { icon: "person-outline", label: "Profile", onPress: handleProfile },
     { icon: "location-outline", label: "Address" },
     { icon: "card-outline", label: "Payment" },
     { icon: "call-outline", label: "Conact" },
@@ -74,6 +79,7 @@ const Menu = () => {
               ]}
               onPressIn={() => setPressedItem(item.label)}
               onPressOut={() => setPressedItem(null)}
+              onPress={() => handleProfile()}
             >
               <Ionicons name={item.icon as any} size={22} color="#F59E0B" style={{backgroundColor: "#fff", padding: 10, borderRadius: 50}}/>
               <Text style={styles.menuText}>{item.label}</Text>
@@ -114,8 +120,7 @@ const styles = StyleSheet.create({
     height: "100%",
     width: width * 0.85, 
     backgroundColor: "#F59E0B",
-    borderTopLeftRadius: 30,
-    borderBottomLeftRadius: 30,
+    borderTopLeftRadius: 50,
     padding: 20,
     justifyContent: "flex-start",
     elevation: 10,
@@ -148,7 +153,7 @@ const styles = StyleSheet.create({
   menuItem: {
     flexDirection: "row",
     alignItems: "center",
-    paddingVertical: 12,
+    paddingVertical: 5,
     paddingHorizontal: 10,
     borderRadius: 10,
     marginBottom: 10,
