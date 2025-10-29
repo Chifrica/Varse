@@ -17,7 +17,7 @@ export const styles = StyleSheet.create({
         fontWeight: "700",
         color: "#000",
         alignSelf: "center",
-        marginLeft: 80,
+        marginLeft: 100,
     },
     section: {
         backgroundColor: "#fff",

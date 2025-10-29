@@ -34,6 +34,10 @@ const Menu = () => {
     router.navigate("/vendor/(root)/src/contact/contactUs")
   }
 
+  const handleSetting = () => {
+    router.navigate("/vendor/(root)/src/setting/settings")
+  }
+
   const menuItems = [
     { icon: "cart-outline", label: "My Orders"  },
     { icon: "person-outline", label: "Profile", onPress: handleProfile },
@@ -41,7 +45,7 @@ const Menu = () => {
     { icon: "card-outline", label: "Payment" },
     { icon: "call-outline", label: "Conact", onPress: handleContact },
     { icon: "help-circle-outline", label: "Help & FAQ" },
-    { icon: "settings-outline", label: "Settings" },
+    { icon: "settings-outline", label: "Settings", onPress: handleSetting },
   ];
 
   return (
