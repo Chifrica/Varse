@@ -100,6 +100,6 @@ const styles = StyleSheet.create({
     },
     orderStatus: {
         fontWeight: "600",
-        color: "#F59E0B",
+        color: "#FF8800",
     },
 })

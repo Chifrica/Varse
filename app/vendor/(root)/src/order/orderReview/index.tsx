@@ -75,7 +75,7 @@ const Index = () => {
                 <View style={styles.section}>
                     <View style={styles.statusRow}>
                         <View style={styles.leftStatus}>
-                            <Ionicons name="car-outline" size={22} color="#F59E0B" />
+                            <Ionicons name="car-outline" size={22} color="#FF8800" />
                             <Text style={styles.sectionTitle}>Delivery Status</Text>
                         </View>
                         <Text style={[styles.statusText, { color: "#22C55E" }]}>Delivered</Text>
@@ -86,7 +86,7 @@ const Index = () => {
                 <View style={styles.section}>
                     <View style={styles.statusRow}>
                         <View style={styles.leftStatus}>
-                            <Ionicons name="card-outline" size={22} color="#F59E0B" />
+                            <Ionicons name="card-outline" size={22} color="#FF8800" />
                             <Text style={styles.sectionTitle}>Payment Status</Text>
                         </View>
                         <Text style={[styles.statusText, { color: "#22C55E" }]}>Paid</Text>

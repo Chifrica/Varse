@@ -30,12 +30,16 @@ const Menu = () => {
     router.navigate("/vendor/src/profile/myProfile")
   }
 
+  const handleContact = () => {
+    router.navigate("/vendor/(root)/src/contact/contactUs")
+  }
+
   const menuItems = [
     { icon: "cart-outline", label: "My Orders"  },
     { icon: "person-outline", label: "Profile", onPress: handleProfile },
     { icon: "location-outline", label: "Address" },
     { icon: "card-outline", label: "Payment" },
-    { icon: "call-outline", label: "Conact" },
+    { icon: "call-outline", label: "Conact", onPress: handleContact },
     { icon: "help-circle-outline", label: "Help & FAQ" },
     { icon: "settings-outline", label: "Settings" },
   ];
@@ -79,9 +83,11 @@ const Menu = () => {
               ]}
               onPressIn={() => setPressedItem(item.label)}
               onPressOut={() => setPressedItem(null)}
-              onPress={() => handleProfile()}
+              onPress={() => {
+                if (item.onPress) item.onPress()
+              }}
             >
-              <Ionicons name={item.icon as any} size={22} color="#F59E0B" style={{backgroundColor: "#fff", padding: 10, borderRadius: 50}}/>
+              <Ionicons name={item.icon as any} size={22} color="#FF8800" style={{backgroundColor: "#fff", padding: 10, borderRadius: 50}}/>
               <Text style={styles.menuText}>{item.label}</Text>
             </TouchableOpacity>
           ))}
@@ -98,7 +104,7 @@ const Menu = () => {
           onPressIn={() => setPressedItem("Logout")}
           onPressOut={() => setPressedItem(null)}
         >
-          <Ionicons name="log-out-outline" size={22} color="#F59E0B" style={{backgroundColor: "#fff", padding: 10, borderRadius: 50}}/>
+          <Ionicons name="log-out-outline" size={22} color="#FF8800" style={{backgroundColor: "#fff", padding: 10, borderRadius: 50}}/>
           <Text style={[styles.menuText, { color: "#fff" }]}>Logout</Text>
         </TouchableOpacity>
       </Animated.View>
@@ -119,7 +125,7 @@ const styles = StyleSheet.create({
     right: 0, 
     height: "100%",
     width: width * 0.85, 
-    backgroundColor: "#F59E0B",
+    backgroundColor: "#FF8800",
     borderTopLeftRadius: 50,
     padding: 20,
     justifyContent: "flex-start",

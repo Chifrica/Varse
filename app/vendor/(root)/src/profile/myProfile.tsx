@@ -30,7 +30,7 @@ const MyProfile = () => {
           <TouchableOpacity onPress={handleBackArrow}>
             <Ionicons name="arrow-back-outline" size={24} color="#000" />
           </TouchableOpacity>
-          <Text style={styles.title}>Order Details</Text>
+          <Text style={styles.title}>My Profile</Text>
         </View>
 
         {/* Profile Image */}
@@ -97,7 +97,8 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: '#000',
     alignSelf: 'center',
-    marginLeft: 80,
+    textAlign: 'center',
+    marginLeft: 100,
   },
   profileSection: {
     alignItems: 'center',
@@ -132,8 +133,8 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   button: {
-    backgroundColor: '#f59e0b',
-    paddingVertical: 14,
+    backgroundColor: '#FF8800',
+    paddingVertical: 18,
     borderRadius: 10,
     alignItems: 'center',
     marginTop: 30,

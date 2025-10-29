@@ -44,7 +44,7 @@ const Order = () => {
 
   const stats = [
     { label: "Completed", value: 600, color: "#22C55E", onPress: handleCompletedOrder },
-    { label: "Pending", value: 3, color: "#F59E0B", onPress: handlePendingOrder },
+    { label: "Pending", value: 3, color: "#FF8800", onPress: handlePendingOrder },
     { label: "In Progress", value: 2, color: "#3B82F6", onPress: handleInProgressOrder },
     { label: "Cancelled", value: 2, color: "#EF4444", onPress: handleCancelledOrder },
   ];
@@ -130,7 +130,7 @@ const Order = () => {
             { status: "Completed", color: "#22C55E", onPress: handleOderReview },
             { status: "In Progress", color: "#3B82F6" },
             { status: "Cancelled", color: "#EF4444" },
-            { status: "Pending", color: "#F59E0B" },
+            { status: "Pending", color: "#FF8800" },
           ].map((order, index) => (
             <TouchableOpacity onPress={order.onPress} key={index} style={styles.orderCard}>
               <View style={styles.orderRow}>
