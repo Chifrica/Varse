@@ -38,10 +38,14 @@ const Menu = () => {
     router.navigate("/vendor/(root)/src/setting/settings")
   }
 
+  const handleAddress = () => {
+    router.navigate("/vendor/(root)/src/address/address")
+  }
+
   const menuItems = [
     { icon: "cart-outline", label: "My Orders"  },
     { icon: "person-outline", label: "Profile", onPress: handleProfile },
-    { icon: "location-outline", label: "Address" },
+    { icon: "location-outline", label: "Address", onPress: handleAddress },
     { icon: "card-outline", label: "Payment" },
     { icon: "call-outline", label: "Conact", onPress: handleContact },
     { icon: "help-circle-outline", label: "Help & FAQ" },
