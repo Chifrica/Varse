@@ -3,7 +3,7 @@ import { useRouter } from "expo-router";
 import React from "react";
 import { Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { styles } from "./style";
+import { styles } from "./_style";
 
 const Index = () => {
     const router = useRouter();

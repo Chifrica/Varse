@@ -15,7 +15,7 @@ import {
     featuredShops,
     popularItems,
     trendingProducts,
-} from "../homePage/data"; // Adjust path if needed
+} from "../homePage/_data"; // Adjust path if needed
 
 const Search = () => {
   const [searchQuery, setSearchQuery] = useState("");

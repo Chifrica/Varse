@@ -1,15 +1,15 @@
 import { Ionicons } from "@expo/vector-icons";
 import React from "react";
 import {
-  Image,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
+    Image,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { categoriesItems, popularItems } from "./data";
+import { categoriesItems, popularItems } from "./_data";
 
 const Home = () => {
   return (

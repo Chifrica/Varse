@@ -11,7 +11,7 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { styles } from "./style";
+import { styles } from "./_style";
 
 const KYCSetUp = () => {
   const [activeTab, setActiveTab] = useState("basic");

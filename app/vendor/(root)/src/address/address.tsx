@@ -24,6 +24,10 @@ const Address = () => {
     },
   ];
 
+  const handleAddAddress = () => {
+    router.navigate("/vendor/src/address/addAddress")
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false}>
@@ -59,7 +63,7 @@ const Address = () => {
         </View>
 
         {/* Add New Address Button */}
-        <TouchableOpacity style={styles.addButton}>
+        <TouchableOpacity style={styles.addButton} onPress={handleAddAddress}>
           <Ionicons name="add-circle-outline" size={22} color="#fff" />
           <Text style={styles.addButtonText}>Add Address</Text>
         </TouchableOpacity>

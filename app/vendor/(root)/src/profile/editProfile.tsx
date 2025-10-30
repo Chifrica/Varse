@@ -2,13 +2,13 @@ import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React from 'react';
 import {
-    Image,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  Image,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -16,7 +16,7 @@ const EditProfile = () => {
   const router = useRouter();
 
   const handleBackArrow = () => {
-    router.back();
+    router.navigate('/vendor/(root)/src/profile/myProfile');
   };
 
   const handleUpdate = () => {
