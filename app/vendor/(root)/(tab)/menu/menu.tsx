@@ -1,7 +1,9 @@
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
+import { getAuth, signOut } from "firebase/auth";
 import React, { useEffect, useState } from "react";
 import {
+  Alert,
   Animated,
   Dimensions,
   Image,
@@ -42,8 +44,36 @@ const Menu = () => {
     router.navigate("/vendor/(root)/src/address/address")
   }
 
+  const handleLogOut = async () => {
+    Alert.alert(
+      "Logout Confirmation",
+      "Are you sure you want to logout?",
+      [
+        {
+          text: "No",
+          style: "cancel"
+        },
+        {
+          text: "Yes",
+          onPress: async () => {
+            const auth = getAuth();
+            try {
+              await signOut(auth);
+              alert("Logged out successfully");
+              router.replace("/vendor/signin/signin");
+            } catch (error) {
+              console.error("Error logging out:", error.message);
+              alert("Failed to log out. Try again.");
+            }
+          }
+        }
+
+      ]
+    )
+  };
+
   const menuItems = [
-    { icon: "cart-outline", label: "My Orders"  },
+    { icon: "cart-outline", label: "My Orders" },
     { icon: "person-outline", label: "Profile", onPress: handleProfile },
     { icon: "location-outline", label: "Address", onPress: handleAddress },
     { icon: "card-outline", label: "Payment" },
@@ -95,7 +125,7 @@ const Menu = () => {
                 if (item.onPress) item.onPress()
               }}
             >
-              <Ionicons name={item.icon as any} size={22} color="#FF8800" style={{backgroundColor: "#fff", padding: 10, borderRadius: 50}}/>
+              <Ionicons name={item.icon as any} size={22} color="#FF8800" style={{ backgroundColor: "#fff", padding: 10, borderRadius: 50 }} />
               <Text style={styles.menuText}>{item.label}</Text>
             </TouchableOpacity>
           ))}
@@ -111,8 +141,9 @@ const Menu = () => {
           ]}
           onPressIn={() => setPressedItem("Logout")}
           onPressOut={() => setPressedItem(null)}
+          onPress={handleLogOut}
         >
-          <Ionicons name="log-out-outline" size={22} color="#FF8800" style={{backgroundColor: "#fff", padding: 10, borderRadius: 50}}/>
+          <Ionicons name="log-out-outline" size={22} color="#FF8800" style={{ backgroundColor: "#fff", padding: 10, borderRadius: 50 }} />
           <Text style={[styles.menuText, { color: "#fff" }]}>Logout</Text>
         </TouchableOpacity>
       </Animated.View>
@@ -130,9 +161,9 @@ const styles = StyleSheet.create({
   modal: {
     position: "absolute",
     top: 0,
-    right: 0, 
+    right: 0,
     height: "100%",
-    width: width * 0.85, 
+    width: width * 0.85,
     backgroundColor: "#FF8800",
     borderTopLeftRadius: 50,
     padding: 20,

@@ -1,5 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
+import { getAuth } from "firebase/auth";
 import React from "react";
 import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, useColorScheme, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -12,6 +13,14 @@ const Home = () => {
 
   const handleAddProduct = () => {
     router.push("/vendor/(root)/src/product/myProduct");
+  }
+
+  const auth = getAuth();
+  const user = auth.currentUser;
+
+  if (user !== null) {
+    const displayName = user.displayName;
+    const photoURL = user.photoURL;
   }
   return (
     <SafeAreaView style={[styles.container, colorScheme === 'light' ? {backgroundColor: '#fff'} : {backgroundColor: "#000"}]}>

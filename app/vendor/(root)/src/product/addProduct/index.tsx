@@ -138,7 +138,9 @@ const AddProduct = () => {
           </Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={{ borderWidth: 1, borderColor: "#FF8800", padding: 12, borderRadius: 8, alignItems: "center", marginTop: 10 }} onPress={() => {}}>
+        <TouchableOpacity 
+        style={{ borderWidth: 1, borderColor: "#FF8800", padding: 12, borderRadius: 8, alignItems: "center", marginTop: 10 }} 
+        onPress={handleBackArrow}>
           <Text style={{ color: "#FF8800", fontSize: 20, fontWeight: "600" }}>
             Cancel
           </Text>
