@@ -1,10 +1,12 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import React from "react";
-import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, useColorScheme, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const Home = () => {
+
+  const colorScheme = useColorScheme();
 
   const router = useRouter();
 
@@ -12,7 +14,7 @@ const Home = () => {
     router.push("/vendor/(root)/src/product/myProduct");
   }
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, colorScheme === 'light' ? {backgroundColor: '#fff'} : {backgroundColor: "#000"}]}>
       <ScrollView showsVerticalScrollIndicator={false}>
         {/* Header */}
         <View style={styles.header}>
@@ -21,47 +23,47 @@ const Home = () => {
             style={styles.logo}
           />
           <View>
-            <Text style={styles.greeting}>Hi Joshua 👋</Text>
+            <Text style={[styles.greeting, colorScheme === 'light' ? {color: '#000'} : {color: "#fff"}]}>Hi Joshua 👋</Text>
             <Text style={styles.subGreeting}>Welcome back!</Text>
           </View>
         </View>
 
         {/* Dashboard Section */}
         <View style={styles.dashboard}>
-          <View style={styles.card}>
+          <View style={[styles.card, colorScheme === 'light' ? {backgroundColor: '#FFF5E5'} : {backgroundColor: "#333"}]}>
             <Ionicons name="cash-outline" size={26} color="#FF8800" />
             <View>
-              <Text style={styles.cardTitle}>
+              <Text style={[styles.cardTitle, colorScheme === 'light' ? {color: '#000'} : {color: "#fff"}]}>
                 Total Sales
                 <Text style={styles.cardValue}>{`    1`}</Text>
               </Text>
             </View>
           </View>
 
-          <View style={styles.card}>
+          <View style={[styles.card, colorScheme === 'light' ? {backgroundColor: '#FFF5E5'} : {backgroundColor: "#333"}]}>
             <Ionicons name="cart-outline" size={26} color="#FF8800" />
             <View>
-              <Text style={styles.cardTitle}>
+              <Text style={[styles.cardTitle, colorScheme === 'light' ? {color: '#000'} : {color: "#fff"}]}>
                 Pending Orders
                 <Text style={styles.cardValue}>{`    14`}</Text>
               </Text>
             </View>
           </View>
 
-          <View style={styles.card}>
+          <View style={[styles.card, colorScheme === 'light' ? {backgroundColor: '#FFF5E5'} : {backgroundColor: "#333"}]}>
             <Ionicons name="cube-outline" size={26} color="#FF8800" />
             <View>
-              <Text style={styles.cardTitle}>
+              <Text style={[styles.cardTitle, colorScheme === 'light' ? {color: '#000'} : {color: "#fff"}]}>
                 Active Products
                 <Text style={styles.cardValue}>{`    10`}</Text>
               </Text>
             </View>
           </View>
 
-          <View style={styles.card}>
+          <View style={[styles.card, colorScheme === 'light' ? {backgroundColor: '#FFF5E5'} : {backgroundColor: "#333"}]}>
             <Ionicons name="wallet-outline" size={26} color="#FF8800" />
             <View>
-              <Text style={styles.cardTitle}>
+              <Text style={[styles.cardTitle, colorScheme === 'light' ? {color: '#000'} : {color: "#fff"}]}>
                 Wallet Balance    
                 <Text style={styles.cardValue}>{`    $5`}</Text>
               </Text>
@@ -72,34 +74,34 @@ const Home = () => {
         {/* Actions Row */}
         <View style={styles.actionsRow}>
           <View style={styles.actionItem}>
-            <TouchableOpacity style={styles.iconWrapper} onPress={handleAddProduct}>
+            <TouchableOpacity style={[styles.iconWrapper, colorScheme === 'light' ? {backgroundColor: '#FFF5E5'} : {backgroundColor: "#333"}]} onPress={handleAddProduct}>
               <Ionicons name="add" size={26} color="#FF8800" />
             </TouchableOpacity>
-            <Text style={styles.actionText}>Add New Product</Text>
+            <Text style={[styles.actionText, colorScheme === 'light' ? {color: '#000'} : {color: "#fff"}]}>Add New Product</Text>
           </View>
 
           <View style={styles.actionItem}>
-            <View style={styles.iconWrapper}>
+            <View style={[styles.iconWrapper, colorScheme === 'light' ? {backgroundColor: '#FFF5E5'} : {backgroundColor: "#333"}]}>
               <Ionicons name="wallet-outline" size={26} color="#FF8800" />
             </View>
-            <Text style={styles.actionText}>Withdraw Earnings</Text>
+            <Text style={[styles.actionText, colorScheme === 'light' ? {color: '#000'} : {color: "#fff"}]}>Withdraw Earnings</Text>
           </View>
 
           <View style={styles.actionItem}>
-            <View style={styles.iconWrapper}>
+            <View style={[styles.iconWrapper, colorScheme === 'light' ? {backgroundColor: '#FFF5E5'} : {backgroundColor: "#333"}]}>
               <Ionicons name="list-outline" size={26} color="#FF8800" />
             </View>
-            <Text style={styles.actionText}>View Orders</Text>
+            <Text style={[styles.actionText, colorScheme === 'light' ? {color: '#000'} : {color: "#fff"}]}>View Orders</Text>
           </View>
         </View>
 
         {/* Recent Orders */}
         <View style={styles.recentHeader}>
-          <Text style={styles.recentTitle}>Recent Orders</Text>
+          <Text style={[styles.recentTitle, colorScheme === 'light' ? {color: '#000'} : {color: "#fff"}]}>Recent Orders</Text>
           <Text style={styles.seeAll}>See all</Text>
         </View>
 
-        <View style={styles.recentOrders}>
+        <View style={[styles.recentOrders, colorScheme === 'light' ? {backgroundColor: '#FFF5E5'} : {backgroundColor: "#333"}]}>
           <View style={styles.tableHeader}>
             <Text style={styles.tableHeaderText}>Description</Text>
             <Text style={styles.tableHeaderText}>Status</Text>
@@ -178,7 +180,7 @@ const styles = StyleSheet.create({
   greeting: {
     fontSize: 18,
     fontWeight: "600",
-    color: "#000",
+    // color: "#000",
   },
   subGreeting: {
     fontSize: 14,
@@ -208,7 +210,7 @@ const styles = StyleSheet.create({
   },
   cardTitle: {
     fontSize: 14,
-    color: "#333",
+    // color: "#333",
     fontWeight: "600",
   },
   cardValue: {
@@ -233,7 +235,7 @@ const styles = StyleSheet.create({
   iconWrapper: {
     width: 55,
     height: 55,
-    backgroundColor: "#fff",
+    // backgroundColor: "#fff",
     borderRadius: 30,
     justifyContent: "center",
     alignItems: "center",
@@ -257,7 +259,7 @@ const styles = StyleSheet.create({
     padding: 8,
     borderWidth: 0.5,
     borderColor: "#888",
-    backgroundColor: "#fff",
+    // backgroundColor: "#fff",
   },
   recentHeader: {
     flexDirection: "row",

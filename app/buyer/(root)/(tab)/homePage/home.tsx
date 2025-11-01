@@ -1,19 +1,22 @@
 import { Ionicons } from "@expo/vector-icons";
 import React from "react";
 import {
-    Image,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  Image,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  useColorScheme,
+  View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { categoriesItems, popularItems } from "./_data";
 
 const Home = () => {
+
+  const colorScheme = useColorScheme()
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, colorScheme === 'light' ? {backgroundColor: "#fff"} : {backgroundColor: "#000"}]}>
       <ScrollView showsVerticalScrollIndicator={false}>
         {/* Header Section */}
         <View style={styles.header}>
@@ -184,7 +187,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 16,
     paddingTop: 10,
-    backgroundColor: "#fff",
+    // backgroundColor: "#fff",
   },
 
   /* HEADER */

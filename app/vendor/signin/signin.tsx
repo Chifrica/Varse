@@ -13,8 +13,8 @@ const Index = () => {
     router.push('/vendor/signup/signup');
   }
 
-  const handleKYC = () => {
-    router.push('/vendor/signup/kycRegistration/kyc')
+  const handleSignIn = () => {
+    router.push("/vendor/(root)/(tab)/homePage/home");
   }
 
   const signupTxt = { text: "SignUp", onPress: handleSignUp };
@@ -69,7 +69,7 @@ const Index = () => {
         </TouchableOpacity>
       </View>
       <View>
-        <TouchableOpacity style={styles.button} onPress={handleKYC}>
+        <TouchableOpacity style={styles.button} onPress={handleSignIn}>
           <Text style={styles.buttonText}>Sign in</Text>
         </TouchableOpacity>
       </View>

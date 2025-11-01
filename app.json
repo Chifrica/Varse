@@ -9,7 +9,8 @@
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.galaxies.firebase"
     },
     "android": {
       "adaptiveIcon": {
@@ -19,7 +20,8 @@
         "monochromeImage": "./assets/icons/logo.png"
       },
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.galaxies.firebase"
     },
     "web": {
       "output": "static",
@@ -36,6 +38,13 @@
           "backgroundColor": "#FF8800",
           "dark": {
             "backgroundColor": "#FF8800"
+          }
+        }
+      ],
+      ["expo-build-properties", 
+        {
+          "ios": {
+            "useFrameWorks": "static"
           }
         }
       ]
