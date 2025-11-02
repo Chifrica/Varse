@@ -41,113 +41,114 @@ const Index = () => {
 
       router.push("/vendor/(root)/(tab)/homePage/home");
     } catch (error) {
-      console.error(error.message);
-      alert("Invalid email or password. Please try again.");
+      console.error(
+        alert("Invalid email or password. Please try again.")
+      );
     }
   };
 
-  const signupTxt = { text: "SignUp", onPress: handleSignUp };
+const signupTxt = { text: "SignUp", onPress: handleSignUp };
 
-  return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <Image source={require("../../../assets/icons/logo.png")} />
-        <Text style={styles.title}>Welcome Back !</Text>
-        <Text style={styles.subTitle}>
-          Your Marketplace, Your Control.
-        </Text>
-      </View>
-
-      <View>
-        <View>
-          <TextInput
-            placeholder="Enter Email"
-            style={styles.input}
-            value={email}
-            onChangeText={setEmail}
-          />
-        </View>
-
-        <View style={{ position: "relative", justifyContent: "center" }}>
-          <TextInput
-            placeholder="Enter Password"
-            secureTextEntry={!showPassword}
-            style={styles.input}
-            value={password}
-            onChangeText={setPassword}
-          />
-
-          <TouchableOpacity
-            onPress={() => setShowPassword(!showPassword)}
-            style={{
-              position: "absolute",
-              right: 20,
-              top: 15,
-            }}
-          >
-            <FontAwesome
-              name={showPassword ? "eye-slash" : "eye"}
-              size={20}
-              color="#888"
-            />
-          </TouchableOpacity>
-        </View>
-      </View>
-
-      {/* Horizontal Line */}
-      <View
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          marginVertical: 20,
-          width: "90%",
-        }}
-      >
-        <View style={styles.horizontalLine} />
-        <Text style={styles.orTxt}>OR</Text>
-        <View style={styles.horizontalLine} />
-      </View>
-
-      <Text style={{ fontSize: 18, color: "#666", fontWeight: "700" }}>
-        Log in with
+return (
+  <SafeAreaView style={styles.container}>
+    <View style={styles.header}>
+      <Image source={require("../../../assets/icons/logo.png")} />
+      <Text style={styles.title}>Welcome Back !</Text>
+      <Text style={styles.subTitle}>
+        Your Marketplace, Your Control.
       </Text>
+    </View>
 
-      <View style={styles.socialIcons}>
-        <TouchableOpacity style={styles.iconBox}>
-          <FontAwesome name="google" size={24} color="#DB4437" />
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.iconBox}>
-          <FontAwesome name="apple" size={24} color="#000000" />
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.iconBox}>
-          <FontAwesome name="facebook" size={24} color="#1877F2" />
-        </TouchableOpacity>
-      </View>
-
+    <View>
       <View>
-        <TouchableOpacity style={styles.button} onPress={handleSignIn}>
-          <Text style={styles.buttonText}>Sign in</Text>
-        </TouchableOpacity>
+        <TextInput
+          placeholder="Enter Email"
+          style={styles.input}
+          value={email}
+          onChangeText={setEmail}
+        />
       </View>
 
-      <View
-        style={{
-          marginTop: 15,
-          flexDirection: "row",
-          alignItems: "center",
-        }}
-      >
-        <Text style={styles.signUpTxt1}>
-          Don't have an account?
-          <TouchableOpacity onPress={signupTxt.onPress}>
-            <Text style={styles.signUpText2}> {signupTxt.text}</Text>
-          </TouchableOpacity>
-        </Text>
+      <View style={{ position: "relative", justifyContent: "center" }}>
+        <TextInput
+          placeholder="Enter Password"
+          secureTextEntry={!showPassword}
+          style={styles.input}
+          value={password}
+          onChangeText={setPassword}
+        />
+
+        <TouchableOpacity
+          onPress={() => setShowPassword(!showPassword)}
+          style={{
+            position: "absolute",
+            right: 20,
+            top: 15,
+          }}
+        >
+          <FontAwesome
+            name={showPassword ? "eye" : "eye-slash"}
+            size={20}
+            color="#888"
+          />
+        </TouchableOpacity>
       </View>
-    </SafeAreaView>
-  );
+    </View>
+
+    {/* Horizontal Line */}
+    <View
+      style={{
+        flexDirection: "row",
+        alignItems: "center",
+        marginVertical: 20,
+        width: "90%",
+      }}
+    >
+      <View style={styles.horizontalLine} />
+      <Text style={styles.orTxt}>OR</Text>
+      <View style={styles.horizontalLine} />
+    </View>
+
+    <Text style={{ fontSize: 18, color: "#666", fontWeight: "700" }}>
+      Log in with
+    </Text>
+
+    <View style={styles.socialIcons}>
+      <TouchableOpacity style={styles.iconBox}>
+        <FontAwesome name="google" size={24} color="#DB4437" />
+      </TouchableOpacity>
+
+      <TouchableOpacity style={styles.iconBox}>
+        <FontAwesome name="apple" size={24} color="#000000" />
+      </TouchableOpacity>
+
+      <TouchableOpacity style={styles.iconBox}>
+        <FontAwesome name="facebook" size={24} color="#1877F2" />
+      </TouchableOpacity>
+    </View>
+
+    <View>
+      <TouchableOpacity style={styles.button} onPress={handleSignIn}>
+        <Text style={styles.buttonText}>Sign in</Text>
+      </TouchableOpacity>
+    </View>
+
+    <View
+      style={{
+        marginTop: 15,
+        flexDirection: "row",
+        alignItems: "center",
+      }}
+    >
+      <Text style={styles.signUpTxt1}>
+        Don't have an account?
+        <TouchableOpacity onPress={signupTxt.onPress}>
+          <Text style={styles.signUpText2}> {signupTxt.text}</Text>
+        </TouchableOpacity>
+      </Text>
+    </View>
+  </SafeAreaView>
+);
 };
 
 export default Index;

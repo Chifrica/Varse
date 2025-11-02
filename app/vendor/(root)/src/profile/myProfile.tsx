@@ -1,6 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import React from 'react';
+import { doc, onSnapshot } from 'firebase/firestore';
+import React, { useEffect, useState } from 'react';
 import {
   Image,
   ScrollView,
@@ -10,8 +11,26 @@ import {
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { auth, db } from '../../../../../firebaseConfig';
 
 const MyProfile = () => {
+
+  const [profile, setProfile] = useState(null);
+
+  useEffect(() => {
+  const user = auth.currentUser;
+  if (!user) return;
+
+  const unsub = onSnapshot(doc(db, "users", user.uid), (docSnap) => {
+    if (docSnap.exists()) {
+      setProfile(docSnap.data());
+    }
+  }, (error) => console.error("Error loading profile:", error));
+
+  return () => unsub();
+}, []);
+
+
   const router = useRouter();
 
   const handleBackArrow = () => {
@@ -46,26 +65,26 @@ const MyProfile = () => {
 
         {/* Info Sections */}
         <View style={styles.infoSection}>
-          <Text style={styles.label}>First Name</Text>
-          <Text style={styles.value}>Yusuf Bashir Jafar</Text>
+          <Text style={styles.label}>Full Name</Text>
+          <Text style={styles.value}>{profile?.firstName || "—"}</Text>
         </View>
         <View style={styles.line} />
 
         <View style={styles.infoSection}>
           <Text style={styles.label}>Email</Text>
-          <Text style={styles.value}>chikaonwunali20122@gmail.com</Text>
+          <Text style={styles.value}>{profile?.email || "—"}</Text>
         </View>
         <View style={styles.line} />
 
         <View style={styles.infoSection}>
           <Text style={styles.label}>Phone Number</Text>
-          <Text style={styles.value}>09014074161</Text>
+          <Text style={styles.value}>{profile?.phone || "—"}</Text>
         </View>
         <View style={styles.line} />
 
         <View style={styles.infoSection}>
           <Text style={styles.label}>Address</Text>
-          <Text style={styles.value}>No 12 Avenue, Samaru</Text>
+          <Text style={styles.value}>{profile?.address || "—"}</Text>
         </View>
         <View style={styles.line} />
 

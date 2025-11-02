@@ -1,17 +1,21 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
+import { deleteUser, getAuth, signOut } from 'firebase/auth';
 import React, { useState } from 'react';
-import { ScrollView, StyleSheet, Switch, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, ScrollView, StyleSheet, Switch, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 const Settings = () => {
   const router = useRouter();
+  const auth = getAuth();
 
   const handleBackArrow = () => {
     router.back();
   };
 
-  // Notification toggle states
+  // -----------------------------
+  // TOGGLE STATES
+  // -----------------------------
   const [notifications, setNotifications] = useState({
     order: true,
     payment: false,
@@ -21,6 +25,95 @@ const Settings = () => {
 
   const toggleSwitch = (key) => {
     setNotifications((prev) => ({ ...prev, [key]: !prev[key] }));
+  };
+
+  // -----------------------------
+  // LOGOUT HANDLER
+  // -----------------------------
+  const handleLogOut = () => {
+    Alert.alert(
+      "Logout Confirmation",
+      "Are you sure you want to logout?",
+      [
+        { text: "No", style: "cancel" },
+        {
+          text: "Yes",
+          onPress: async () => {
+            try {
+              await signOut(auth);
+              alert("Logged out successfully");
+              router.replace("/vendor/signin/signin");
+            } catch (error) {
+              console.error("Error logging out:", error.message);
+              alert("Failed to log out. Try again.");
+            }
+          },
+        },
+      ]
+    );
+  };
+
+  // -----------------------------
+  // DELETE ACCOUNT HANDLER
+  // -----------------------------
+  const handleDeleteAccount = () => {
+    Alert.alert(
+      "Delete Account",
+      "Are you sure you want to permanently delete your account? This action cannot be undone.",
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Yes, Delete",
+          onPress: async () => {
+            const user = auth.currentUser;
+            if (user) {
+              try {
+                await deleteUser(user);
+                alert("Account deleted successfully.");
+                router.replace("/vendor/signin/signin");
+              } catch (error) {
+                console.error("Error deleting account:", error.message);
+                alert("Failed to delete account. Please log in again and try.");
+              }
+            } else {
+              alert("No user is currently signed in.");
+            }
+          },
+          style: "destructive",
+        },
+      ]
+    );
+  };
+
+  // -----------------------------
+  // SWITCH ACCOUNT HANDLER
+  // -----------------------------
+  const handleSwitchAccount = () => {
+    Alert.alert(
+      "Switch Account",
+      "Do you want to switch to your buyer account?",
+      [
+        {
+          text: "No, Log Out Instead",
+          onPress: async () => {
+            try {
+              await signOut(auth);
+              alert("Logged out successfully");
+              router.replace("/vendor/signin/signin");
+            } catch (error) {
+              console.error("Error logging out:", error.message);
+              alert("Failed to log out. Try again.");
+            }
+          },
+        },
+        {
+          text: "Yes, Switch to Buyer",
+          onPress: () => {
+            router.replace("/buyer/signin/signin");
+          },
+        },
+      ]
+    );
   };
 
   return (
@@ -48,89 +141,28 @@ const Settings = () => {
           </View>
         </View>
 
-        {/* Payment & Wallet */}
-        <View style={styles.section}>
-          <Text style={styles.sectionHeader}>Payment & Wallet</Text>
-          <View style={styles.innerSection}>
-            <Text style={styles.item}>Bank Details → Add or edit bank account</Text>
-            <View style={styles.line} />
-            <Text style={styles.item}>Wallet Settings → View transaction history</Text>
-            <View style={styles.line} />
-            <Text style={styles.item}>Payout Schedule → Choose daily or weekly payments</Text>
-            <View style={styles.line} />
-            <Text style={styles.item}>Earnings Reports → Export or view statement</Text>
-          </View>
-        </View>
-
         {/* Notifications */}
         <View style={styles.section}>
           <Text style={styles.sectionHeader}>Notifications</Text>
           <View style={styles.innerSection}>
-            <View style={styles.toggleRow}>
-              <Text style={styles.item}>Order Notifications</Text>
-              <Switch
-                value={notifications.order}
-                onValueChange={() => toggleSwitch('order')}
-                trackColor={{ false: '#ccc', true: '#f59e0b' }}
-                thumbColor={notifications.order ? '#fff' : '#f4f3f4'}
-              />
-            </View>
-            <View style={styles.line} />
-            <View style={styles.toggleRow}>
-              <Text style={styles.item}>Payment Updates</Text>
-              <Switch
-                value={notifications.payment}
-                onValueChange={() => toggleSwitch('payment')}
-                trackColor={{ false: '#ccc', true: '#f59e0b' }}
-                thumbColor={notifications.payment ? '#fff' : '#f4f3f4'}
-              />
-            </View>
-            <View style={styles.line} />
-            <View style={styles.toggleRow}>
-              <Text style={styles.item}>Chat Notifications</Text>
-              <Switch
-                value={notifications.chat}
-                onValueChange={() => toggleSwitch('chat')}
-                trackColor={{ false: '#ccc', true: '#f59e0b' }}
-                thumbColor={notifications.chat ? '#fff' : '#f4f3f4'}
-              />
-            </View>
-            <View style={styles.line} />
-            <View style={styles.toggleRow}>
-              <Text style={styles.item}>Delivery Updates</Text>
-              <Switch
-                value={notifications.delivery}
-                onValueChange={() => toggleSwitch('delivery')}
-                trackColor={{ false: '#ccc', true: '#f59e0b' }}
-                thumbColor={notifications.delivery ? '#fff' : '#f4f3f4'}
-              />
-            </View>
-          </View>
-        </View>
-
-        {/* App Preferences */}
-        <View style={styles.section}>
-          <Text style={styles.sectionHeader}>App Preferences</Text>
-          <View style={styles.innerSection}>
-            <Text style={styles.item}>Dark Mode</Text>
-            <View style={styles.line} />
-            <Text style={styles.item}>Language → English</Text>
-            <View style={styles.line} />
-            <Text style={styles.item}>App Version → v1.0.3 (Latest)</Text>
-          </View>
-        </View>
-
-        {/* Help & Legal */}
-        <View style={styles.section}>
-          <Text style={styles.sectionHeader}>Help & Legal</Text>
-          <View style={styles.innerSection}>
-            <Text style={styles.item}>Help & FAQ</Text>
-            <View style={styles.line} />
-            <Text style={styles.item}>Terms of Service</Text>
-            <View style={styles.line} />
-            <Text style={styles.item}>Privacy Policy</Text>
-            <View style={styles.line} />
-            <Text style={styles.item}>Contact Support</Text>
+            {Object.keys(notifications).map((key, index) => (
+              <View key={key}>
+                <View style={styles.toggleRow}>
+                  <Text style={styles.item}>
+                    {key.charAt(0).toUpperCase() + key.slice(1)} Notifications
+                  </Text>
+                  <Switch
+                    value={notifications[key]}
+                    onValueChange={() => toggleSwitch(key)}
+                    trackColor={{ false: '#ccc', true: '#f59e0b' }}
+                    thumbColor={notifications[key] ? '#fff' : '#f4f3f4'}
+                  />
+                </View>
+                {index !== Object.keys(notifications).length - 1 && (
+                  <View style={styles.line} />
+                )}
+              </View>
+            ))}
           </View>
         </View>
 
@@ -138,11 +170,17 @@ const Settings = () => {
         <View style={styles.section}>
           <Text style={styles.sectionHeader}>Account Actions</Text>
           <View style={styles.innerSection}>
-            <Text style={styles.item}>Switch Accounts</Text>
+            <TouchableOpacity onPress={handleSwitchAccount}>
+              <Text style={[styles.item, { color: '#007AFF' }]}>Switch Accounts</Text>
+            </TouchableOpacity>
             <View style={styles.line} />
-            <Text style={[styles.item, { color: '#f59e0b' }]}>Log Out</Text>
+            <TouchableOpacity onPress={handleLogOut}>
+              <Text style={[styles.item, { color: '#f59e0b' }]}>Log Out</Text>
+            </TouchableOpacity>
             <View style={styles.line} />
-            <Text style={[styles.item, { color: 'red' }]}>Delete Account</Text>
+            <TouchableOpacity onPress={handleDeleteAccount}>
+              <Text style={[styles.item, { color: 'red' }]}>Delete Account</Text>
+            </TouchableOpacity>
           </View>
         </View>
       </ScrollView>
@@ -209,3 +247,22 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 });
+
+
+
+  // Handle Google login response
+  // useEffect(() => {
+  //   if (response?.type === "success") {
+  //     const { id_token } = response.params;
+  //     const credential = GoogleAuthProvider.credential(id_token);
+  //     signInWithCredential(auth, credential)
+  //       .then(() => {
+  //         Alert.alert("Success", "Signed up successfully with Google!");
+  //         router.push("/vendor/signup/kycRegistration/kyc");
+  //       })
+  //       .catch((error) => {
+  //         console.error(error);
+  //         Alert.alert("Google Sign-In Failed", error.message);
+  //       });
+  //   }
+  // }, [response]);

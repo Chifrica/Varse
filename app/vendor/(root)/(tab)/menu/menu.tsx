@@ -6,15 +6,16 @@ import {
   Alert,
   Animated,
   Dimensions,
-  Image,
-  StatusBar,
+  Image, Platform, StatusBar,
   StyleSheet,
   Text,
   TouchableOpacity,
-  View,
+  View
 } from "react-native";
 
 const { width } = Dimensions.get("window");
+
+const STATUSBAR_HEIGHT = Platform.OS === "android" ? StatusBar.currentHeight : 50;
 
 const Menu = () => {
   const [pressedItem, setPressedItem] = useState<string | null>(null);
@@ -160,7 +161,7 @@ const styles = StyleSheet.create({
   },
   modal: {
     position: "absolute",
-    top: 0,
+    top: STATUSBAR_HEIGHT,
     right: 0,
     height: "100%",
     width: width * 0.85,

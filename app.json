@@ -41,13 +41,15 @@
           }
         }
       ],
-      ["expo-build-properties", 
+      [
+        "expo-build-properties",
         {
           "ios": {
             "useFrameWorks": "static"
           }
         }
-      ]
+      ],
+      "expo-web-browser"
     ],
     "experiments": {
       "typedRoutes": true,

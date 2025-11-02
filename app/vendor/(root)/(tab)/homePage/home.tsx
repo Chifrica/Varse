@@ -1,11 +1,43 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import { getAuth } from "firebase/auth";
-import React from "react";
+import { onAuthStateChanged } from "firebase/auth";
+import { doc, getDoc } from "firebase/firestore";
+import React, { useEffect, useState } from "react";
 import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, useColorScheme, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { auth, db } from "../../../../../firebaseConfig";
 
 const Home = () => {
+
+    const [userName, setUserName] = useState<string>("");
+    const [profile, setProfile] = useState(null);
+
+    useEffect(() => {
+  const unsubscribe = onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      try {
+        const docRef = doc(db, "users", user.uid);
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          setProfile(data);
+          setUserName(data.firstName || user.displayName || "User");
+        } else {
+          setUserName(user.displayName || user.email?.split("@")[0] || "User");
+        }
+      } catch (error) {
+        console.log("Error fetching profile:", error);
+      }
+    } else {
+      setUserName("User");
+      setProfile(null);
+    }
+  });
+
+  return () => unsubscribe();
+}, []);
+
 
   const colorScheme = useColorScheme();
 
@@ -15,13 +47,18 @@ const Home = () => {
     router.push("/vendor/(root)/src/product/myProduct");
   }
 
-  const auth = getAuth();
-  const user = auth.currentUser;
-
-  if (user !== null) {
-    const displayName = user.displayName;
-    const photoURL = user.photoURL;
-  }
+  // useEffect(() => {
+  //   const auth = getAuth();
+  //   const unsubscribe = onAuthStateChanged(auth, (user) => {
+  //     if (user) {
+  //       // Prefer displayName; fallback to email if displayName is null
+  //       setUserName(user.displayName || user.email?.split("@")[0] || "User");
+  //     } else {
+  //       setUserName("User");
+  //     }
+  //   });
+  //   return unsubscribe; // cleanup listener on unmount
+  // }, []);
   return (
     <SafeAreaView style={[styles.container, colorScheme === 'light' ? {backgroundColor: '#fff'} : {backgroundColor: "#000"}]}>
       <ScrollView showsVerticalScrollIndicator={false}>
@@ -32,7 +69,7 @@ const Home = () => {
             style={styles.logo}
           />
           <View>
-            <Text style={[styles.greeting, colorScheme === 'light' ? {color: '#000'} : {color: "#fff"}]}>Hi Joshua 👋</Text>
+            <Text style={[styles.greeting, colorScheme === 'light' ? {color: '#000'} : {color: "#fff"}]}>Hi {userName} 👋</Text>
             <Text style={styles.subGreeting}>Welcome back!</Text>
           </View>
         </View>
