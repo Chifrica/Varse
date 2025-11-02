@@ -112,10 +112,10 @@ const EditProfile = () => {
       );
 
       const updatedDoc = await getDoc(doc(db, "users", user.uid));
-if (updatedDoc.exists()) {
-  setProfileImage(updatedDoc.data());
-}
-router.replace("/vendor/(root)/src/profile/myProfile");
+      if (updatedDoc.exists()) {
+        setProfileImage(updatedDoc.data());
+      }
+      router.replace("/vendor/(root)/src/profile/myProfile");
 
     } catch (error) {
       console.error("Error updating profile:", error);
