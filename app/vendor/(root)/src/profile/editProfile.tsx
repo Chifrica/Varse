@@ -52,6 +52,7 @@ const EditProfile = () => {
     fetchProfile();
   }, []);
 
+  // Image picker
   const pickImage = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== "granted") {
@@ -70,6 +71,7 @@ const EditProfile = () => {
     }
   };
 
+  // handling update button
   const handleUpdate = async () => {
     const user = auth.currentUser;
     if (!user) {
@@ -96,7 +98,7 @@ const EditProfile = () => {
         await uploadBytes(storageRef, blob);
         imageUrl = await getDownloadURL(storageRef);
       } else {
-        imageUrl = profileImage; // keep existing image
+        imageUrl = profileImage; 
       }
 
       await setDoc(
