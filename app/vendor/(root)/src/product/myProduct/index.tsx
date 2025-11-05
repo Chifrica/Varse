@@ -1,40 +1,84 @@
 import { Ionicons } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
-import React from "react";
+import { useFocusEffect, useRouter } from "expo-router";
+import React, { useCallback, useState } from "react";
 import {
+  ActivityIndicator,
+  Alert,
   Image,
   ScrollView,
   Text,
   TextInput,
   TouchableOpacity,
-  View
+  View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { deleteItem, getAllItem } from "../../../../../api/varse";
 import { styles } from "./_style";
+
+const formatCurrency = (amount, currency = "NGN") => {
+  if (isNaN(amount)) return "₦0";
+  const formatted = amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  return currency === "NGN" ? `₦${formatted}` : formatted;
+};
 
 const AddProduct = () => {
   const router = useRouter();
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const handleBackArrow = () => {
-    router.back();
+  const fetchProducts = async () => {
+    try {
+      setLoading(true);
+      const data = await getAllItem();
+      setProducts(data);
+    } catch (error) {
+      console.error("Error fetching products:", error.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleAddProduct = () => {
-    router.navigate("/vendor/(root)/src/product/addProduct"); 
+  // ✅ Automatically refetch whenever the screen comes into focus
+  useFocusEffect(
+    useCallback(() => {
+      fetchProducts();
+    }, [])
+  );
+
+  const confirmDelete = (id, name) => {
+    Alert.alert(
+      "Delete Product",
+      `Are you sure you want to delete "${name}"?`,
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Yes, Delete",
+          style: "destructive",
+          onPress: async () => {
+            try {
+              await deleteItem(id); // delete from Supabase
+              setProducts((prev) => prev.filter((item) => item.id !== id)); // update UI
+            } catch (error) {
+              console.error("Error deleting product:", error.message);
+              Alert.alert("Error", "Failed to delete the product. Try again.");
+            }
+          },
+        },
+      ]
+    );
   };
+
 
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false}>
-        {/* Header */}
         <View style={styles.header}>
-          <TouchableOpacity onPress={handleBackArrow}>
+          <TouchableOpacity onPress={() => router.back()}>
             <Ionicons name="arrow-back-outline" size={24} color="#000" />
           </TouchableOpacity>
           <Text style={styles.title}>My Products</Text>
         </View>
 
-        {/* Search Bar */}
         <View style={styles.searchContainer}>
           <Ionicons name="search-outline" size={20} color="#999" />
           <TextInput
@@ -44,38 +88,62 @@ const AddProduct = () => {
           />
         </View>
 
-        {/* Product Card */}
-        <View style={styles.productCard}>
-          <Image
-            source={require("../../../../../../assets/icons/logo.png")}
-            style={styles.productImage}
+        {loading ? (
+          <ActivityIndicator
+            size="large"
+            color="#FF8800"
+            style={{ marginTop: 50 }}
           />
+        ) : products.length === 0 ? (
+          <Text style={{ textAlign: "center", marginTop: 40 }}>
+            No products yet
+          </Text>
+        ) : (
+          products.map((item) => (
+            <View key={item.id} style={styles.productCard}>
+              <Image
+                source={{
+                  uri: item.image_url || "https://via.placeholder.com/150",
+                }}
+                style={styles.productImage}
+              />
 
-          <View style={styles.productInfo}>
-            <Text style={styles.productName}>Oraimo Earphones</Text>
-            <Text style={styles.price}>$29.99</Text>
-
-            <View style={styles.actions}>
-              <TouchableOpacity style={styles.actionBtn}>
-                <Ionicons name="create-outline" size={18} color="#FF8800" />
-                <Text style={styles.actionText}>Edit</Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity style={styles.actionBtn}>
-                <Ionicons name="trash-outline" size={18} color="red" />
-                <Text style={[styles.actionText, { color: "red" }]}>
-                  Delete
+              <View style={styles.productInfo}>
+                <Text style={styles.productName}>{item.productName}</Text>
+                <Text style={styles.price}>
+                  {formatCurrency(item.price, "NGN")}
                 </Text>
-              </TouchableOpacity>
-            </View>
-          </View>
 
-          <Text style={styles.stock}>In Stock</Text>
-        </View>
+                <View style={styles.actions}>
+                  <TouchableOpacity style={styles.actionBtn}>
+                    <Ionicons name="create-outline" size={18} color="#FF8800" />
+                    <Text style={styles.actionText}>Edit</Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                    style={styles.actionBtn}
+                    onPress={() => confirmDelete(item.id, item.name)}
+                  >
+                    <Ionicons name="trash-outline" size={18} color="red" />
+                    <Text style={[styles.actionText, { color: "red" }]}>
+                      Delete
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+
+              <Text style={styles.stock}>
+                {item.stockQuantity ? "In Stock" : "Out of Stock"}
+              </Text>
+            </View>
+          ))
+        )}
       </ScrollView>
 
-      {/* Floating Add Button */}
-      <TouchableOpacity style={styles.fab} onPress={handleAddProduct}>
+      <TouchableOpacity
+        style={styles.fab}
+        onPress={() => router.navigate("/vendor/(root)/src/product/addProduct")}
+      >
         <Ionicons name="add" size={28} color="#fff" />
       </TouchableOpacity>
     </SafeAreaView>
@@ -83,4 +151,3 @@ const AddProduct = () => {
 };
 
 export default AddProduct;
-
