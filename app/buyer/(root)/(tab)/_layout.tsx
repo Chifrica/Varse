@@ -28,6 +28,7 @@ const AppLayout = () => {
           bottom: 0,
           left: 0,
           right: 0,
+          backgroundColor: "#fff",
         },
         sceneStyle: {
           backgroundColor: "#fff", 
@@ -43,16 +44,6 @@ const AppLayout = () => {
           title: "Home",
           tabBarIcon: ({ color }) => (
             <FontAwesome name="home" size={22} color={color} />
-          ),
-        }}
-      />
-
-      <Tabs.Screen
-        name="search/search"
-        options={{
-          title: "Search",
-          tabBarIcon: ({ color }) => (
-            <FontAwesome name="search" size={22} color={color} />
           ),
         }}
       />

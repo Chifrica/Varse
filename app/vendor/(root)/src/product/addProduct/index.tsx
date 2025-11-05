@@ -32,6 +32,8 @@ const AddProduct = () => {
     description: "",
     weight: "",
     color: "",
+    shopName: "",
+    location: ""
   });
 
   const handleChange = (key, value) => setForm({ ...form, [key]: value });
@@ -141,6 +143,8 @@ const uploadImageToSupabase = async (imageUri) => {
       weight: form.weight.trim(),
       color: form.color.trim(),
       image_url: imageUrl || "https://via.placeholder.com/150",
+      shopName: form.shopName.trim(),
+      location: form.location.trim(),
     });
 
     Alert.alert("Success", "Product uploaded successfully!");
@@ -213,6 +217,7 @@ const uploadImageToSupabase = async (imageUri) => {
                 <Picker.Item label="Accessories" value="accessories" />
                 <Picker.Item label="Home Appliances" value="home" />
                 <Picker.Item label="Fashion" value="fashion" />
+                <Picker.Item label="Food" value="food" />
               </Picker>
             </View>
           </View>
@@ -256,6 +261,30 @@ const uploadImageToSupabase = async (imageUri) => {
               textAlignVertical="top"
               value={form.description}
               onChangeText={(text) => handleChange("description", text)}
+            />
+          </View>
+
+          {/* Location */}
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>Location</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Enter Loation"
+              placeholderTextColor="#999"
+              value={form.location}
+              onChangeText={(text) => handleChange("location", text)}
+            />
+          </View>
+
+          {/* Shop Name */}
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>Shop Name</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Enter Shop Name"
+              placeholderTextColor="#999"
+              value={form.shopName}
+              onChangeText={(text) => handleChange("shopName", text)}
             />
           </View>
 

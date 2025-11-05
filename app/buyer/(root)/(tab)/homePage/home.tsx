@@ -1,5 +1,5 @@
 import { Ionicons } from "@expo/vector-icons";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   FlatList,
   Image,
@@ -13,11 +13,39 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Svg, { Path } from "react-native-svg";
+import { getAllItem } from "../../../../api/varse";
 import { categories, categoriesItems, featuredShops, popularItems, trendingProducts } from "./_data";
 
 const Home = () => {
 
   const [searchQuery, setSearchQuery] = useState("");
+  const [popularMeals, setPopularMeals] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  // Fetch popular meals from Supabase
+  useEffect(() => {
+    const fetchPopularMeals = async () => {
+      try {
+        setLoading(true);
+        const allItems = await getAllItem();
+
+        // ✅ Filter meals only
+        const meals = allItems.filter(
+          (item) =>
+            item.category?.toLowerCase() === "meal" ||
+            item.category?.toLowerCase() === "food" ||
+            item.category?.toLowerCase().includes("meal")
+        );
+
+        setPopularMeals(meals);
+      } catch (error) {
+        console.error("Error fetching meals:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchPopularMeals();
+  }, []);
 
   // Combine all searchable data into one unified array
   const allItems = [
@@ -54,8 +82,14 @@ const Home = () => {
       )
       : [];
 
+  const formatCurrency = (amount, currency = "NGN") => {
+    if (isNaN(amount)) return "₦0";
+    const formatted = amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    return currency === "NGN" ? `₦${formatted}` : formatted;
+  };
 
   const colorScheme = useColorScheme()
+
   return (
     <SafeAreaView style={[styles.container, colorScheme === 'light' ? { backgroundColor: "#fff" } : { backgroundColor: "#fff" }]}>
       <ScrollView showsVerticalScrollIndicator={false}>
@@ -120,7 +154,6 @@ const Home = () => {
         </ScrollView>
 
         {/* Promo Banner */}
-
         <View style={styles.promoContainer}>
           {/* Zigzag Background */}
           <Svg
@@ -165,23 +198,45 @@ const Home = () => {
           showsHorizontalScrollIndicator={false}
           style={styles.popularScroll}
         >
-          {popularItems.map((item) => (
-            <View key={item.id} style={styles.popularCard}>
-              <Image source={item.image} style={styles.popularImage} />
-              <View style={styles.popularInfo}>
-                <Text style={styles.popularName}>{item.name}</Text>
-                <View style={styles.popularBottom}>
-                  <View style={styles.ratingWrapper}>
-                    <Ionicons name="star" size={14} color="#FFA500" />
-                    {/* <Text style={styles.ratingText}>{item.rate.}</Text> */}
-                    <Text style={styles.popularDescription}>{item.description}</Text>
+          {popularMeals.length > 0 ? (
+            popularMeals.map((item) => (
+              <View key={item.id} style={styles.popularCard}>
+                <Image
+                  source={{ uri: item.image_url }}
+                  style={styles.popularImage}
+                />
+                <View style={styles.popularInfo}>
+                  {/* Product Name */}
+                  <Text style={styles.popularName} numberOfLines={1}>
+                    {item.productName}
+                  </Text>
+
+                  {/* Shop Name */}
+                  <Text style={styles.shopName} numberOfLines={1}>
+                    {item.shopName || "Unknown Vendor"}
+                  </Text>
+
+                  {/* Location */}
+                  <View style={styles.locationRow}>
+                    <Ionicons name="location-outline" size={14} color="#777" />
+                    <Text style={styles.locationText} numberOfLines={1}>
+                      {item.location || "Not specified"}
+                    </Text>
                   </View>
-                  <Text style={styles.popularPrice}>₦{item.price}</Text>
+
+                  {/* Price */}
+                  <Text style={styles.popularPrice}>
+                    {formatCurrency(item.price, "NGN")}
+                  </Text>
                 </View>
               </View>
-            </View>
-          ))}
+            ))
+          ) : (
+            <Text style={{ color: "#888", fontSize: 16 }}>No popular meals found</Text>
+          )}
         </ScrollView>
+
+
 
         {/* Fashion Section */}
         <Text style={styles.sectionTitle}>Fashion</Text>
@@ -198,7 +253,6 @@ const Home = () => {
                 <View style={styles.popularBottom}>
                   <View style={styles.ratingWrapper}>
                     <Ionicons name="star" size={14} color="#FFA500" />
-                    {/* <Text style={styles.ratingText}>{item.rate.}</Text> */}
                     <Text style={styles.popularDescription}>{item.description}</Text>
                   </View>
                   <Text style={styles.popularPrice}>₦{item.price}</Text>
@@ -223,7 +277,6 @@ const Home = () => {
                 <View style={styles.popularBottom}>
                   <View style={styles.ratingWrapper}>
                     <Ionicons name="star" size={14} color="#FFA500" />
-                    {/* <Text style={styles.ratingText}>{item.rate.}</Text> */}
                     <Text style={styles.popularDescription}>{item.description}</Text>
                   </View>
                   <Text style={styles.popularPrice}>₦{item.price}</Text>
@@ -465,32 +518,7 @@ const styles = StyleSheet.create({
   /* POPULAR */
   popularScroll: {
     marginTop: 10,
-  },
-  popularCard: {
-    backgroundColor: "#F9F9F9",
-    borderRadius: 16,
-    marginRight: 16,
-    marginBottom: 20,
-    width: 160,
-    shadowColor: "#000",
-    shadowOpacity: 0.1,
-    shadowRadius: 5,
-    elevation: 3,
-  },
-  popularImage: {
-    width: "100%",
-    height: 110,
-    borderTopLeftRadius: 16,
-    borderTopRightRadius: 16,
-    resizeMode: "cover",
-  },
-  popularInfo: {
-    padding: 10,
-  },
-  popularName: {
-    fontSize: 16,
-    fontWeight: "700",
-    color: "#000",
+    marginBottom: 10,
   },
   popularDescription: {
     fontSize: 18,
@@ -503,11 +531,56 @@ const styles = StyleSheet.create({
     // alignItems: "center",
     marginTop: 4,
   },
+  popularCard: {
+    backgroundColor: "#FFF",
+    borderRadius: 16,
+    marginRight: 16,
+    marginBottom: 20,
+    width: 160,
+    shadowColor: "#000",
+    shadowOpacity: 0.08,
+    shadowRadius: 5,
+    elevation: 3,
+    overflow: "hidden",
+  },
+  popularImage: {
+    width: "100%",
+    height: 120,
+    borderTopLeftRadius: 16,
+    borderTopRightRadius: 16,
+    resizeMode: "cover",
+  },
+  popularInfo: {
+    padding: 10,
+  },
+  popularName: {
+    fontSize: 15,
+    fontWeight: "700",
+    color: "#000",
+    marginBottom: 2,
+  },
+  shopName: {
+    fontSize: 13,
+    color: "#777",
+    marginBottom: 4,
+  },
+  locationRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 6,
+  },
+  locationText: {
+    fontSize: 13,
+    color: "#777",
+    marginLeft: 3,
+  },
   popularPrice: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: "700",
     color: "#FF6A00",
+    textAlign: "right",
   },
+
   ratingWrapper: {
     flexDirection: "row",
     alignItems: "center",

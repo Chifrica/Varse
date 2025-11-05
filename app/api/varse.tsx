@@ -14,10 +14,10 @@ export const getAllItem = async () => {
 
 // create an item
 
-export const createItem = async ({ productName, description, category, price, stockQuantity, weight, color, image_url }) => {
+export const createItem = async ({ productName, description, category, price, stockQuantity, weight, color, image_url, location, shopName }) => {
     const { data, error } = await supabase
         .from("productsUpload")
-        .insert([{ productName, description, category, price, stockQuantity, weight, color, image_url }])
+        .insert([{ productName, description, category, price, stockQuantity, weight, color, image_url, location, shopName }])
         .select()
         .single()
 
