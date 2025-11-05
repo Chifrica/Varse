@@ -47,6 +47,14 @@ export const categories = [
     },
 ]
 
+export const categoriesItems = [
+    { id: 1, name: "Food", icon: require("../../../../../assets/icons/logo.png") },
+    { id: 2, name: "Gas Refill", icon: require("../../../../../assets/icons/logo.png") },
+    { id: 3, name: "Pharmacy", icon: require("../../../../../assets/icons/logo.png") },
+    { id: 4, name: "Courier", icon: require("../../../../../assets/icons/logo.png") },
+    { id: 5, name: "Market Place", icon: require("../../../../../assets/icons/logo.png") },
+];
+
 export const featuredShops = [
     {
         id: '1',
@@ -132,14 +140,6 @@ export const trendingProducts = [
         shop: 'Shop A2'
     },
 ]
-
-export const categoriesItems = [
-    { id: 1, name: "Beverages", icon: require("../../../../../assets/icons/logo.png") },
-    { id: 2, name: "Snacks", icon: require("../../../../../assets/icons/logo.png") },
-    { id: 3, name: "Desserts", icon: require("../../../../../assets/icons/logo.png") },
-    { id: 4, name: "Fruits", icon: require("../../../../../assets/icons/logo.png") },
-    { id: 5, name: "Meals", icon: require("../../../../../assets/icons/logo.png") },
-];
 
 export const popularItems = [
     {

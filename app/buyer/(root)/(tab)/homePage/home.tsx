@@ -16,7 +16,7 @@ const Home = () => {
 
   const colorScheme = useColorScheme()
   return (
-    <SafeAreaView style={[styles.container, colorScheme === 'light' ? {backgroundColor: "#fff"} : {backgroundColor: "#000"}]}>
+    <SafeAreaView style={[styles.container, colorScheme === 'light' ? { backgroundColor: "#fff" } : { backgroundColor: "#fff" }]}>
       <ScrollView showsVerticalScrollIndicator={false}>
         {/* Header Section */}
         <View style={styles.header}>
@@ -38,27 +38,6 @@ const Home = () => {
           </View>
         </View>
 
-        {/* Promo Banner */}
-        <View style={styles.promoContainer}>
-          <View style={styles.textContainer}>
-            <Text style={styles.title}>
-              {`Order meals from your \nfavorite campus spots`}
-            </Text>
-            <Text style={styles.subtitle}>
-              Enjoy <Text style={styles.highlight}>our offer</Text> now
-            </Text>
-
-            <TouchableOpacity style={styles.button}>
-              <Text style={styles.buttonText}>Shop Now</Text>
-            </TouchableOpacity>
-          </View>
-
-          <Image
-            source={require("../../../../../assets/icons/logo.png")}
-            style={styles.image}
-          />
-        </View>
-
         {/* Category Section */}
         <Text style={styles.sectionTitle}>Category</Text>
         <ScrollView
@@ -76,8 +55,25 @@ const Home = () => {
           ))}
         </ScrollView>
 
+        {/* Promo Banner */}
+        <View style={styles.promoContainer}>
+          <View style={styles.textContainer}>
+            <Text style={styles.promoTitle}>Big Weekend Deals</Text>
+            <Text style={styles.promoSubtitle}>Shop Now Before It’s Gone!</Text>
+
+            <TouchableOpacity style={styles.promoButton} onPress={() => alert("Shop Now Clicked!")}>
+              <Text style={styles.promoButtonText}>Shop now</Text>
+            </TouchableOpacity>
+          </View>
+
+          <Image
+            source={require("../../../../../assets/images/image 5.png")} // use your uploaded image path
+            style={styles.promoImage}
+          />
+        </View>
+
         {/* Popular Section */}
-        <Text style={styles.sectionTitle}>Popular</Text>
+        <Text style={styles.sectionTitle}>Popular Meals</Text>
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
@@ -225,7 +221,7 @@ const styles = StyleSheet.create({
   /* PROMO */
   promoContainer: {
     flexDirection: "row",
-    backgroundColor: "#FFE5B4",
+    backgroundColor: "#FF8800",
     padding: 20,
     alignItems: "center",
     borderRadius: 16,
@@ -234,6 +230,35 @@ const styles = StyleSheet.create({
   },
   textContainer: {
     flex: 1,
+  },
+  promoTitle: {
+    fontSize: 20,
+    fontWeight: "700",
+    color: "#000",
+    marginBottom: 4,
+  },
+  promoSubtitle: {
+    fontSize: 16,
+    color: "#000",
+    marginBottom: 12,
+  },
+  promoButton: {
+    backgroundColor: "#000",
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 10,
+    alignSelf: "flex-start",
+  },
+  promoButtonText: {
+    color: "#fff",
+    fontWeight: "700",
+    fontSize: 16,
+  },
+  promoImage: {
+    width: 130,
+    height: 130,
+    marginLeft: 10,
+    resizeMode: "contain",
   },
   title: {
     fontSize: 20,

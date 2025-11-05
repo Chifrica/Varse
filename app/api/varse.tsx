@@ -7,34 +7,52 @@ export const getAllItem = async () => {
         .select('*')
 
     if (error) {
-        throw new Error (error.message);
+        throw new Error(error.message);
     }
     return data
 }
 
 // create an item
 
-export const createItem = async({productName, description, category, price, stockQuantity, weight, color, image_url }) => {
-    const {data, error} = await supabase
+export const createItem = async ({ productName, description, category, price, stockQuantity, weight, color, image_url }) => {
+    const { data, error } = await supabase
         .from("productsUpload")
-        .insert([{productName, description, category, price, stockQuantity, weight, color, image_url}])
+        .insert([{ productName, description, category, price, stockQuantity, weight, color, image_url }])
         .select()
         .single()
 
     if (error) {
-        throw new Error (error.message)
+        throw new Error(error.message)
     }
 
     return data;
 }
 
-export const deleteItem = async(id) => {
-    const {error} = await supabase
+export const updateItem = async (id, updatedData) => {
+  const { data, error } = await supabase
+    .from('productsUpload')
+    .update(updatedData)
+    .eq('id', id)
+    .select()
+    .single();
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return data;
+};
+
+export const deleteItem = async (id) => {
+    const { error } = await supabase
         .from("productsUpload")
         .delete()
         .eq("id", id)
-    
+
     if (error) {
-        throw new Error (error.message)
+        throw new Error(error.message)
     }
 }
+
+
+
