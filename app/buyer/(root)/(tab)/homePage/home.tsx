@@ -1,45 +1,109 @@
 import { Ionicons } from "@expo/vector-icons";
-import React from "react";
+import React, { useState } from "react";
 import {
+  FlatList,
   Image,
   ScrollView,
   StyleSheet,
   Text,
+  TextInput,
   TouchableOpacity,
   useColorScheme,
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { categoriesItems, popularItems } from "./_data";
+import Svg, { Path } from "react-native-svg";
+import { categories, categoriesItems, featuredShops, popularItems, trendingProducts } from "./_data";
 
 const Home = () => {
+
+  const [searchQuery, setSearchQuery] = useState("");
+
+  // Combine all searchable data into one unified array
+  const allItems = [
+    ...categories.map((item) => ({
+      id: `cat-${item.id}`,
+      name: item.name,
+      image: { uri: item.image },
+      price: null,
+    })),
+    ...featuredShops.map((item) => ({
+      id: `shop-${item.id}`,
+      name: item.name,
+      image: { uri: item.image },
+      price: item.review,
+    })),
+    ...trendingProducts.map((item) => ({
+      id: `trend-${item.id}`,
+      name: item.name,
+      image: { uri: item.image },
+      price: item.price,
+    })),
+    ...popularItems.map((item) => ({
+      id: `pop-${item.id}`,
+      name: item.name,
+      image: item.image,
+      price: item.price,
+    })),
+  ];
+
+  const filteredItems =
+    searchQuery.trim().length > 0
+      ? allItems.filter((item) =>
+        item.name.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+      : [];
+
 
   const colorScheme = useColorScheme()
   return (
     <SafeAreaView style={[styles.container, colorScheme === 'light' ? { backgroundColor: "#fff" } : { backgroundColor: "#fff" }]}>
       <ScrollView showsVerticalScrollIndicator={false}>
-        {/* Header Section */}
-        <View style={styles.header}>
-          <View style={styles.headerLeft}>
-            <Image
-              source={require("../../../../../assets/icons/logo.png")}
-              style={styles.headerImage}
+
+        {/* Search Bar */}
+        <View style={styles.searchBar}>
+          <View style={styles.inputContainer}>
+            <Ionicons name="search" size={20} color="gray" style={styles.searchIcon} />
+            <TextInput
+              placeholder="Search for products, shops, or categories..."
+              placeholderTextColor="#999"
+              style={styles.searchInput}
+              value={searchQuery}
+              onChangeText={setSearchQuery}
             />
-            <Text style={styles.headerName}>Hi Ahmed</Text>
           </View>
 
           <View style={styles.headerIcons}>
-            <View style={styles.iconWrapper}>
-              <Ionicons name="cart-outline" size={20} color="#fff" />
-            </View>
             <View style={styles.iconWrapper}>
               <Ionicons name="notifications-outline" size={20} color="#fff" />
             </View>
           </View>
         </View>
 
+        {/* Search Results */}
+        {searchQuery.trim().length > 0 && (
+          <FlatList
+            data={filteredItems}
+            keyExtractor={(item) => item.id.toString()}
+            ListEmptyComponent={
+              <Text style={styles.noResults}>No items found</Text>
+            }
+            renderItem={({ item }) => (
+              <TouchableOpacity style={styles.resultItem}>
+                <Image source={item.image} style={styles.itemImage} />
+                <View>
+                  <Text style={styles.itemName}>{item.name}</Text>
+                  {item.price && (
+                    <Text style={styles.itemPrice}>{item.price}</Text>
+                  )}
+                </View>
+              </TouchableOpacity>
+            )}
+          />
+        )}
+
         {/* Category Section */}
-        <Text style={styles.sectionTitle}>Category</Text>
+        <Text style={styles.sectionTitle}>Categories</Text>
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
@@ -56,21 +120,43 @@ const Home = () => {
         </ScrollView>
 
         {/* Promo Banner */}
+
         <View style={styles.promoContainer}>
+          {/* Zigzag Background */}
+          <Svg
+            height="100%"
+            width="100%"
+            style={StyleSheet.absoluteFillObject}
+            preserveAspectRatio="none"
+          >
+            <Path
+              d="M0 10 L0 100 L50 10 L100 100 L150 10 L200 130 L250 10 L300 100 L350 10"
+              stroke="#fff"
+              strokeWidth="3"
+              fill="none"
+              opacity={0.1}
+            />
+          </Svg>
+
+          {/* Text + Image on top */}
           <View style={styles.textContainer}>
             <Text style={styles.promoTitle}>Big Weekend Deals</Text>
             <Text style={styles.promoSubtitle}>Shop Now Before It’s Gone!</Text>
 
-            <TouchableOpacity style={styles.promoButton} onPress={() => alert("Shop Now Clicked!")}>
+            <TouchableOpacity
+              style={styles.promoButton}
+              onPress={() => alert("Shop Now Clicked!")}
+            >
               <Text style={styles.promoButtonText}>Shop now</Text>
             </TouchableOpacity>
           </View>
 
           <Image
-            source={require("../../../../../assets/images/image 5.png")} // use your uploaded image path
+            source={require("../../../../../assets/images/image 5.png")}
             style={styles.promoImage}
           />
         </View>
+
 
         {/* Popular Section */}
         <Text style={styles.sectionTitle}>Popular Meals</Text>
@@ -185,27 +271,31 @@ const styles = StyleSheet.create({
     paddingTop: 10,
     // backgroundColor: "#fff",
   },
-
-  /* HEADER */
-  header: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  headerLeft: {
+  /* SEARCH */
+  searchBar: {
     flexDirection: "row",
     alignItems: "center",
+    borderRadius: 12,
+    marginBottom: 20,
+    marginTop: 20
   },
-  headerImage: {
-    width: 50,
-    height: 50,
-    borderRadius: 20,
-    marginRight: 10,
+  inputContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    flex: 1,
+    backgroundColor: "#f2f2f2",
+    borderRadius: 50,
+    paddingHorizontal: 10,
+    paddingVertical: 8,
   },
-  headerName: {
-    fontSize: 22,
-    fontWeight: "700",
+  searchIcon: {
+    marginRight: 6,
+  },
+  searchInput: {
+    flex: 1,
+    fontSize: 16,
     color: "#000",
+    paddingVertical: 4,
   },
   headerIcons: {
     flexDirection: "row",
@@ -216,6 +306,47 @@ const styles = StyleSheet.create({
     backgroundColor: "#FF6A00",
     borderRadius: 12,
     padding: 6,
+    marginLeft: 20
+  },
+  filterContainer: {
+    borderWidth: 1,
+    borderColor: "#FF8800",
+    borderRadius: 5,
+    paddingVertical: 8,
+    paddingHorizontal: 10,
+    marginLeft: 30,
+  },
+
+  /* Results */
+  resultItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#f9f9f9",
+    borderRadius: 10,
+    padding: 10,
+    marginBottom: 10,
+  },
+  itemImage: {
+    width: 60,
+    height: 60,
+    borderRadius: 10,
+    marginRight: 10,
+  },
+  itemName: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#000",
+  },
+  itemPrice: {
+    color: "#FF8800",
+    fontWeight: "500",
+    marginTop: 2,
+  },
+  noResults: {
+    textAlign: "center",
+    color: "#999",
+    marginTop: 40,
+    fontSize: 16,
   },
 
   /* PROMO */
@@ -227,6 +358,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     justifyContent: "space-between",
     marginTop: 25,
+    overflow: "hidden"
   },
   textContainer: {
     flex: 1,
