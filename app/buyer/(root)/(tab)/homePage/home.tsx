@@ -20,6 +20,8 @@ const Home = () => {
 
   const [searchQuery, setSearchQuery] = useState("");
   const [popularMeals, setPopularMeals] = useState([]);
+  const [electronics, setElectronics] = useState([]);
+  const [fashions, setFashion] = useState([]);
   const [loading, setLoading] = useState(true);
 
   // Fetch popular meals from Supabase
@@ -45,6 +47,56 @@ const Home = () => {
       }
     };
     fetchPopularMeals();
+  }, []);
+
+  // Fetch fashions from Supabase
+  useEffect(() => {
+    const fetchFashion = async () => {
+      try {
+        setLoading(true);
+        const allItems = await getAllItem();
+
+        // ✅ Filter fashions only
+        const fashion = allItems.filter(
+          (item) =>
+            item.category?.toLowerCase() === "fashion" ||
+            item.category?.toLowerCase() === "clothing" ||
+            item.category?.toLowerCase().includes("fashion")
+        );
+
+        setFashion(fashion);
+      } catch (error) {
+        console.error("Error fetching fashions:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchFashion();
+  }, []);
+
+  // Fetch electronics from Supabase
+  useEffect(() => {
+    const fetchElectronics = async () => {
+      try {
+        setLoading(true);
+        const allItems = await getAllItem();
+
+        // ✅ Filter electronics only
+        const electronics = allItems.filter(
+          (item) =>
+            item.category?.toLowerCase() === "electronics" ||
+            item.category?.toLowerCase() === "electronics" ||
+            item.category?.toLowerCase().includes("appliances")
+        );
+
+        setElectronics(electronics);
+      } catch (error) {
+        console.error("Error fetching electronics:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchElectronics();
   }, []);
 
   // Combine all searchable data into one unified array
@@ -236,30 +288,49 @@ const Home = () => {
           )}
         </ScrollView>
 
-
-
         {/* Fashion Section */}
-        <Text style={styles.sectionTitle}>Fashion</Text>
+       <Text style={styles.sectionTitle}>Fashion</Text>
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
           style={styles.popularScroll}
         >
-          {popularItems.map((item) => (
-            <View key={item.id} style={styles.popularCard}>
-              <Image source={item.image} style={styles.popularImage} />
-              <View style={styles.popularInfo}>
-                <Text style={styles.popularName}>{item.name}</Text>
-                <View style={styles.popularBottom}>
-                  <View style={styles.ratingWrapper}>
-                    <Ionicons name="star" size={14} color="#FFA500" />
-                    <Text style={styles.popularDescription}>{item.description}</Text>
+          {fashions.length > 0 ? (
+            fashions.map((item) => (
+              <View key={item.id} style={styles.popularCard}>
+                <Image
+                  source={{ uri: item.image_url }}
+                  style={styles.popularImage}
+                />
+                <View style={styles.popularInfo}>
+                  {/* Product Name */}
+                  <Text style={styles.popularName} numberOfLines={1}>
+                    {item.productName}
+                  </Text>
+
+                  {/* Shop Name */}
+                  <Text style={styles.shopName} numberOfLines={1}>
+                    {item.shopName || "Unknown Vendor"}
+                  </Text>
+
+                  {/* Location */}
+                  <View style={styles.locationRow}>
+                    <Ionicons name="location-outline" size={14} color="#777" />
+                    <Text style={styles.locationText} numberOfLines={1}>
+                      {item.location || "Not specified"}
+                    </Text>
                   </View>
-                  <Text style={styles.popularPrice}>₦{item.price}</Text>
+
+                  {/* Price */}
+                  <Text style={styles.popularPrice}>
+                    {formatCurrency(item.price, "NGN")}
+                  </Text>
                 </View>
               </View>
-            </View>
-          ))}
+            ))
+          ) : (
+            <Text style={{ color: "#888", fontSize: 16 }}>No fashions found</Text>
+          )}
         </ScrollView>
 
         {/* Electronics Section */}
@@ -269,21 +340,42 @@ const Home = () => {
           showsHorizontalScrollIndicator={false}
           style={styles.popularScroll}
         >
-          {popularItems.map((item) => (
-            <View key={item.id} style={styles.popularCard}>
-              <Image source={item.image} style={styles.popularImage} />
-              <View style={styles.popularInfo}>
-                <Text style={styles.popularName}>{item.name}</Text>
-                <View style={styles.popularBottom}>
-                  <View style={styles.ratingWrapper}>
-                    <Ionicons name="star" size={14} color="#FFA500" />
-                    <Text style={styles.popularDescription}>{item.description}</Text>
+          {electronics.length > 0 ? (
+            electronics.map((item) => (
+              <View key={item.id} style={styles.popularCard}>
+                <Image
+                  source={{ uri: item.image_url }}
+                  style={styles.popularImage}
+                />
+                <View style={styles.popularInfo}>
+                  {/* Product Name */}
+                  <Text style={styles.popularName} numberOfLines={1}>
+                    {item.productName}
+                  </Text>
+
+                  {/* Shop Name */}
+                  <Text style={styles.shopName} numberOfLines={1}>
+                    {item.shopName || "Unknown Vendor"}
+                  </Text>
+
+                  {/* Location */}
+                  <View style={styles.locationRow}>
+                    <Ionicons name="location-outline" size={14} color="#777" />
+                    <Text style={styles.locationText} numberOfLines={1}>
+                      {item.location || "Not specified"}
+                    </Text>
                   </View>
-                  <Text style={styles.popularPrice}>₦{item.price}</Text>
+
+                  {/* Price */}
+                  <Text style={styles.popularPrice}>
+                    {formatCurrency(item.price, "NGN")}
+                  </Text>
                 </View>
               </View>
-            </View>
-          ))}
+            ))
+          ) : (
+            <Text style={{ color: "#888", fontSize: 16 }}>No electronics found</Text>
+          )}
         </ScrollView>
 
         {/* Clothing Section */}
@@ -533,7 +625,7 @@ const styles = StyleSheet.create({
   },
   popularCard: {
     backgroundColor: "#FFF",
-    borderRadius: 16,
+    borderRadius: 12,
     marginRight: 16,
     marginBottom: 20,
     width: 160,
