@@ -1,4 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
+import { navigate } from "expo-router/build/global-state/routing";
 import React, { useEffect, useState } from "react";
 import {
   FlatList,
@@ -26,78 +28,38 @@ const Home = () => {
 
   // Fetch popular meals from Supabase
   useEffect(() => {
-    const fetchPopularMeals = async () => {
+    const fetchItems = async () => {
       try {
         setLoading(true);
         const allItems = await getAllItem();
 
-        // ✅ Filter meals only
-        const meals = allItems.filter(
-          (item) =>
-            item.category?.toLowerCase() === "meal" ||
-            item.category?.toLowerCase() === "food" ||
-            item.category?.toLowerCase().includes("meal")
+        setPopularMeals(
+          allItems.filter((item) =>
+            ["meal", "food"].includes(item.category?.toLowerCase())
+          )
         );
 
-        setPopularMeals(meals);
+        setFashion(
+          allItems.filter((item) =>
+            ["fashion", "clothing"].includes(item.category?.toLowerCase())
+          )
+        );
+
+        setElectronics(
+          allItems.filter((item) =>
+            ["electronics", "appliances"].includes(item.category?.toLowerCase())
+          )
+        );
       } catch (error) {
-        console.error("Error fetching meals:", error);
+        console.error("Error fetching data:", error);
       } finally {
         setLoading(false);
       }
     };
-    fetchPopularMeals();
+
+    fetchItems();
   }, []);
 
-  // Fetch fashions from Supabase
-  useEffect(() => {
-    const fetchFashion = async () => {
-      try {
-        setLoading(true);
-        const allItems = await getAllItem();
-
-        // ✅ Filter fashions only
-        const fashion = allItems.filter(
-          (item) =>
-            item.category?.toLowerCase() === "fashion" ||
-            item.category?.toLowerCase() === "clothing" ||
-            item.category?.toLowerCase().includes("fashion")
-        );
-
-        setFashion(fashion);
-      } catch (error) {
-        console.error("Error fetching fashions:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchFashion();
-  }, []);
-
-  // Fetch electronics from Supabase
-  useEffect(() => {
-    const fetchElectronics = async () => {
-      try {
-        setLoading(true);
-        const allItems = await getAllItem();
-
-        // ✅ Filter electronics only
-        const electronics = allItems.filter(
-          (item) =>
-            item.category?.toLowerCase() === "electronics" ||
-            item.category?.toLowerCase() === "electronics" ||
-            item.category?.toLowerCase().includes("appliances")
-        );
-
-        setElectronics(electronics);
-      } catch (error) {
-        console.error("Error fetching electronics:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchElectronics();
-  }, []);
 
   // Combine all searchable data into one unified array
   const allItems = [
@@ -141,6 +103,24 @@ const Home = () => {
   };
 
   const colorScheme = useColorScheme()
+
+  const router = useRouter()
+  // ✅ Handle product click
+  const handleProductPress = (item) => {
+    router.push({
+      pathname: "/buyer/src/product/productsReview",
+      params: {
+        productId: item.id,
+        name: item.productName,
+        image: item.image_url,
+        description: item.description,
+        price: item.price,
+        vendorName: item.shopName,
+        category: item.category,
+        location: item.location,
+      },
+    });
+  };
 
   return (
     <SafeAreaView style={[styles.container, colorScheme === 'light' ? { backgroundColor: "#fff" } : { backgroundColor: "#fff" }]}>
@@ -196,12 +176,12 @@ const Home = () => {
           style={styles.categoryScroll}
         >
           {categoriesItems.map((item) => (
-            <View key={item.id} style={styles.categoryItem}>
+            <TouchableOpacity key={item.id} style={styles.categoryItem} onPress={() => navigate("/buyer/src/product/productsReview")}>
               <View style={styles.categoryCircle}>
                 <Image source={item.icon} style={styles.categoryIcon} />
               </View>
               <Text style={styles.categoryText}>{item.name}</Text>
-            </View>
+            </TouchableOpacity>
           ))}
         </ScrollView>
 
@@ -244,6 +224,7 @@ const Home = () => {
 
 
         {/* Popular Section */}
+         {/* Popular Meals */}
         <Text style={styles.sectionTitle}>Popular Meals</Text>
         <ScrollView
           horizontal
@@ -252,44 +233,35 @@ const Home = () => {
         >
           {popularMeals.length > 0 ? (
             popularMeals.map((item) => (
-              <View key={item.id} style={styles.popularCard}>
+              <TouchableOpacity
+                key={item.id}
+                style={styles.popularCard}
+                onPress={() => handleProductPress(item)}
+              >
                 <Image
                   source={{ uri: item.image_url }}
                   style={styles.popularImage}
                 />
                 <View style={styles.popularInfo}>
-                  {/* Product Name */}
                   <Text style={styles.popularName} numberOfLines={1}>
                     {item.productName}
                   </Text>
-
-                  {/* Shop Name */}
-                  <Text style={styles.shopName} numberOfLines={1}>
+                  <Text style={styles.shopName}>
                     {item.shopName || "Unknown Vendor"}
                   </Text>
-
-                  {/* Location */}
-                  <View style={styles.locationRow}>
-                    <Ionicons name="location-outline" size={14} color="#777" />
-                    <Text style={styles.locationText} numberOfLines={1}>
-                      {item.location || "Not specified"}
-                    </Text>
-                  </View>
-
-                  {/* Price */}
                   <Text style={styles.popularPrice}>
                     {formatCurrency(item.price, "NGN")}
                   </Text>
                 </View>
-              </View>
+              </TouchableOpacity>
             ))
           ) : (
-            <Text style={{ color: "#888", fontSize: 16 }}>No popular meals found</Text>
+            <Text style={{ color: "#888" }}>No popular meals found</Text>
           )}
         </ScrollView>
 
-        {/* Fashion Section */}
-       <Text style={styles.sectionTitle}>Fashion</Text>
+        {/* Fashion */}
+        <Text style={styles.sectionTitle}>Fashion</Text>
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
@@ -297,43 +269,30 @@ const Home = () => {
         >
           {fashions.length > 0 ? (
             fashions.map((item) => (
-              <View key={item.id} style={styles.popularCard}>
+              <TouchableOpacity
+                key={item.id}
+                style={styles.popularCard}
+                onPress={() => handleProductPress(item)}
+              >
                 <Image
                   source={{ uri: item.image_url }}
                   style={styles.popularImage}
                 />
                 <View style={styles.popularInfo}>
-                  {/* Product Name */}
-                  <Text style={styles.popularName} numberOfLines={1}>
-                    {item.productName}
-                  </Text>
-
-                  {/* Shop Name */}
-                  <Text style={styles.shopName} numberOfLines={1}>
-                    {item.shopName || "Unknown Vendor"}
-                  </Text>
-
-                  {/* Location */}
-                  <View style={styles.locationRow}>
-                    <Ionicons name="location-outline" size={14} color="#777" />
-                    <Text style={styles.locationText} numberOfLines={1}>
-                      {item.location || "Not specified"}
-                    </Text>
-                  </View>
-
-                  {/* Price */}
+                  <Text style={styles.popularName}>{item.productName}</Text>
+                  <Text style={styles.shopName}>{item.shopName}</Text>
                   <Text style={styles.popularPrice}>
                     {formatCurrency(item.price, "NGN")}
                   </Text>
                 </View>
-              </View>
+              </TouchableOpacity>
             ))
           ) : (
-            <Text style={{ color: "#888", fontSize: 16 }}>No fashions found</Text>
+            <Text style={{ color: "#888" }}>No fashions found</Text>
           )}
         </ScrollView>
 
-        {/* Electronics Section */}
+        {/* Electronics */}
         <Text style={styles.sectionTitle}>Electronics</Text>
         <ScrollView
           horizontal
@@ -342,66 +301,28 @@ const Home = () => {
         >
           {electronics.length > 0 ? (
             electronics.map((item) => (
-              <View key={item.id} style={styles.popularCard}>
+              <TouchableOpacity
+                key={item.id}
+                style={styles.popularCard}
+                onPress={() => handleProductPress(item)}
+              >
                 <Image
                   source={{ uri: item.image_url }}
                   style={styles.popularImage}
                 />
                 <View style={styles.popularInfo}>
-                  {/* Product Name */}
-                  <Text style={styles.popularName} numberOfLines={1}>
-                    {item.productName}
-                  </Text>
-
-                  {/* Shop Name */}
-                  <Text style={styles.shopName} numberOfLines={1}>
-                    {item.shopName || "Unknown Vendor"}
-                  </Text>
-
-                  {/* Location */}
-                  <View style={styles.locationRow}>
-                    <Ionicons name="location-outline" size={14} color="#777" />
-                    <Text style={styles.locationText} numberOfLines={1}>
-                      {item.location || "Not specified"}
-                    </Text>
-                  </View>
-
-                  {/* Price */}
+                  <Text style={styles.popularName}>{item.productName}</Text>
+                  <Text style={styles.shopName}>{item.shopName}</Text>
                   <Text style={styles.popularPrice}>
                     {formatCurrency(item.price, "NGN")}
                   </Text>
                 </View>
-              </View>
+              </TouchableOpacity>
             ))
           ) : (
-            <Text style={{ color: "#888", fontSize: 16 }}>No electronics found</Text>
+            <Text style={{ color: "#888" }}>No electronics found</Text>
           )}
-        </ScrollView>
-
-        {/* Clothing Section */}
-        <Text style={styles.sectionTitle}>Clothing</Text>
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          style={styles.popularScroll}
-        >
-          {popularItems.map((item) => (
-            <View key={item.id} style={styles.popularCard}>
-              <Image source={item.image} style={styles.popularImage} />
-              <View style={styles.popularInfo}>
-                <Text style={styles.popularName}>{item.name}</Text>
-                <View style={styles.popularBottom}>
-                  <View style={styles.ratingWrapper}>
-                    <Ionicons name="star" size={14} color="#FFA500" />
-                    {/* <Text style={styles.ratingText}>{item.rate.}</Text> */}
-                    <Text style={styles.popularDescription}>{item.description}</Text>
-                  </View>
-                  <Text style={styles.popularPrice}>₦{item.price}</Text>
-                </View>
-              </View>
-            </View>
-          ))}
-        </ScrollView>
+      </ScrollView>
       </ScrollView>
     </SafeAreaView>
   );
