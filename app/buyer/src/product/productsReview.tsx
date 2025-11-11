@@ -1,11 +1,14 @@
+import { Ionicons } from "@expo/vector-icons";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useState } from "react";
 import {
     ActivityIndicator,
+    Image,
     Pressable,
+    StyleSheet,
     Text,
     TouchableOpacity,
-    View
+    View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -14,7 +17,6 @@ const ProductsReview = () => {
   const [qty, setQty] = useState(1);
   const [loading, setLoading] = useState(false);
 
-  // ✅ Get product data passed from Home
   const {
     name,
     image,
@@ -28,7 +30,6 @@ const ProductsReview = () => {
   const increaseQty = () => setQty((prev) => prev + 1);
   const decreaseQty = () => setQty((prev) => (prev > 1 ? prev - 1 : 1));
 
-  // ✅ Format price nicely
   const formatCurrency = (amount) => {
     if (!amount) return "₦0";
     const formatted = amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -37,42 +38,42 @@ const ProductsReview = () => {
 
   if (loading) {
     return (
-      <SafeAreaView className="flex-1 justify-center items-center bg-white">
+      <SafeAreaView style={styles.loadingContainer}>
         <ActivityIndicator size="large" color="#000" />
       </SafeAreaView>
     );
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-white p-4">
+    <SafeAreaView style={styles.container}>
       {/* Header */}
-      <View className="flex-row items-center mb-4 justify-between">
-        <Text className="text-lg font-bold">Product Review</Text>
+      <View style={styles.header}>
         <TouchableOpacity onPress={() => router.back()}>
-          <Text className="text-blue-500">← Back</Text>
+            <Ionicons name="arrow-back" size={24}/>
         </TouchableOpacity>
+        <Text style={styles.headerTitle}>Product</Text>
       </View>
 
-      {/* Product image */}
-      <View className="items-center mb-4">
-        {
-        //   <Image
-        //     source={{ uri: image }}
-        //     className="w-64 h-64 rounded-2xl"
-        //     resizeMode="cover"
-        //   />
-         (
-          <View className="w-64 h-64 bg-gray-200 rounded-2xl justify-center items-center">
+      {/* Product Image */}
+      <View style={styles.imageContainer}>
+        {image ? (
+          <Image
+            source={{ uri: Array.isArray(image) ? image[0] : image }}
+            style={styles.productImage}
+            resizeMode="cover"
+          />
+        ) : (
+          <View style={styles.noImageBox}>
             <Text>No Image</Text>
           </View>
         )}
       </View>
 
       {/* Product Details */}
-      <View className="mb-4">
-        <View className="flex-row justify-between items-center">
-          <Text className="text-xl font-semibold">{name || "Unnamed Product"}</Text>
-          <View className="flex-row space-x-3">
+      <View style={styles.detailsContainer}>
+        <View style={styles.nameRow}>
+          <Text style={styles.productName}>{name || "Unnamed Product"}</Text>
+          <View style={styles.iconRow}>
             <Text>🤍</Text>
             <Text>🔗</Text>
           </View>
@@ -80,57 +81,183 @@ const ProductsReview = () => {
       </View>
 
       {/* Quantity Selector */}
-      <View className="flex-row justify-between items-center mb-4">
-        <Text className="text-lg font-semibold">Quantity</Text>
-        <View className="flex-row items-center space-x-3">
-          <Pressable
-            onPress={decreaseQty}
-            className="bg-gray-200 px-3 py-1 rounded-md"
-          >
-            <Text className="text-lg font-bold">-</Text>
+      <View style={styles.qtyContainer}>
+        <Text style={styles.qtyLabel}>Quantity</Text>
+        <View style={styles.qtyButtons}>
+          <Pressable onPress={decreaseQty} style={styles.qtyButton}>
+            <Text style={styles.qtySign}>-</Text>
           </Pressable>
-          <Text className="text-lg">{qty}</Text>
-          <Pressable
-            onPress={increaseQty}
-            className="bg-gray-200 px-3 py-1 rounded-md"
-          >
-            <Text className="text-lg font-bold">+</Text>
+          <Text style={styles.qtyText}>{qty}</Text>
+          <Pressable onPress={increaseQty} style={styles.qtyButton}>
+            <Text style={styles.qtySign}>+</Text>
           </Pressable>
         </View>
       </View>
 
       {/* Description */}
-      <Text className="text-gray-600 mb-2 font-semibold">Description</Text>
-      <Text className="text-gray-700 mb-4">
+      <Text style={styles.sectionTitle}>Description</Text>
+      <Text style={styles.description}>
         {description || "No description provided."}
       </Text>
 
       {/* Price */}
-      <Text className="text-xl font-bold mb-2">
-        {formatCurrency(price)}
-      </Text>
+      <Text style={styles.price}>{formatCurrency(price)}</Text>
 
-      {/* Vendor Name */}
-      <Text className="text-gray-600 mb-1">Vendor: {vendorName || "Unknown"}</Text>
-      <Text className="text-gray-600 mb-6">
+      {/* Vendor Info */}
+      <Text style={styles.vendorText}>
+        Vendor: {vendorName || "Unknown"}
+      </Text>
+      <Text style={styles.vendorText}>
         Location: {location || "Not specified"}
       </Text>
 
       {/* Customize Button */}
-      <Pressable className="bg-yellow-100 py-3 rounded-xl mb-4">
-        <Text className="text-center text-yellow-800 font-semibold">
+      {/* <Pressable style={styles.customizeButton}> */}
+        <Text style={styles.customizeText}>
           Customize Your {category || "Product"}
         </Text>
-      </Pressable>
+      {/* </Pressable> */}
 
-      {/* Add to Cart */}
-      <TouchableOpacity className="bg-green-600 py-4 rounded-2xl">
-        <Text className="text-center text-white text-lg font-semibold">
-          Add to Cart
-        </Text>
+      {/* Add to Cart Button */}
+      <TouchableOpacity style={styles.cartButton}>
+        <Text style={styles.cartButtonText}>Add to Cart</Text>
       </TouchableOpacity>
     </SafeAreaView>
   );
 };
 
 export default ProductsReview;
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#fff",
+    padding: 16,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#fff",
+  },
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 20,
+  },
+  headerTitle: {
+    fontSize: 20,
+    fontWeight: "700",
+    color: "#000",
+    marginLeft: 140
+  },
+  imageContainer: {
+    alignItems: "center",
+    marginBottom: 20,
+  },
+  productImage: {
+    width: 260,
+    height: 260,
+    borderRadius: 16,
+  },
+  noImageBox: {
+    width: 260,
+    height: 260,
+    backgroundColor: "#eee",
+    borderRadius: 16,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  detailsContainer: {
+    marginBottom: 20,
+  },
+  nameRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  productName: {
+    fontSize: 22,
+    fontWeight: "700",
+    color: "#000",
+  },
+  iconRow: {
+    flexDirection: "row",
+    gap: 10,
+  },
+  qtyContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 20,
+  },
+  qtyLabel: {
+    fontSize: 18,
+    fontWeight: "600",
+  },
+  qtyButtons: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  qtyButton: {
+    backgroundColor: "#eee",
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+    borderRadius: 6,
+  },
+  qtySign: {
+    fontSize: 20,
+    fontWeight: "bold",
+  },
+  qtyText: {
+    fontSize: 18,
+    marginHorizontal: 10,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: "600",
+    color: "#555",
+    marginBottom: 6,
+  },
+  description: {
+    fontSize: 15,
+    color: "#444",
+    marginBottom: 20,
+    lineHeight: 22,
+  },
+  price: {
+    fontSize: 22,
+    fontWeight: "700",
+    marginBottom: 10,
+  },
+  vendorText: {
+    fontSize: 15,
+    color: "#666",
+    marginBottom: 4,
+  },
+  customizeButton: {
+    backgroundColor: "#FFF4CC",
+    paddingVertical: 12,
+    borderRadius: 10,
+    marginTop: 20,
+    marginBottom: 20,
+  },
+  customizeText: {
+    color: "#A06E00",
+    fontWeight: "600",
+    fontSize: 16,
+    marginTop: 15,
+    marginBottom: 15
+  },
+  cartButton: {
+    backgroundColor: "#FF6A00",
+    paddingVertical: 16,
+    borderRadius: 12,
+    alignItems: "center",
+  },
+  cartButtonText: {
+    color: "#fff",
+    fontSize: 18,
+    fontWeight: "700",
+  },
+});
