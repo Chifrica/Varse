@@ -224,7 +224,6 @@ const Home = () => {
 
 
         {/* Popular Section */}
-         {/* Popular Meals */}
         <Text style={styles.sectionTitle}>Popular Meals</Text>
         <ScrollView
           horizontal

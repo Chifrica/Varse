@@ -45,6 +45,14 @@ const Cart = () => {
     Alert.alert("🗑️ Removed", "Item removed from your cart.");
   };
 
+  /** ----------------------
+   *  CART CALCULATIONS
+   * ---------------------- */
+  const subtotal = cartItems.reduce((totalPrice, item) => totalPrice + (item.totalPrice || 0), 0);
+  const deliveryFee = 500;
+  const discount = 0; // You can change this later
+  const finalTotal = subtotal + deliveryFee - discount;
+
   const renderItem = ({ item }) => (
     <View style={styles.cartItem}>
       {item.image ? (
@@ -57,6 +65,7 @@ const Cart = () => {
 
       <View style={styles.productDetails}>
         <Text style={styles.productName}>{item.name}</Text>
+
         <Text style={styles.price}>{formatCurrency(item.totalPrice)}</Text>
       </View>
 
@@ -88,6 +97,36 @@ const Cart = () => {
           showsVerticalScrollIndicator={false}
         />
       )}
+
+      <View style={{ marginTop: 20 }}>
+        <View style={styles.summaryRow}>
+          <Text>Subtotal</Text>
+          <Text>{formatCurrency(subtotal)}</Text>
+        </View>
+
+        <View style={styles.summaryRow}>
+          <Text>Delivery Fee</Text>
+          <Text>{formatCurrency(deliveryFee)}</Text>
+        </View>
+
+        <View style={styles.summaryRow}>
+          <Text>Discount</Text>
+          <Text>{formatCurrency(discount)}</Text>
+        </View>
+
+        <View style={styles.summaryRow}>
+          <Text style={{ fontWeight: "700" }}>Total</Text>
+          <Text style={{ fontWeight: "700" }}>{formatCurrency(finalTotal)}</Text>
+        </View>
+      </View>
+
+      {/* PROCEED BUTTON */}
+      <TouchableOpacity
+        style={styles.paymentButton}
+        onPress={() => Alert.alert("Proceeding", "Redirecting to payment...")}
+      >
+        <Text style={styles.paymentButtonText}>Proceed to Payment</Text>
+      </TouchableOpacity>
     </SafeAreaView>
   );
 };
@@ -146,6 +185,25 @@ const styles = StyleSheet.create({
   price: {
     fontSize: 16,
     color: "#FF6A00",
+    fontWeight: "700",
+  },
+
+  summaryRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 6,
+  },
+
+  paymentButton: {
+    backgroundColor: "#FF6A00",
+    paddingVertical: 16,
+    borderRadius: 12,
+    marginTop: 20,
+    alignItems: "center",
+  },
+  paymentButtonText: {
+    color: "#fff",
+    fontSize: 18,
     fontWeight: "700",
   },
 });
