@@ -51,7 +51,7 @@ const AppLayout = () => {
       <Tabs.Screen
         name="order/order"
         options={{
-          title: "Order",
+          title: "Cart",
           tabBarIcon: ({ color }) => (
             <FontAwesome name="shopping-cart" size={22} color={color} />
           ),

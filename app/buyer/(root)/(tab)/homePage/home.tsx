@@ -105,7 +105,7 @@ const Home = () => {
   const colorScheme = useColorScheme()
 
   const router = useRouter()
-  // ✅ Handle product click
+
   const handleProductPress = (item) => {
     router.push({
       pathname: "/buyer/src/product/productsReview",

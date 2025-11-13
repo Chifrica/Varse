@@ -1,8 +1,10 @@
 import { Ionicons } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useState } from "react";
 import {
     ActivityIndicator,
+    Alert,
     Image,
     Pressable,
     StyleSheet,
@@ -17,6 +19,7 @@ const ProductsReview = () => {
     const [qty, setQty] = useState(1);
     const [loading, setLoading] = useState(false);
 
+
     const {
         name,
         image,
@@ -26,6 +29,8 @@ const ProductsReview = () => {
         category,
         location,
     } = useLocalSearchParams();
+
+    const totalPrice = price * qty;
 
     const increaseQty = () => setQty((prev) => prev + 1);
     const decreaseQty = () => setQty((prev) => (prev > 1 ? prev - 1 : 1));
@@ -58,11 +63,54 @@ const ProductsReview = () => {
         })
     }
 
+    const handleAddCart = async () => {
+        try {
+            // Prepare the new item
+            const newItem = {
+                id: Date.now().toString(),
+                image: Array.isArray(image) ? image[0] : image,
+                name: name || "Unnamed Product",
+                // price: price || 0,
+                qty: qty,
+                totalPrice: totalPrice,
+            };
+
+            // Fetch existing cart items
+            const existingCart = await AsyncStorage.getItem("cartItems");
+            let updatedCart = [];
+
+            if (existingCart) {
+                updatedCart = JSON.parse(existingCart);
+            }
+
+            updatedCart.push(newItem);
+
+            await AsyncStorage.setItem("cartItems", JSON.stringify(updatedCart));
+
+            Alert.alert(
+                "✅ Success",
+                "You have successfully added this item to your cart.",
+                [
+                    {
+                        text: "OK",
+                        onPress: () =>
+                            router.push({
+                                pathname: "/buyer/(root)/(tab)/order/order",
+                            }),
+                    },
+                ]
+            );
+        } catch (error) {
+            console.error("Error adding to cart:", error);
+            Alert.alert("Error", "Something went wrong while adding to your cart.");
+        }
+    }
+
     return (
         <SafeAreaView style={styles.container}>
             {/* Header */}
             <View style={styles.header}>
-                <TouchableOpacity onPress={() => router.back()}>
+                <TouchableOpacity onPress={() => router.navigate("/buyer/homePage/home")}>
                     <Ionicons name="arrow-back" size={24} />
                 </TouchableOpacity>
                 <Text style={styles.headerTitle}>Product</Text>
@@ -115,7 +163,10 @@ const ProductsReview = () => {
             </Text>
 
             {/* Price */}
-            <Text style={styles.price}>{formatCurrency(price)}</Text>
+            <Text style={styles.price}>
+                {formatCurrency(totalPrice)}
+            </Text>
+
 
             {/* Vendor Info */}
             <Text style={styles.vendorText}>
@@ -133,7 +184,7 @@ const ProductsReview = () => {
             </TouchableOpacity>
 
             {/* Add to Cart Button */}
-            <TouchableOpacity style={styles.cartButton}>
+            <TouchableOpacity style={styles.cartButton} onPress={handleAddCart}>
                 <Text style={styles.cartButtonText}>Add to Cart</Text>
             </TouchableOpacity>
         </SafeAreaView>
