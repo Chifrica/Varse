@@ -1,6 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
   Alert,
@@ -16,6 +16,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 const Cart = () => {
   const router = useRouter();
   const [cartItems, setCartItems] = useState([]);
+
+  const { parsedPrice } = useLocalSearchParams()
 
   useEffect(() => {
     const loadCart = async () => {
@@ -76,7 +78,7 @@ const Cart = () => {
         <Text style={styles.qtyText}>Qty: {item.qty}</Text>
 
         {/* Base Price */}
-        <Text style={styles.basePrice}>Base Price: {formatCurrency(item.totalPrice)}</Text>
+        <Text style={styles.basePrice}>Base Price: {formatCurrency(item.totalPrice / item.qty)}</Text>
 
         {item.category === "food" && item.extras?.length > 0 && (
           <View style={{ marginTop: 10 }}>

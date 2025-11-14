@@ -97,6 +97,7 @@ const ProductsReview = () => {
                         onPress: () =>
                             router.push({
                                 pathname: "/buyer/(root)/(tab)/order/order",
+                                params: {parsedPrice}
                             }),
                     },
                 ]
