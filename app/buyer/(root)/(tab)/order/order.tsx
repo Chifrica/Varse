@@ -75,6 +75,10 @@ const Cart = () => {
     </View>
   );
 
+  const handleCheckout = () => {
+    router.navigate('/buyer/src/checkout/checkout')
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       {/* Header */}
@@ -100,30 +104,30 @@ const Cart = () => {
 
       <View style={{ marginTop: 20 }}>
         <View style={styles.summaryRow}>
-          <Text>Subtotal</Text>
-          <Text>{formatCurrency(subtotal)}</Text>
+          <Text style={{ fontWeight: "700", fontSize: 18 }}>Subtotal</Text>
+          <Text style={{ fontWeight: "700", fontSize: 16 }}>{formatCurrency(subtotal)}</Text>
         </View>
 
         <View style={styles.summaryRow}>
-          <Text>Delivery Fee</Text>
-          <Text>{formatCurrency(deliveryFee)}</Text>
+          <Text style={{ fontSize: 18 }}>Delivery Fee</Text>
+          <Text style={{ fontWeight: "700", fontSize: 16 }}>{formatCurrency(deliveryFee)}</Text>
         </View>
 
         <View style={styles.summaryRow}>
-          <Text>Discount</Text>
-          <Text>{formatCurrency(discount)}</Text>
+          <Text style={{ fontSize: 16 }}>Discount</Text>
+          <Text style={{ fontWeight: "700", fontSize: 16 }}>{formatCurrency(discount)}</Text>
         </View>
 
         <View style={styles.summaryRow}>
-          <Text style={{ fontWeight: "700" }}>Total</Text>
-          <Text style={{ fontWeight: "700" }}>{formatCurrency(finalTotal)}</Text>
+          <Text style={{ fontWeight: "700", fontSize: 18 }}>Total</Text>
+          <Text style={{ fontWeight: "700", fontSize: 16 }}>{formatCurrency(finalTotal)}</Text>
         </View>
       </View>
 
       {/* PROCEED BUTTON */}
       <TouchableOpacity
         style={styles.paymentButton}
-        onPress={() => Alert.alert("Proceeding", "Redirecting to payment...")}
+        onPress={handleCheckout}
       >
         <Text style={styles.paymentButtonText}>Proceed to Payment</Text>
       </TouchableOpacity>
