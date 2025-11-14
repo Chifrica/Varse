@@ -1,8 +1,10 @@
 import { Ionicons } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import CheckBox from "expo-checkbox";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useState } from "react";
 import {
+    Alert,
     Image,
     ScrollView,
     StyleSheet,
@@ -14,7 +16,22 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 const ProductsItemAddition = () => {
     const router = useRouter();
-    const { image } = useLocalSearchParams();
+    const [qty, setQty] = useState(1);
+
+    const {
+        name,
+        image,
+        description,
+        price,
+        vendorName,
+        category,
+        location,
+    } = useLocalSearchParams();
+
+      const parsedPrice = Number(price) || 0;
+
+
+    const totalPrice = parsedPrice * qty;
 
     const [selectedItems, setSelectedItems] = useState([]);
 
@@ -52,10 +69,63 @@ const ProductsItemAddition = () => {
         .filter((item) => selectedItems.includes(item.name))
         .reduce((sum, item) => sum + item.price, 0);
 
-    const handleAddCart = () => {
-        router.push("/buyer/src/cart/addCart")
-    }
+    const handleAddCart = async () => {
+        try {
+            // Build selected extras with full object details
+            const extras = options
+                .flatMap(opt => opt.items)
+                .filter(item => selectedItems.includes(item.name));
 
+            // Calculate extras total
+            const extrasTotal = extras.reduce((sum, item) => sum + item.price, 0);
+
+            // Total = base price × quantity + extras total
+            const finalTotal = parsedPrice * qty + extrasTotal;
+
+            // New cart item object
+            const newItem = {
+                id: Date.now().toString(),
+                image: Array.isArray(image) ? image[0] : image,
+                name: name || "Unnamed Product",
+                qty,
+                basePrice: price,
+                extras: extras,               // <--- Added
+                extrasTotal: extrasTotal,     // <--- Added
+                totalPrice: finalTotal,       // <--- Updated
+                vendorName,
+                category,
+                location,
+            };
+
+            // Load existing cart
+            const existingCart = await AsyncStorage.getItem("cartItems");
+            let updatedCart = existingCart ? JSON.parse(existingCart) : [];
+
+            // Push new order
+            updatedCart.push(newItem);
+
+            // Save back to storage
+            await AsyncStorage.setItem("cartItems", JSON.stringify(updatedCart));
+
+            Alert.alert(
+                "✅ Success",
+                "Item successfully added to your cart with all extras!",
+                [
+                    {
+                        text: "OK",
+                        onPress: () =>
+                            router.push({
+                                pathname: "/buyer/(root)/(tab)/order/order",
+                                params: {totalPrice, name}
+                            }),
+                    },
+                ]
+            );
+        } catch (error) {
+            console.error("Error adding to cart:", error);
+            Alert.alert("Error", "Something went wrong while adding this item.");
+        }
+    };
 
     return (
         <SafeAreaView style={styles.container}>
@@ -225,10 +295,10 @@ const styles = StyleSheet.create({
     totalValue: {
         fontSize: 17,
         fontWeight: "700",
-        color: "#FF6A00",
+        color: "#FF8800",
     },
     cartButton: {
-        backgroundColor: "#FF6A00",
+        backgroundColor: "#FF8800",
         paddingVertical: 16,
         borderRadius: 12,
         alignItems: "center",

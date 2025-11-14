@@ -1,4 +1,5 @@
 import { Ionicons } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
 import { onAuthStateChanged } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
@@ -9,34 +10,50 @@ import { auth, db } from "../../../../../firebaseConfig";
 
 const Home = () => {
 
-    const [userName, setUserName] = useState<string>("");
-    const [profile, setProfile] = useState(null);
+  const [userName, setUserName] = useState<string>("");
+  const [profile, setProfile] = useState(null);
+  const [recentOrders, setRecentOrders] = useState([]);
 
-    useEffect(() => {
-  const unsubscribe = onAuthStateChanged(auth, async (user) => {
-    if (user) {
+  useEffect(() => {
+    const loadOrders = async () => {
       try {
-        const docRef = doc(db, "users", user.uid);
-        const docSnap = await getDoc(docRef);
-
-        if (docSnap.exists()) {
-          const data = docSnap.data();
-          setProfile(data);
-          setUserName(data.firstName || user.displayName || "User");
-        } else {
-          setUserName(user.displayName || user.email?.split("@")[0] || "User");
-        }
-      } catch (error) {
-        console.log("Error fetching profile:", error);
+        const saved = await AsyncStorage.getItem("vendorOrders");
+        setRecentOrders(saved ? JSON.parse(saved) : []);
+      } catch (err) {
+        console.log("Error loading vendor orders:", err);
       }
-    } else {
-      setUserName("User");
-      setProfile(null);
-    }
-  });
+    };
 
-  return () => unsubscribe();
-}, []);
+    loadOrders();
+  }, []);
+
+
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        try {
+          const docRef = doc(db, "users", user.uid);
+          const docSnap = await getDoc(docRef);
+
+          if (docSnap.exists()) {
+            const data = docSnap.data();
+            setProfile(data);
+            setUserName(data.firstName || user.displayName || "User");
+          } else {
+            setUserName(user.displayName || user.email?.split("@")[0] || "User");
+          }
+        } catch (error) {
+          console.log("Error fetching profile:", error);
+        }
+      } else {
+        setUserName("User");
+        setProfile(null);
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
 
 
   const colorScheme = useColorScheme();
@@ -60,7 +77,7 @@ const Home = () => {
   //   return unsubscribe; // cleanup listener on unmount
   // }, []);
   return (
-    <SafeAreaView style={[styles.container, colorScheme === 'light' ? {backgroundColor: '#fff'} : {backgroundColor: "#000"}]}>
+    <SafeAreaView style={[styles.container, colorScheme === 'light' ? { backgroundColor: '#fff' } : { backgroundColor: "#000" }]}>
       <ScrollView showsVerticalScrollIndicator={false}>
         {/* Header */}
         <View style={styles.header}>
@@ -69,48 +86,48 @@ const Home = () => {
             style={styles.logo}
           />
           <View>
-            <Text style={[styles.greeting, colorScheme === 'light' ? {color: '#000'} : {color: "#fff"}]}>Hi {userName} 👋</Text>
+            <Text style={[styles.greeting, colorScheme === 'light' ? { color: '#000' } : { color: "#fff" }]}>Hi {userName} 👋</Text>
             <Text style={styles.subGreeting}>Welcome back!</Text>
           </View>
         </View>
 
         {/* Dashboard Section */}
         <View style={styles.dashboard}>
-          <View style={[styles.card, colorScheme === 'light' ? {backgroundColor: '#FFF5E5'} : {backgroundColor: "#333"}]}>
+          <View style={[styles.card, colorScheme === 'light' ? { backgroundColor: '#FFF5E5' } : { backgroundColor: "#333" }]}>
             <Ionicons name="cash-outline" size={26} color="#FF8800" />
             <View>
-              <Text style={[styles.cardTitle, colorScheme === 'light' ? {color: '#000'} : {color: "#fff"}]}>
+              <Text style={[styles.cardTitle, colorScheme === 'light' ? { color: '#000' } : { color: "#fff" }]}>
                 Total Sales
                 <Text style={styles.cardValue}>{`    1`}</Text>
               </Text>
             </View>
           </View>
 
-          <View style={[styles.card, colorScheme === 'light' ? {backgroundColor: '#FFF5E5'} : {backgroundColor: "#333"}]}>
+          <View style={[styles.card, colorScheme === 'light' ? { backgroundColor: '#FFF5E5' } : { backgroundColor: "#333" }]}>
             <Ionicons name="cart-outline" size={26} color="#FF8800" />
             <View>
-              <Text style={[styles.cardTitle, colorScheme === 'light' ? {color: '#000'} : {color: "#fff"}]}>
+              <Text style={[styles.cardTitle, colorScheme === 'light' ? { color: '#000' } : { color: "#fff" }]}>
                 Pending Orders
                 <Text style={styles.cardValue}>{`    14`}</Text>
               </Text>
             </View>
           </View>
 
-          <View style={[styles.card, colorScheme === 'light' ? {backgroundColor: '#FFF5E5'} : {backgroundColor: "#333"}]}>
+          <View style={[styles.card, colorScheme === 'light' ? { backgroundColor: '#FFF5E5' } : { backgroundColor: "#333" }]}>
             <Ionicons name="cube-outline" size={26} color="#FF8800" />
             <View>
-              <Text style={[styles.cardTitle, colorScheme === 'light' ? {color: '#000'} : {color: "#fff"}]}>
+              <Text style={[styles.cardTitle, colorScheme === 'light' ? { color: '#000' } : { color: "#fff" }]}>
                 Active Products
                 <Text style={styles.cardValue}>{`    10`}</Text>
               </Text>
             </View>
           </View>
 
-          <View style={[styles.card, colorScheme === 'light' ? {backgroundColor: '#FFF5E5'} : {backgroundColor: "#333"}]}>
+          <View style={[styles.card, colorScheme === 'light' ? { backgroundColor: '#FFF5E5' } : { backgroundColor: "#333" }]}>
             <Ionicons name="wallet-outline" size={26} color="#FF8800" />
             <View>
-              <Text style={[styles.cardTitle, colorScheme === 'light' ? {color: '#000'} : {color: "#fff"}]}>
-                Wallet Balance    
+              <Text style={[styles.cardTitle, colorScheme === 'light' ? { color: '#000' } : { color: "#fff" }]}>
+                Wallet Balance
                 <Text style={styles.cardValue}>{`    $5`}</Text>
               </Text>
             </View>
@@ -120,84 +137,77 @@ const Home = () => {
         {/* Actions Row */}
         <View style={styles.actionsRow}>
           <View style={styles.actionItem}>
-            <TouchableOpacity style={[styles.iconWrapper, colorScheme === 'light' ? {backgroundColor: '#FFF5E5'} : {backgroundColor: "#333"}]} onPress={handleAddProduct}>
+            <TouchableOpacity style={[styles.iconWrapper, colorScheme === 'light' ? { backgroundColor: '#FFF5E5' } : { backgroundColor: "#333" }]} onPress={handleAddProduct}>
               <Ionicons name="add" size={26} color="#FF8800" />
             </TouchableOpacity>
-            <Text style={[styles.actionText, colorScheme === 'light' ? {color: '#000'} : {color: "#fff"}]}>Add New Product</Text>
+            <Text style={[styles.actionText, colorScheme === 'light' ? { color: '#000' } : { color: "#fff" }]}>Add New Product</Text>
           </View>
 
           <View style={styles.actionItem}>
-            <View style={[styles.iconWrapper, colorScheme === 'light' ? {backgroundColor: '#FFF5E5'} : {backgroundColor: "#333"}]}>
+            <View style={[styles.iconWrapper, colorScheme === 'light' ? { backgroundColor: '#FFF5E5' } : { backgroundColor: "#333" }]}>
               <Ionicons name="wallet-outline" size={26} color="#FF8800" />
             </View>
-            <Text style={[styles.actionText, colorScheme === 'light' ? {color: '#000'} : {color: "#fff"}]}>Withdraw Earnings</Text>
+            <Text style={[styles.actionText, colorScheme === 'light' ? { color: '#000' } : { color: "#fff" }]}>Withdraw Earnings</Text>
           </View>
 
           <View style={styles.actionItem}>
-            <View style={[styles.iconWrapper, colorScheme === 'light' ? {backgroundColor: '#FFF5E5'} : {backgroundColor: "#333"}]}>
+            <View style={[styles.iconWrapper, colorScheme === 'light' ? { backgroundColor: '#FFF5E5' } : { backgroundColor: "#333" }]}>
               <Ionicons name="list-outline" size={26} color="#FF8800" />
             </View>
-            <Text style={[styles.actionText, colorScheme === 'light' ? {color: '#000'} : {color: "#fff"}]}>View Orders</Text>
+            <Text style={[styles.actionText, colorScheme === 'light' ? { color: '#000' } : { color: "#fff" }]}>View Orders</Text>
           </View>
         </View>
 
         {/* Recent Orders */}
         <View style={styles.recentHeader}>
-          <Text style={[styles.recentTitle, colorScheme === 'light' ? {color: '#000'} : {color: "#fff"}]}>Recent Orders</Text>
+          <Text style={[styles.recentTitle, colorScheme === 'light' ? { color: '#000' } : { color: "#fff" }]}>Recent Orders</Text>
           <Text style={styles.seeAll}>See all</Text>
         </View>
+        <View style={{ marginTop: 20 }}>
+          {recentOrders.length === 0 ? (
+            <Text style={{ textAlign: "center", padding: 10 }}>No recent orders yet</Text>
+          ) : (
+            recentOrders.map((order, index) => (
+              <TouchableOpacity
+                key={index}
+                style={styles.orderRow}
+                onPress={handleOderReview}
+              >
+                <Text style={styles.orderName}>{order.name}</Text>
+                <Text style={{ color: "#22C55E", fontWeight: "700" }}>Paid</Text>
+              </TouchableOpacity>
+            ))
+          )}
+        </View>
 
-        <View style={[styles.recentOrders, colorScheme === 'light' ? {backgroundColor: '#FFF5E5'} : {backgroundColor: "#333"}]}>
+
+
+        <View style={[styles.recentOrders, colorScheme === 'light' ? { backgroundColor: '#FFF5E5' } : { backgroundColor: "#333" }]}>
+
           <View style={styles.tableHeader}>
             <Text style={styles.tableHeaderText}>Description</Text>
             <Text style={styles.tableHeaderText}>Status</Text>
           </View>
 
-          {/* Divider */}
           <View style={styles.divider} />
 
-          {/* Order Items */}
-          <View style={styles.orderCard}>
-            <View>
-              <Text style={styles.orderTitle}>
-                3 Medium size Jollof Rice Bowl
-              </Text>
-              <Text style={styles.orderDetails}>
-                Order ID: #12345ABC | Date: 2023-09-15
-              </Text>
-            </View>
-            <Text style={styles.approved}>Approved</Text>
-          </View>
+          {recentOrders.length === 0 ? (
+            <Text style={{ textAlign: "center", padding: 10 }}>No recent orders yet</Text>
+          ) : (
+            recentOrders.map((order, index) => (
+              <View key={index} style={styles.orderCard}>
+                <View>
+                  <Text style={styles.orderTitle}>{order.name}</Text>
+                  <Text style={styles.orderDetails}>
+                    Price: ₦{order.totalPrice} | ID: {order.id}
+                  </Text>
+                </View>
 
-          <View style={styles.orderCard}>
-            <View>
-              <Text style={styles.orderTitle}>1 Large Tote Bag</Text>
-              <Text style={styles.orderDetails}>
-                Order ID: #67890XYZ | Date: 2023-09-16
-              </Text>
-            </View>
-            <Text style={styles.pending}>Pending</Text>
-          </View>
+                <Text style={styles.approved}>Paid</Text>
+              </View>
+            ))
+          )}
 
-          <View style={styles.orderCard}>
-            <View>
-              <Text style={styles.orderTitle}>10 HP Laptops</Text>
-              <Text style={styles.orderDetails}>
-                Order ID: #24680LMN | Date: 2023-09-17
-              </Text>
-            </View>
-            <Text style={styles.declined}>Declined</Text>
-          </View>
-
-          <View style={styles.orderCard}>
-            <View>
-              <Text style={styles.orderTitle}>10 HP Laptops</Text>
-              <Text style={styles.orderDetails}>
-                Order ID: #24680LMN | Date: 2023-09-17
-              </Text>
-            </View>
-            <Text style={styles.declined}>Declined</Text>
-          </View>
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -374,4 +384,21 @@ const styles = StyleSheet.create({
     color: "red",
     fontWeight: "700",
   },
+  orderRow: {
+  backgroundColor: "#fff",
+  padding: 12,
+  borderRadius: 10,
+  marginBottom: 10,
+  flexDirection: "row",
+  justifyContent: "space-between",
+  alignItems: "center",
+  borderWidth: 1,
+  borderColor: "#ddd"
+},
+orderName: {
+  fontSize: 16,
+  fontWeight: "600",
+  color: "#000",
+},
+
 });

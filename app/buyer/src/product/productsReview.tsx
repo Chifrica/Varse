@@ -19,7 +19,6 @@ const ProductsReview = () => {
     const [qty, setQty] = useState(1);
     const [loading, setLoading] = useState(false);
 
-
     const {
         name,
         image,
@@ -30,7 +29,9 @@ const ProductsReview = () => {
         location,
     } = useLocalSearchParams();
 
-    const totalPrice = price * qty;
+    const parsedPrice = Number(price) || 0;
+
+    const totalPrice = parsedPrice * qty;
 
     const increaseQty = () => setQty((prev) => prev + 1);
     const decreaseQty = () => setQty((prev) => (prev > 1 ? prev - 1 : 1));
@@ -166,7 +167,6 @@ const ProductsReview = () => {
             <Text style={styles.price}>
                 {formatCurrency(totalPrice)}
             </Text>
-
 
             {/* Vendor Info */}
             <Text style={styles.vendorText}>

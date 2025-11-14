@@ -1,4 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useState } from "react";
 import {
   Modal,
@@ -8,9 +10,13 @@ import {
   View
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import Svg, { Path } from "react-native-svg";
 
-const CardTransfer = ({ amount = 25000 }) => {
+const CardTransfer = () => {
   const [visible, setVisible] = useState(false);
+  const { finalTotal } = useLocalSearchParams();
+
+  const router = useRouter();
 
   const handlePay = () => {
     setVisible(true);
@@ -25,12 +31,21 @@ const CardTransfer = ({ amount = 25000 }) => {
       <View style={styles.card}>
         {/* Flower Decorations */}
         <Text style={styles.flowerTop}>🌸✨</Text>
-
+        <Svg
+          height="100%"
+          width="100%"
+          style={StyleSheet.absoluteFillObject}
+          preserveAspectRatio="none"
+        >
+          <Path
+            d="M0 10 L0 100 L50 10 L100 100 L150 10 L200 130 L250 10 L300 100 L350 10"
+            stroke="#fff"
+            strokeWidth="3"
+            fill="none"
+            opacity={0.1}
+          />
+        </Svg>
         <Text style={styles.bankName}>Opay</Text>
-
-        <Text style={styles.amountText}>
-          You are to pay <Text style={{ fontWeight: "700" }}>{formatCurrency(amount)}</Text>
-        </Text>
 
         <Text style={styles.cardNumber}>9014   0741   61</Text>
 
@@ -56,7 +71,7 @@ const CardTransfer = ({ amount = 25000 }) => {
             </View>
 
             <Text style={styles.reviewText}>
-              Payment received for {formatCurrency(amount)}
+              Payment received for {formatCurrency(finalTotal)}
             </Text>
 
             <Text style={styles.subReview}>
@@ -67,10 +82,30 @@ const CardTransfer = ({ amount = 25000 }) => {
 
             <TouchableOpacity
               style={styles.closeBtn}
-              onPress={() => setVisible(false)}
+              onPress={async () => {
+                // 1. Load cart items
+                const savedCart = await AsyncStorage.getItem("cartItems");
+                let cart = savedCart ? JSON.parse(savedCart) : [];
+
+                // 2. Mark all items as PAID
+                const updatedCart = cart.map(item => ({
+                  ...item,
+                  paid: true,  // new field
+                }));
+
+                // 3. Save updated cart
+                await AsyncStorage.setItem("cartItems", JSON.stringify(updatedCart));
+
+                // 4. Close modal
+                setVisible(false);
+
+                // 5. Navigate back to cart
+                router.replace("/buyer/(root)/(tab)/order/order");
+              }}
             >
               <Text style={styles.closeText}>Okay</Text>
             </TouchableOpacity>
+
           </View>
         </View>
       </Modal>
@@ -92,7 +127,7 @@ const styles = StyleSheet.create({
   card: {
     width: "92%",
     backgroundColor: "#FF8800",
-    height: 210,
+    height: 180,
     borderRadius: 18,
     padding: 18,
     elevation: 12,
@@ -102,14 +137,14 @@ const styles = StyleSheet.create({
 
   flowerTop: {
     position: "absolute",
-    top: 10,
-    right: 15,
+    top: 50,
+    right: 85,
     fontSize: 20,
   },
   flowerBottom: {
     position: "absolute",
-    bottom: 10,
-    left: 15,
+    bottom: 70,
+    left: 45,
     fontSize: 20,
   },
 

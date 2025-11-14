@@ -18,24 +18,20 @@ const Cart = () => {
   const [cartItems, setCartItems] = useState([]);
 
   useEffect(() => {
-    const loadCartItems = async () => {
+    const loadCart = async () => {
       try {
         const savedCart = await AsyncStorage.getItem("cartItems");
-        if (savedCart) {
-          setCartItems(JSON.parse(savedCart));
-        }
+        if (savedCart) setCartItems(JSON.parse(savedCart));
       } catch (error) {
         console.error("Error loading cart:", error);
       }
     };
-
-    loadCartItems();
+    loadCart();
   }, []);
 
   const formatCurrency = (amount) => {
-    if (!amount) return "₦0";
-    const formatted = amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-    return `₦${formatted}`;
+    const num = Number(amount) || 0;
+    return "₦" + num.toLocaleString();
   };
 
   const handleDelete = async (id) => {
@@ -45,18 +41,18 @@ const Cart = () => {
     Alert.alert("🗑️ Removed", "Item removed from your cart.");
   };
 
-  /** ----------------------
-   *  CART CALCULATIONS
-   * ---------------------- */
-  const subtotal = cartItems.reduce((totalPrice, item) => totalPrice + (item.totalPrice || 0), 0);
-  const deliveryFee = 500;
-  const discount = 0; // You can change this later
-  const finalTotal = subtotal + deliveryFee - discount;
+  const unpaidItems = cartItems.filter(item => !item.paid);
+  const subtotal = unpaidItems.reduce((t, i) => t + (i.totalPrice || 0), 0);
+  const deliveryFee = unpaidItems.length > 0 ? 500 : 0;
+
+  const finalTotal = subtotal + deliveryFee;
 
   const renderItem = ({ item }) => (
     <View style={styles.cartItem}>
+
+      {/* Product Image */}
       {item.image ? (
-        <Image source={{ uri: item.image }} style={styles.productImage} resizeMode="cover" />
+        <Image source={{ uri: item.image }} style={styles.productImage} />
       ) : (
         <View style={styles.noImageBox}>
           <Text>No Image</Text>
@@ -64,23 +60,62 @@ const Cart = () => {
       )}
 
       <View style={styles.productDetails}>
+
+        {/* Paid Badge */}
+        {item.paid && (
+          <View style={styles.paidBadge}>
+            <Ionicons name="checkmark-circle" size={18} color="#28A745" />
+            <Text style={styles.paidText}>Paid</Text>
+          </View>
+        )}
+
+        {/* Name */}
         <Text style={styles.productName}>{item.name}</Text>
 
-        <Text style={styles.price}>{formatCurrency(item.totalPrice)}</Text>
+        {/* Qty */}
+        <Text style={styles.qtyText}>Qty: {item.qty}</Text>
+
+        {/* Base Price */}
+        <Text style={styles.basePrice}>Base Price: {formatCurrency(item.totalPrice)}</Text>
+
+        {item.category === "food" && item.extras?.length > 0 && (
+          <View style={{ marginTop: 10 }}>
+            <Text style={styles.extraHeader}>Extras:</Text>
+
+            {item.extras.map((extra, index) => (
+              <View key={index} style={styles.extraRow}>
+                <Text style={styles.extraName}>• {extra.name}</Text>
+                <Text style={styles.extraPrice}>{formatCurrency(extra.price)}</Text>
+              </View>
+            ))}
+
+            <Text style={styles.extraTotal}>
+              Extras Total: {formatCurrency(item.extrasTotal)}
+            </Text>
+          </View>
+        )}
+
+        {/* Final Total */}
+        <Text style={styles.finalTotal}>
+          Total: {formatCurrency(item.totalPrice)}
+        </Text>
       </View>
 
+      {/* Delete button */}
       <TouchableOpacity onPress={() => handleDelete(item.id)}>
         <Ionicons name="trash-outline" size={24} color="#FF4C4C" />
       </TouchableOpacity>
+
     </View>
   );
 
   const handleCheckout = () => {
-    router.navigate('/buyer/src/checkout/checkout')
-  }
+    router.navigate('/buyer/src/checkout/checkout');
+  };
 
   return (
     <SafeAreaView style={styles.container}>
+
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.navigate("/buyer/homePage/home")}>
@@ -89,6 +124,7 @@ const Cart = () => {
         <Text style={styles.headerTitle}>My Cart</Text>
       </View>
 
+      {/* Empty State */}
       {cartItems.length === 0 ? (
         <View style={{ alignItems: "center", marginTop: 50 }}>
           <Text>Your cart is empty 🛒</Text>
@@ -102,35 +138,29 @@ const Cart = () => {
         />
       )}
 
+      {/* Summary */}
       <View style={{ marginTop: 20 }}>
         <View style={styles.summaryRow}>
-          <Text style={{ fontWeight: "700", fontSize: 18 }}>Subtotal</Text>
-          <Text style={{ fontWeight: "700", fontSize: 16 }}>{formatCurrency(subtotal)}</Text>
+          <Text style={styles.summaryLabel}>Subtotal</Text>
+          <Text style={styles.summaryValue}>{formatCurrency(subtotal)}</Text>
         </View>
 
         <View style={styles.summaryRow}>
-          <Text style={{ fontSize: 18 }}>Delivery Fee</Text>
-          <Text style={{ fontWeight: "700", fontSize: 16 }}>{formatCurrency(deliveryFee)}</Text>
+          <Text style={styles.summaryLabel}>Delivery Fee</Text>
+          <Text style={styles.summaryValue}>{formatCurrency(deliveryFee)}</Text>
         </View>
 
         <View style={styles.summaryRow}>
-          <Text style={{ fontSize: 16 }}>Discount</Text>
-          <Text style={{ fontWeight: "700", fontSize: 16 }}>{formatCurrency(discount)}</Text>
-        </View>
-
-        <View style={styles.summaryRow}>
-          <Text style={{ fontWeight: "700", fontSize: 18 }}>Total</Text>
-          <Text style={{ fontWeight: "700", fontSize: 16 }}>{formatCurrency(finalTotal)}</Text>
+          <Text style={styles.summaryLabel}>Total</Text>
+          <Text style={styles.summaryValue}>{formatCurrency(finalTotal)}</Text>
         </View>
       </View>
 
-      {/* PROCEED BUTTON */}
-      <TouchableOpacity
-        style={styles.paymentButton}
-        onPress={handleCheckout}
-      >
+      {/* Checkout Button */}
+      <TouchableOpacity style={styles.paymentButton} onPress={handleCheckout}>
         <Text style={styles.paymentButtonText}>Proceed to Payment</Text>
       </TouchableOpacity>
+
     </SafeAreaView>
   );
 };
@@ -151,12 +181,11 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 20,
     fontWeight: "700",
-    color: "#000",
     marginLeft: 140,
   },
   cartItem: {
     flexDirection: "row",
-    alignItems: "center",
+    alignItems: "flex-start",
     backgroundColor: "#F9F9F9",
     padding: 10,
     borderRadius: 12,
@@ -181,15 +210,65 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   productName: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: "#000",
-    marginBottom: 4,
-  },
-  price: {
-    fontSize: 16,
-    color: "#FF6A00",
+    fontSize: 17,
     fontWeight: "700",
+    color: "#000",
+  },
+  qtyText: {
+    fontSize: 14,
+    marginTop: 4,
+    color: "#333",
+  },
+  basePrice: {
+    fontSize: 14,
+    marginTop: 4,
+    color: "#444",
+  },
+
+  paidBadge: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#E8F9EE",
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 6,
+    marginBottom: 5,
+  },
+  paidText: {
+    marginLeft: 4,
+    color: "#28A745",
+    fontWeight: "700",
+  },
+
+  extraHeader: {
+    fontSize: 15,
+    fontWeight: "700",
+    marginBottom: 5,
+    marginTop: 10,
+  },
+  extraRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginVertical: 2,
+  },
+  extraName: {
+    fontSize: 14,
+    color: "#444",
+  },
+  extraPrice: {
+    fontSize: 14,
+    fontWeight: "600",
+  },
+  extraTotal: {
+    fontWeight: "700",
+    marginTop: 5,
+    color: "#000",
+  },
+  finalTotal: {
+    marginTop: 10,
+    fontSize: 16,
+    fontWeight: "700",
+    color: "#FF6A00",
   },
 
   summaryRow: {
@@ -197,9 +276,17 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     marginBottom: 6,
   },
+  summaryLabel: {
+    fontSize: 17,
+    fontWeight: "700",
+  },
+  summaryValue: {
+    fontSize: 17,
+    fontWeight: "700",
+  },
 
   paymentButton: {
-    backgroundColor: "#FF6A00",
+    backgroundColor: "#FF8800",
     paddingVertical: 16,
     borderRadius: 12,
     marginTop: 20,
