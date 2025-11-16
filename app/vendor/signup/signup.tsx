@@ -65,7 +65,7 @@ const SignUp = () => {
   //       const email = error.customData.email
   //       const credential = GoogleAuthProvider.credentialFromError(error)
   //     })
-    // signInWithRedirect(auth, provider);
+  // signInWithRedirect(auth, provider);
 
 
   // Handle Google login response
@@ -108,7 +108,7 @@ const SignUp = () => {
       router.push("/vendor/signup/kycRegistration/kyc");
     } catch (error) {
       console.log(error);
-      Alert.alert("Signup failed", error.message);
+      Alert.alert("Signup failed", "This email already have an account! Use another email account.");
     }
   };
 

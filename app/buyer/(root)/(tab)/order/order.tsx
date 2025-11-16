@@ -12,6 +12,7 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { supabase } from "../../../../utils/supabase";
 
 const Cart = () => {
   const router = useRouter();
@@ -111,8 +112,30 @@ const Cart = () => {
     </View>
   );
 
-  const handleCheckout = () => {
-    router.navigate('/buyer/src/checkout/checkout');
+  const handleCheckout = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+
+    for (const item of cartItems) {
+      const { error } = await supabase
+        .from("orders")
+        .insert({
+          buyer_id: item.userId,      // buyer id
+          vendor_id: item.vendorId || user.id,
+          product_id: item.id,
+          name: item.name,
+          qty: item.qty,
+          extras: item.extras || [],
+          extras_total: item.extrasTotal || 0,
+          total_price: item.totalPrice,
+          image: item.image,
+          paid: true
+        });
+
+      if (error) console.log("Insert error:", error);
+    }
+
+    Alert.alert("Success", "Order placed successfully!");
+    router.push("/buyer/src/checkout/checkout");
   };
 
   return (

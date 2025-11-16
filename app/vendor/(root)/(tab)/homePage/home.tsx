@@ -1,12 +1,10 @@
 import { Ionicons } from "@expo/vector-icons";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
-import { onAuthStateChanged } from "firebase/auth";
-import { doc, getDoc } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, useColorScheme, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { auth, db } from "../../../../../firebaseConfig";
+import { supabase } from "../../../../utils/supabase";
+// import { auth, db } from "../../../../../firebaseConfig";
 
 const Home = () => {
 
@@ -16,45 +14,48 @@ const Home = () => {
 
   useEffect(() => {
     const loadOrders = async () => {
-      try {
-        const saved = await AsyncStorage.getItem("vendorOrders");
-        setRecentOrders(saved ? JSON.parse(saved) : []);
-      } catch (err) {
-        console.log("Error loading vendor orders:", err);
-      }
+      const { data: { user } } = await supabase.auth.getUser();
+
+      if (!user) return;
+
+      const { data, error } = await supabase
+        .from("orders")
+        .select("*")
+        .eq("vendor_id", user.id)   // your vendor ID
+        .order("created_at", { ascending: false });
+
+      if (!error) setRecentOrders(data);
     };
 
     loadOrders();
   }, []);
 
 
+  // useEffect(() => {
+  //   const unsubscribe = onAuthStateChanged(auth, async (user) => {
+  //     if (user) {
+  //       try {
+  //         const docRef = doc(db, "users", user.uid);
+  //         const docSnap = await getDoc(docRef);
 
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        try {
-          const docRef = doc(db, "users", user.uid);
-          const docSnap = await getDoc(docRef);
+  //         if (docSnap.exists()) {
+  //           const data = docSnap.data();
+  //           setProfile(data);
+  //           setUserName(data.firstName || user.displayName || "User");
+  //         } else {
+  //           setUserName(user.displayName || user.email?.split("@")[0] || "User");
+  //         }
+  //       } catch (error) {
+  //         console.log("Error fetching profile:", error);
+  //       }
+  //     } else {
+  //       setUserName("User");
+  //       setProfile(null);
+  //     }
+  //   });
 
-          if (docSnap.exists()) {
-            const data = docSnap.data();
-            setProfile(data);
-            setUserName(data.firstName || user.displayName || "User");
-          } else {
-            setUserName(user.displayName || user.email?.split("@")[0] || "User");
-          }
-        } catch (error) {
-          console.log("Error fetching profile:", error);
-        }
-      } else {
-        setUserName("User");
-        setProfile(null);
-      }
-    });
-
-    return () => unsubscribe();
-  }, []);
-
+  //   return () => unsubscribe();
+  // }, []);
 
   const colorScheme = useColorScheme();
 
@@ -171,7 +172,7 @@ const Home = () => {
               <TouchableOpacity
                 key={index}
                 style={styles.orderRow}
-                onPress={handleOderReview}
+              // onPress={handleOderReview}
               >
                 <Text style={styles.orderName}>{order.name}</Text>
                 <Text style={{ color: "#22C55E", fontWeight: "700" }}>Paid</Text>
@@ -179,8 +180,6 @@ const Home = () => {
             ))
           )}
         </View>
-
-
 
         <View style={[styles.recentOrders, colorScheme === 'light' ? { backgroundColor: '#FFF5E5' } : { backgroundColor: "#333" }]}>
 
@@ -385,20 +384,20 @@ const styles = StyleSheet.create({
     fontWeight: "700",
   },
   orderRow: {
-  backgroundColor: "#fff",
-  padding: 12,
-  borderRadius: 10,
-  marginBottom: 10,
-  flexDirection: "row",
-  justifyContent: "space-between",
-  alignItems: "center",
-  borderWidth: 1,
-  borderColor: "#ddd"
-},
-orderName: {
-  fontSize: 16,
-  fontWeight: "600",
-  color: "#000",
-},
+    backgroundColor: "#fff",
+    padding: 12,
+    borderRadius: 10,
+    marginBottom: 10,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: "#ddd"
+  },
+  orderName: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#000",
+  },
 
 });
