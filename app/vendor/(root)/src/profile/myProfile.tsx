@@ -1,6 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
+import { useFocusEffect } from '@react-navigation/native';
 import { useRouter } from 'expo-router';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
   Image,
   ScrollView,
@@ -16,27 +17,30 @@ const MyProfile = () => {
   const [profile, setProfile] = useState(null);
   const router = useRouter();
 
-  useEffect(() => {
-    const loadProfile = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
+  useFocusEffect(
+    React.useCallback(() => {
+      const loadProfile = async () => {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) return;
 
-      const { data, error } = await supabase
-        .from("profiles")
-        .select("*")
-        .eq("id", user.id)
-        .single();
+        const { data, error } = await supabase
+          .from("profiles")
+          .select("*")
+          .eq("id", user.id)
+          .single();
 
-      if (error) {
-        console.log("Profile load error:", error);
-        return;
-      }
+        if (error) {
+          console.log("Profile load error:", error);
+          return;
+        }
 
-      setProfile(data);
-    };
+        setProfile(data);
+      };
 
-    loadProfile();
-  }, []);
+      loadProfile();
+    }, [])
+  );
+
 
   const handleBackArrow = () => router.navigate("/vendor/(root)/(tab)/menu/menu");
   const handleEditProfile = () => router.navigate("/vendor/(root)/src/profile/editProfile");
@@ -44,7 +48,7 @@ const MyProfile = () => {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false}>
-        
+
         <View style={styles.header}>
           <TouchableOpacity onPress={handleBackArrow}>
             <Ionicons name="arrow-back-outline" size={24} color="#000" />

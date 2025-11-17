@@ -17,12 +17,13 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { supabase } from "../../../../utils/supabase";
 
 const EditProfile = () => {
-  const [fullName, setFirstName] = useState("");
+  const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
   const [profileImage, setProfileImage] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [profile, setProfile] = useState(null);
 
   const router = useRouter();
 
@@ -42,8 +43,9 @@ const EditProfile = () => {
         console.log("Error loading profile:", error);
         return;
       }
+      setProfile(data)
 
-      setFirstName(data.full_name || "");
+      setFullName(data.full_name || "");
       setEmail(data.email || user.email || "");
       setPhone(data.phone_number || "");
       setAddress(data.address || "");
@@ -200,8 +202,8 @@ const EditProfile = () => {
         <TextInput
           style={styles.input}
           value={fullName}
-          onChangeText={setFirstName}
-          placeholder="First Name"
+          onChangeText={setFullName}
+          placeholder="Full Name"
         />
 
         <Text style={styles.label}>Email</Text>
