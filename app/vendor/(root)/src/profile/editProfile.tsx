@@ -1,8 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import { useRouter } from "expo-router";
-import { doc, getDoc, setDoc } from "firebase/firestore";
-import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import React, { useEffect, useState } from "react";
 import {
   ActivityIndicator,
@@ -16,10 +14,10 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { auth, db, storage } from "../../../../../firebaseConfig";
+import { supabase } from "../../../../utils/supabase";
 
 const EditProfile = () => {
-  const [firstName, setFirstName] = useState("");
+  const [fullName, setFirstName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
@@ -28,42 +26,48 @@ const EditProfile = () => {
 
   const router = useRouter();
 
-  // ✅ Load existing user profile data
+  // Load profile from Supabase
   useEffect(() => {
-    const fetchProfile = async () => {
-      const user = auth.currentUser;
+    const loadProfile = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
-      try {
-        const userDoc = await getDoc(doc(db, "users", user.uid));
-        if (userDoc.exists()) {
-          const data = userDoc.data();
-          setFirstName(data.firstName || "");
-          setEmail(data.email || user.email || "");
-          setPhone(data.phone || "");
-          setAddress(data.address || "");
-          setProfileImage(data.profileImage || null);
-        }
-      } catch (error) {
-        console.error("Error loading profile:", error);
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", user.id)
+        .single();
+
+      if (error) {
+        console.log("Error loading profile:", error);
+        return;
       }
+
+      setFirstName(data.full_name || "");
+      setEmail(data.email || user.email || "");
+      setPhone(data.phone_number || "");
+      setAddress(data.address || "");
+      setProfileImage(data.avatar_url || null);
     };
 
-    fetchProfile();
+    loadProfile();
   }, []);
 
-  // Image picker
+  // Pick image
   const pickImage = async () => {
-    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (status !== "granted") {
-      Alert.alert("Permission required", "We need permission to access your gallery.");
+    const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (!permission.granted) {
+      Alert.alert(
+        "Permission needed", 
+        "Allow us to access gallery."
+      );
       return;
     }
 
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
       quality: 0.8,
+      allowsEditing: true,
     });
 
     if (!result.canceled) {
@@ -71,65 +75,100 @@ const EditProfile = () => {
     }
   };
 
-  // handling update button
-  const handleUpdate = async () => {
-    const user = auth.currentUser;
-    if (!user) {
-      Alert.alert("Error", "No user logged in!");
-      return;
-    }
+  const getMimeTypeFromUri = (uri) => {
+    const ext = uri.split('.').pop()?.toLowerCase() || '';
+    const map = {
+      jpg: 'image/jpeg',
+      jpeg: 'image/jpeg',
+      png: 'image/png',
+      webp: 'image/webp',
+      gif: 'image/gif',
+    };
+    return map[ext] || 'application/octet-stream';
+  };
 
-    // ✅ Prevent update if nothing was filled or changed
-    if (!firstName && !email && !phone && !address && !profileImage) {
-      Alert.alert("Nothing to update", "Please fill at least one field or choose an image.");
-      return;
-    }
+  const uploadImage = async (imageUri, userId) => {
+  if (!imageUri) return null;
+
+  try {
+    // 1. Convert image to ArrayBuffer (works in Expo)
+    const response = await fetch(imageUri);
+    if (!response.ok) throw new Error("Failed to read image");
+
+    const arrayBuffer = await response.arrayBuffer();
+    const uint8Array = new Uint8Array(arrayBuffer);
+
+    // 2. Create unique filename
+    const fileExt = imageUri.split(".").pop();
+    const fileName = `${userId}_${Date.now()}.${fileExt}`;
+    const filePath = `avatars/${fileName}`;
+
+    // 3. Detect MIME type
+    const contentType = getMimeTypeFromUri(imageUri);
+
+    // 4. Upload to Supabase Storage
+    const { error: uploadError } = await supabase.storage
+      .from("avatars")
+      .upload(filePath, uint8Array, {
+        contentType,
+        upsert: true,
+      });
+
+    if (uploadError) throw uploadError;
+
+    // 5. Get public URL
+    const { data } = supabase.storage
+      .from("avatars")
+      .getPublicUrl(filePath);
+
+    return data.publicUrl;
+
+  } catch (err) {
+    console.log("Upload error:", err);
+    return null;
+  }
+};
+
+  // Update profile on Supabase
+  const handleUpdate = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return Alert.alert("Error", "User not logged in");
 
     setLoading(true);
 
     try {
-      let imageUrl = null;
+      let imageUrl = profileImage;
 
-      if (profileImage && !profileImage.startsWith("https")) {
-        // Upload new image only if it's a local URI
-        const response = await fetch(profileImage);
-        const blob = await response.blob();
-        const storageRef = ref(storage, `profileImages/${user.uid}.jpg`);
-        await uploadBytes(storageRef, blob);
-        imageUrl = await getDownloadURL(storageRef);
-      } else {
-        imageUrl = profileImage; 
+      if (profileImage && !profileImage.startsWith("http")) {
+        imageUrl = await uploadImage(profileImage, user.id);
       }
 
-      await setDoc(
-        doc(db, "users", user.uid),
-        {
-          firstName: firstName || null,
-          email: email || null,
-          phone: phone || null,
-          address: address || null,
-          profileImage: imageUrl || null,
-        },
-        { merge: true }
-      );
+      const { error } = await supabase
+        .from("profiles")
+        .update({
+          full_name: fullName,
+          email: email,
+          phone_number: phone,
+          address: address,
+          avatar_url: imageUrl,
+          updated_at: new Date(),
+        })
+        .eq("id", user.id);
 
-      const updatedDoc = await getDoc(doc(db, "users", user.uid));
-      if (updatedDoc.exists()) {
-        setProfileImage(updatedDoc.data());
-      }
+      if (error) throw error;
+
+      Alert.alert("Profile updated successfully!");
+
       router.replace("/vendor/(root)/src/profile/myProfile");
 
     } catch (error) {
-      console.error("Error updating profile:", error);
-      Alert.alert("Error", error.message);
+      Alert.alert("Update failed", error.message);
     } finally {
       setLoading(false);
     }
   };
 
-  const handleBackArrow = () => {
-    router.back()
-  };
+  const handleBackArrow = () => router.back();
 
   return (
     <SafeAreaView style={styles.container}>
@@ -156,34 +195,45 @@ const EditProfile = () => {
           <Text style={styles.changeText}>Tap to change photo</Text>
         </View>
 
-        {/* Input Fields */}
-        {[
-          { label: "First Name", value: firstName, onChangeText: setFirstName },
-          { label: "Email", value: email, onChangeText: setEmail },
-          { label: "Phone Number", value: phone, onChangeText: setPhone },
-          { label: "Address", value: address, onChangeText: setAddress },
-        ].map((field, i) => (
-          <View key={i}>
-            <Text style={styles.label}>{field.label}</Text>
-            <TextInput
-              style={styles.input}
-              value={field.value}
-              onChangeText={field.onChangeText}
-              placeholder={field.label}
-            />
-          </View>
-        ))}
+        {/* Input fields */}
+        <Text style={styles.label}>Full Name</Text>
+        <TextInput
+          style={styles.input}
+          value={fullName}
+          onChangeText={setFirstName}
+          placeholder="First Name"
+        />
+
+        <Text style={styles.label}>Email</Text>
+        <TextInput
+          style={styles.input}
+          value={email}
+          onChangeText={setEmail}
+          placeholder="Email"
+        />
+
+        <Text style={styles.label}>Phone Number</Text>
+        <TextInput
+          style={styles.input}
+          value={phone}
+          onChangeText={setPhone}
+          placeholder="Phone Number"
+        />
+
+        <Text style={styles.label}>Address</Text>
+        <TextInput
+          style={styles.input}
+          value={address}
+          onChangeText={setAddress}
+          placeholder="Address"
+        />
 
         <TouchableOpacity
           style={[styles.button, loading && { opacity: 0.7 }]}
           onPress={handleUpdate}
           disabled={loading}
         >
-          {loading ? (
-            <ActivityIndicator color="#fff" />
-          ) : (
-            <Text style={styles.buttonText}>Update Profile</Text>
-          )}
+          {loading ? <ActivityIndicator color="#fff" /> : <Text style={styles.buttonText}>Update Profile</Text>}
         </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
@@ -191,6 +241,7 @@ const EditProfile = () => {
 };
 
 export default EditProfile;
+
 
 const styles = StyleSheet.create({
   container: { flex: 1, padding: 16, backgroundColor: "#f9f9f9" },

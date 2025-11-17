@@ -4,11 +4,9 @@ import React, { useEffect, useState } from "react";
 import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, useColorScheme, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { supabase } from "../../../../utils/supabase";
-// import { auth, db } from "../../../../../firebaseConfig";
 
 const Home = () => {
 
-  const [userName, setUserName] = useState<string>("");
   const [profile, setProfile] = useState(null);
   const [recentOrders, setRecentOrders] = useState([]);
 
@@ -30,32 +28,26 @@ const Home = () => {
     loadOrders();
   }, []);
 
+  useEffect(() => {
+    const loadProfile = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if(!user) return;
 
-  // useEffect(() => {
-  //   const unsubscribe = onAuthStateChanged(auth, async (user) => {
-  //     if (user) {
-  //       try {
-  //         const docRef = doc(db, "users", user.uid);
-  //         const docSnap = await getDoc(docRef);
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", user.id)
+        .single()
 
-  //         if (docSnap.exists()) {
-  //           const data = docSnap.data();
-  //           setProfile(data);
-  //           setUserName(data.firstName || user.displayName || "User");
-  //         } else {
-  //           setUserName(user.displayName || user.email?.split("@")[0] || "User");
-  //         }
-  //       } catch (error) {
-  //         console.log("Error fetching profile:", error);
-  //       }
-  //     } else {
-  //       setUserName("User");
-  //       setProfile(null);
-  //     }
-  //   });
+      if (error) {
+        throw new Error(error);
+      }
 
-  //   return () => unsubscribe();
-  // }, []);
+      setProfile(data);
+    };
+
+    loadProfile();
+  }, []); 
 
   const colorScheme = useColorScheme();
 
@@ -87,7 +79,7 @@ const Home = () => {
             style={styles.logo}
           />
           <View>
-            <Text style={[styles.greeting, colorScheme === 'light' ? { color: '#000' } : { color: "#fff" }]}>Hi {userName} 👋</Text>
+            <Text style={[styles.greeting, colorScheme === 'light' ? { color: '#000' } : { color: "#fff" }]}>Hi {profile?.full_name?.split(" ")[0]} 👋</Text>
             <Text style={styles.subGreeting}>Welcome back!</Text>
           </View>
         </View>

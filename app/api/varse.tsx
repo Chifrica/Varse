@@ -54,5 +54,22 @@ export const deleteItem = async (id) => {
     }
 }
 
+export const updateProfile = async (full_name, id, email, phone_number, address, avatar_url, updated_at) => {
+    const { data, error } = await supabase 
+        .from("profiles")
+        .update({
+            full_name,
+            email, 
+            phone_number,
+            address,
+            avatar_url,
+            updated_at
+        })
+        .eq("id", id)
 
+        if (error) {
+            throw new Error (error.message)
+        }
+        return data
+}
 

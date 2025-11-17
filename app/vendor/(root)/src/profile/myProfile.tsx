@@ -1,6 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import { doc, onSnapshot } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
 import {
   Image,
@@ -11,40 +10,41 @@ import {
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { auth, db } from '../../../../../firebaseConfig';
+import { supabase } from '../../../../utils/supabase';
 
 const MyProfile = () => {
-
   const [profile, setProfile] = useState(null);
-
-  useEffect(() => {
-  const user = auth.currentUser;
-  if (!user) return;
-
-  const unsub = onSnapshot(doc(db, "users", user.uid), (docSnap) => {
-    if (docSnap.exists()) {
-      setProfile(docSnap.data());
-    }
-  }, (error) => console.error("Error loading profile:", error));
-
-  return () => unsub();
-}, []);
-
-
   const router = useRouter();
 
-  const handleBackArrow = () => {
-    router.navigate("/vendor/(root)/(tab)/menu/menu");
-  };
+  useEffect(() => {
+    const loadProfile = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
 
-  const handleEditProfile = () => {
-    router.navigate("/vendor/(root)/src/profile/editProfile")
-  }
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", user.id)
+        .single();
+
+      if (error) {
+        console.log("Profile load error:", error);
+        return;
+      }
+
+      setProfile(data);
+    };
+
+    loadProfile();
+  }, []);
+
+  const handleBackArrow = () => router.navigate("/vendor/(root)/(tab)/menu/menu");
+  const handleEditProfile = () => router.navigate("/vendor/(root)/src/profile/editProfile");
 
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false}>
-        {/* Header */}
+        
         <View style={styles.header}>
           <TouchableOpacity onPress={handleBackArrow}>
             <Ionicons name="arrow-back-outline" size={24} color="#000" />
@@ -52,21 +52,20 @@ const MyProfile = () => {
           <Text style={styles.title}>My Profile</Text>
         </View>
 
-        {/* Profile Image */}
         <View style={styles.profileSection}>
           <Image
             source={{
-              uri: 'https://cdn-icons-png.flaticon.com/512/847/847969.png',
+              uri: profile?.avatar_url ||
+                "https://cdn-icons-png.flaticon.com/512/847/847969.png",
             }}
             style={styles.profileImage}
           />
           <Text style={styles.changeText}>Change Profile Picture</Text>
         </View>
 
-        {/* Info Sections */}
         <View style={styles.infoSection}>
           <Text style={styles.label}>Full Name</Text>
-          <Text style={styles.value}>{profile?.firstName || "—"}</Text>
+          <Text style={styles.value}>{profile?.full_name || "—"}</Text>
         </View>
         <View style={styles.line} />
 
@@ -78,7 +77,7 @@ const MyProfile = () => {
 
         <View style={styles.infoSection}>
           <Text style={styles.label}>Phone Number</Text>
-          <Text style={styles.value}>{profile?.phone || "—"}</Text>
+          <Text style={styles.value}>{profile?.phone_number || "—"}</Text>
         </View>
         <View style={styles.line} />
 
@@ -88,7 +87,6 @@ const MyProfile = () => {
         </View>
         <View style={styles.line} />
 
-        {/* Button */}
         <TouchableOpacity style={styles.button} onPress={handleEditProfile}>
           <Text style={styles.buttonText}>Edit Details</Text>
         </TouchableOpacity>
@@ -98,6 +96,7 @@ const MyProfile = () => {
 };
 
 export default MyProfile;
+
 
 const styles = StyleSheet.create({
   container: {

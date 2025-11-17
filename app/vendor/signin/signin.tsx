@@ -1,8 +1,8 @@
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { useRouter } from "expo-router";
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import React, { useState } from "react";
 import {
+  Alert,
   Image,
   Text,
   TextInput,
@@ -10,42 +10,57 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { supabase } from "../../utils/supabase";
 import styles from "./style";
 
 const Index = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const router = useRouter();
+
+  async function signInWithEmail() {
+    setLoading(true)
+    const { error, data: {session}} = await supabase.auth.signInWithPassword({
+      email: email,
+      password: password,
+    })
+    if (session) {
+      router.push("/vendor/(root)/(tab)/homePage/home")
+    }
+    if (error) Alert.alert(error.message)
+    setLoading(false)
+  }
 
   const handleSignUp = () => {
     router.push("/vendor/signup/signup");
   };
 
-  const handleSignIn = async () => {
-    const auth = getAuth();
-    if (!email || !password) {
-      alert("Please enter both email and password");
-      return;
-    }
+  // const handleSignIn = async () => {
+  //   const auth = getAuth();
+  //   if (!email || !password) {
+  //     alert("Please enter both email and password");
+  //     return;
+  //   }
 
-    try {
-      const userCredential = await signInWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
-      const user = userCredential.user;
-      console.log("Signed in user:", user);
+  //   try {
+  //     const userCredential = await signInWithEmailAndPassword(
+  //       auth,
+  //       email,
+  //       password
+  //     );
+  //     const user = userCredential.user;
+  //     console.log("Signed in user:", user);
 
-      router.push("/vendor/(root)/(tab)/homePage/home");
-    } catch (error) {
-      console.error(
-        alert("Invalid email or password. Please try again.")
-      );
-    }
-  };
+  //     router.push("/vendor/(root)/(tab)/homePage/home");
+  //   } catch (error) {
+  //     console.error(
+  //       alert("Invalid email or password. Please try again.")
+  //     );
+  //   }
+  // };
 
 const signupTxt = { text: "SignUp", onPress: handleSignUp };
 
@@ -128,7 +143,7 @@ return (
     </View>
 
     <View>
-      <TouchableOpacity style={styles.button} onPress={handleSignIn}>
+      <TouchableOpacity style={styles.button} onPress={signInWithEmail}>
         <Text style={styles.buttonText}>Sign in</Text>
       </TouchableOpacity>
     </View>

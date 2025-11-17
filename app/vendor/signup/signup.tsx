@@ -3,12 +3,7 @@ import * as Google from "expo-auth-session/providers/google";
 import Checkbox from "expo-checkbox";
 import { useRouter } from "expo-router";
 import * as WebBrowser from "expo-web-browser";
-import {
-  createUserWithEmailAndPassword,
-  GoogleAuthProvider,
-  signInWithCredential
-} from "firebase/auth";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   Alert,
   Image,
@@ -18,7 +13,7 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { auth } from "../../../firebaseConfig";
+import { supabase } from "../../utils/supabase";
 import styles from "./style";
 
 WebBrowser.maybeCompleteAuthSession();
@@ -31,6 +26,8 @@ const SignUp = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isChecked, setChecked] = useState(false);
+  const [loading, setLoading] = useState(false)
+  const [showPassword, setShowPassword] = useState(false);
 
   // Google Auth Configuration
   const [request, response, promptAsync] = Google.useAuthRequest({
@@ -38,79 +35,22 @@ const SignUp = () => {
     webClientId: "853543512665-gcfohtk0dnkfjvodgeuosv96tnnf9933.apps.googleusercontent.com", // from Firebase
   });
 
-  // const auth = getAuth();
-  // const provider = new GoogleAuthProvider();
-
-  // signInWithPopup(auth, provider)
-  //   .then((result) => {
-  //     const credential = GoogleAuthProvider.credentialFromResult(result);
-  //     const token = credential.accessToken;
-  //     const user = result.user;
-  //   }).catch((error) => {
-  //     const errorCode = error.code;
-  //     const errorMessage = error.message;
-  //     const email = error.customData.email;
-  //     const credential = GoogleAuthProvider.credentialFromError(error);
-  //   })
-
-  //   getRedirectResult(auth)
-  //     .then((result) => {
-  //       const credential = GoogleAuthProvider.credentialFromResult(result);
-  //       const token = credential.accessToken;
-  //       const user = result.user;
-  //     }).catch((error) => {
-  //       const errorCode = error.code;
-  //       const errorMessage = error.message;
-
-  //       const email = error.customData.email
-  //       const credential = GoogleAuthProvider.credentialFromError(error)
-  //     })
-  // signInWithRedirect(auth, provider);
-
-
-  // Handle Google login response
-  useEffect(() => {
-    if (response?.type === "success") {
-      const { id_token } = response.params;
-      const credential = GoogleAuthProvider.credential(id_token);
-      signInWithCredential(auth, credential)
-        .then(() => {
-          Alert.alert("Success", "Signed up successfully with Google!");
-          router.push("/vendor/signup/kycRegistration/kyc");
-        })
-        .catch((error) => {
-          console.error(error);
-          Alert.alert("Google Sign-In Failed", error.message);
-        });
+  async function signUpWithEmail() {
+    setLoading(true)
+    const {
+      data: { session },
+      error,
+    } = await supabase.auth.signUp({
+      email: email,
+      password: password,
+    })
+    if (session) {
+      router.push("/vendor/homePage/home")
     }
-  }, [response]);
-
-  // Email/Password Signup
-  const handleRegister = async () => {
-    if (!email || !password || !confirmPassword) {
-      Alert.alert("Error", "All fields are required.");
-      return;
-    }
-
-    if (password !== confirmPassword) {
-      Alert.alert("Error", "Passwords do not match.");
-      return;
-    }
-
-    if (!isChecked) {
-      Alert.alert("Error", "You must agree to the Terms and Privacy Policy.");
-      return;
-    }
-
-    try {
-      await createUserWithEmailAndPassword(auth, email, password);
-      Alert.alert("Success", "Account created successfully!");
-      router.push("/vendor/signup/kycRegistration/kyc");
-    } catch (error) {
-      console.log(error);
-      Alert.alert("Signup failed", "This email already have an account! Use another email account.");
-    }
-  };
+    if (error) Alert.alert(error.message)
+    if (!session) Alert.alert('Please check your inbox for email verification!')
+    setLoading(false)
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -128,20 +68,56 @@ const SignUp = () => {
           value={email}
           onChangeText={setEmail}
         />
-        <TextInput
-          placeholder="Enter Password"
-          secureTextEntry
-          style={styles.input}
-          value={password}
-          onChangeText={setPassword}
-        />
-        <TextInput
-          placeholder="Confirm Password"
-          secureTextEntry
-          style={styles.input}
-          value={confirmPassword}
-          onChangeText={setConfirmPassword}
-        />
+
+        <View style={{ position: "relative", justifyContent: "center" }}>
+          <TextInput
+            placeholder="Enter Password"
+            secureTextEntry={!showPassword}
+            style={styles.input}
+            value={password}
+            onChangeText={setPassword}
+          />
+
+          <TouchableOpacity
+            onPress={() => setShowPassword(!showPassword)}
+            style={{
+              position: "absolute",
+              right: 20,
+              top: 15,
+            }}
+          >
+            <FontAwesome
+              name={showPassword ? "eye" : "eye-slash"}
+              size={20}
+              color="#888"
+            />
+          </TouchableOpacity>
+        </View>
+
+        <View style={{ position: "relative", justifyContent: "center" }}>
+          <TextInput
+            placeholder="Enter Password"
+            secureTextEntry={!showPassword}
+            style={styles.input}
+            value={confirmPassword}
+            onChangeText={setConfirmPassword}
+          />
+
+          <TouchableOpacity
+            onPress={() => setShowPassword(!showPassword)}
+            style={{
+              position: "absolute",
+              right: 20,
+              top: 15,
+            }}
+          >
+            <FontAwesome
+              name={showPassword ? "eye" : "eye-slash"}
+              size={20}
+              color="#888"
+            />
+          </TouchableOpacity>
+        </View>
       </View>
 
       {/* Divider */}
@@ -195,7 +171,7 @@ const SignUp = () => {
       </View>
 
       {/* Register Button */}
-      <TouchableOpacity style={styles.button} onPress={handleRegister}>
+      <TouchableOpacity style={styles.button} onPress={signUpWithEmail}>
         <Text style={styles.buttonText}>Register</Text>
       </TouchableOpacity>
     </SafeAreaView>
