@@ -20,7 +20,7 @@ const STATUSBAR_HEIGHT = Platform.OS === "android" ? StatusBar.currentHeight : 5
 
 const Menu = () => {
   const [pressedItem, setPressedItem] = useState<string | null>(null);
-  const [slideAnim] = useState(new Animated.Value(width)); // Start off-screen to the right
+  const [slideAnim] = useState(new Animated.Value(width));
   const [profile, setProfile] = useState(null)
   
   useEffect(() => {
