@@ -1,21 +1,16 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import { deleteUser, getAuth, signOut } from 'firebase/auth';
 import React, { useState } from 'react';
-import { Alert, ScrollView, StyleSheet, Switch, Text, TouchableOpacity, View } from 'react-native';
+import { ScrollView, StyleSheet, Switch, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 const Settings = () => {
   const router = useRouter();
-  const auth = getAuth();
 
   const handleBackArrow = () => {
     router.back();
   };
 
-  // -----------------------------
-  // TOGGLE STATES
-  // -----------------------------
   const [notifications, setNotifications] = useState({
     order: true,
     payment: false,
@@ -30,91 +25,91 @@ const Settings = () => {
   // -----------------------------
   // LOGOUT HANDLER
   // -----------------------------
-  const handleLogOut = () => {
-    Alert.alert(
-      "Logout Confirmation",
-      "Are you sure you want to logout?",
-      [
-        { text: "No", style: "cancel" },
-        {
-          text: "Yes",
-          onPress: async () => {
-            try {
-              await signOut(auth);
-              alert("Logged out successfully");
-              router.replace("/vendor/signin/signin");
-            } catch (error) {
-              console.error("Error logging out:", error.message);
-              alert("Failed to log out. Try again.");
-            }
-          },
-        },
-      ]
-    );
-  };
+  // const handleLogOut = () => {
+  //   Alert.alert(
+  //     "Logout Confirmation",
+  //     "Are you sure you want to logout?",
+  //     [
+  //       { text: "No", style: "cancel" },
+  //       {
+  //         text: "Yes",
+  //         onPress: async () => {
+  //           try {
+  //             await signOut(auth);
+  //             alert("Logged out successfully");
+  //             router.replace("/vendor/signin/signin");
+  //           } catch (error) {
+  //             console.error("Error logging out:", error.message);
+  //             alert("Failed to log out. Try again.");
+  //           }
+  //         },
+  //       },
+  //     ]
+  //   );
+  // };
 
   // -----------------------------
   // DELETE ACCOUNT HANDLER
   // -----------------------------
-  const handleDeleteAccount = () => {
-    Alert.alert(
-      "Delete Account",
-      "Are you sure you want to permanently delete your account? This action cannot be undone.",
-      [
-        { text: "Cancel", style: "cancel" },
-        {
-          text: "Yes, Delete",
-          onPress: async () => {
-            const user = auth.currentUser;
-            if (user) {
-              try {
-                await deleteUser(user);
-                alert("Account deleted successfully.");
-                router.replace("/vendor/signin/signin");
-              } catch (error) {
-                console.error("Error deleting account:", error.message);
-                alert("Failed to delete account. Please log in again and try.");
-              }
-            } else {
-              alert("No user is currently signed in.");
-            }
-          },
-          style: "destructive",
-        },
-      ]
-    );
-  };
+  // const handleDeleteAccount = () => {
+  //   Alert.alert(
+  //     "Delete Account",
+  //     "Are you sure you want to permanently delete your account? This action cannot be undone.",
+  //     [
+  //       { text: "Cancel", style: "cancel" },
+  //       {
+  //         text: "Yes, Delete",
+  //         onPress: async () => {
+  //           const user = auth.currentUser;
+  //           if (user) {
+  //             try {
+  //               await deleteUser(user);
+  //               alert("Account deleted successfully.");
+  //               router.replace("/vendor/signin/signin");
+  //             } catch (error) {
+  //               console.error("Error deleting account:", error.message);
+  //               alert("Failed to delete account. Please log in again and try.");
+  //             }
+  //           } else {
+  //             alert("No user is currently signed in.");
+  //           }
+  //         },
+  //         style: "destructive",
+  //       },
+  //     ]
+  //   );
+  // };
 
   // -----------------------------
   // SWITCH ACCOUNT HANDLER
   // -----------------------------
-  const handleSwitchAccount = () => {
-    Alert.alert(
-      "Switch Account",
-      "Do you want to switch to your buyer account?",
-      [
-        {
-          text: "No, Log Out Instead",
-          onPress: async () => {
-            try {
-              await signOut(auth);
-              alert("Logged out successfully");
-              router.replace("/vendor/signin/signin");
-            } catch (error) {
-              console.error("Error logging out:", error.message);
-              alert("Failed to log out. Try again.");
-            }
-          },
-        },
-        {
-          text: "Yes, Switch to Buyer",
-          onPress: () => {
-            router.replace("/buyer/signin/signin");
-          },
-        },
-      ]
-    );
-  };
+  // const handleSwitchAccount = () => {
+  //   Alert.alert(
+  //     "Switch Account",
+  //     "Do you want to switch to your buyer account?",
+  //     [
+  //       {
+  //         text: "No, Log Out Instead",
+  //         onPress: async () => {
+  //           try {
+  //             await signOut(auth);
+  //             alert("Logged out successfully");
+  //             router.replace("/vendor/signin/signin");
+  //           } catch (error) {
+  //             console.error("Error logging out:", error.message);
+  //             alert("Failed to log out. Try again.");
+  //           }
+  //         },
+  //       },
+  //       {
+  //         text: "Yes, Switch to Buyer",
+  //         onPress: () => {
+  //           router.replace("/buyer/signin/signin");
+  //         },
+  //       },
+  //     ]
+  //   );
+  // };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -170,15 +165,15 @@ const Settings = () => {
         <View style={styles.section}>
           <Text style={styles.sectionHeader}>Account Actions</Text>
           <View style={styles.innerSection}>
-            <TouchableOpacity onPress={handleSwitchAccount}>
+            <TouchableOpacity onPress={() => ""}>
               <Text style={[styles.item, { color: '#007AFF' }]}>Switch Accounts</Text>
             </TouchableOpacity>
             <View style={styles.line} />
-            <TouchableOpacity onPress={handleLogOut}>
+            <TouchableOpacity onPress={() => ""}>
               <Text style={[styles.item, { color: '#f59e0b' }]}>Log Out</Text>
             </TouchableOpacity>
             <View style={styles.line} />
-            <TouchableOpacity onPress={handleDeleteAccount}>
+            <TouchableOpacity onPress={() => ""}>
               <Text style={[styles.item, { color: 'red' }]}>Delete Account</Text>
             </TouchableOpacity>
           </View>

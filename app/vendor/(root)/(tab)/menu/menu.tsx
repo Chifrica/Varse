@@ -22,6 +22,7 @@ const Menu = () => {
   const [pressedItem, setPressedItem] = useState<string | null>(null);
   const [slideAnim] = useState(new Animated.Value(width)); // Start off-screen to the right
   const [profile, setProfile] = useState(null)
+  
   useEffect(() => {
     Animated.timing(slideAnim, {
       toValue: 0, // Slide in to visible position
@@ -199,7 +200,7 @@ const styles = StyleSheet.create({
   profileSection: {
     flexDirection: "row",
     alignItems: "center",
-    marginTop: StatusBar.currentHeight ? StatusBar.currentHeight + 20 : 50,
+    marginTop: StatusBar.currentHeight ? StatusBar.currentHeight : 30,
     marginBottom: 40,
     gap: 15,
   },
@@ -240,7 +241,7 @@ const styles = StyleSheet.create({
   },
   logoutButton: {
     position: "absolute",
-    bottom: 40,
+    bottom: 120,
     width: "90%",
     alignSelf: "center",
   },
