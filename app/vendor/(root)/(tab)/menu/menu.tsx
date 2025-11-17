@@ -12,6 +12,7 @@ import {
   TouchableOpacity,
   View
 } from "react-native";
+import { supabase } from "../../../../utils/supabase";
 
 const { width } = Dimensions.get("window");
 
@@ -20,7 +21,7 @@ const STATUSBAR_HEIGHT = Platform.OS === "android" ? StatusBar.currentHeight : 5
 const Menu = () => {
   const [pressedItem, setPressedItem] = useState<string | null>(null);
   const [slideAnim] = useState(new Animated.Value(width)); // Start off-screen to the right
-
+  const [profile, setProfile] = useState(null)
   useEffect(() => {
     Animated.timing(slideAnim, {
       toValue: 0, // Slide in to visible position
@@ -28,6 +29,29 @@ const Menu = () => {
       useNativeDriver: false,
     }).start();
   }, []);
+
+  useEffect(() => {
+    const loadProfile = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", user.id)
+        .single()
+
+      if (error) {
+        throw new Error(error)
+      }
+
+      setProfile(data)
+
+    };
+
+    loadProfile();
+  }, [])
 
   const handleProfile = () => {
     router.navigate("/vendor/src/profile/myProfile")
@@ -100,13 +124,14 @@ const Menu = () => {
         <View style={styles.profileSection}>
           <Image
             source={{
-              uri: "https://cdn-icons-png.flaticon.com/512/149/149071.png",
+              uri: profile?.avatar_url ||
+                "https://cdn-icons-png.flaticon.com/512/149/149071.png",
             }}
             style={styles.profileImage}
           />
           <View>
-            <Text style={styles.profileName}>Mohammed Jafar</Text>
-            <Text style={styles.profileEmail}>chikaonwunali20122@gmail.com</Text>
+            <Text style={styles.profileName}>{profile?.full_name}</Text>
+            <Text style={styles.profileEmail}>{profile?.email}</Text>
           </View>
         </View>
 
