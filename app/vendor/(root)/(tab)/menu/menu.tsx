@@ -1,6 +1,5 @@
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
-import { getAuth, signOut } from "firebase/auth";
 import React, { useEffect, useState } from "react";
 import {
   Alert,
@@ -82,9 +81,8 @@ const Menu = () => {
         {
           text: "Yes",
           onPress: async () => {
-            const auth = getAuth();
             try {
-              await signOut(auth);
+              await supabase.auth.signOut();
               alert("Logged out successfully");
               router.replace("/vendor/signin/signin");
             } catch (error) {

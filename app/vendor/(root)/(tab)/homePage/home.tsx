@@ -75,7 +75,9 @@ const Home = () => {
         {/* Header */}
         <View style={styles.header}>
           <Image
-            source={require("../../../../../assets/icons/logo.png")}
+            source={{
+              uri: profile?.avatar_url
+            }}
             style={styles.logo}
           />
           <View>
@@ -223,6 +225,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     marginRight: 10,
+    borderRadius: 50
   },
   greeting: {
     fontSize: 18,
