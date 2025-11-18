@@ -33,7 +33,7 @@ const AddProduct = () => {
     weight: "",
     color: "",
     shopName: "",
-    location: ""
+    location: "",
   });
 
   const handleChange = (key, value) => setForm({ ...form, [key]: value });
@@ -142,7 +142,7 @@ const AddProduct = () => {
         color: form.color.trim(),
         image_url: imageUrl || "https://via.placeholder.com/150",
         shopName: form.shopName.trim(),
-        location: form.location.trim(),
+        location: form.location.trim()
       });
 
       Alert.alert("Success", "Product uploaded successfully!");
