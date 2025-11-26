@@ -24,7 +24,7 @@ const AddProduct = () => {
   const [loading, setLoading] = useState(false);
   const [image, setImage] = useState(null);
 
-  // 🧩 Form states
+  // Form states
   const [form, setForm] = useState({
     productName: "",
     price: "",
@@ -40,7 +40,7 @@ const AddProduct = () => {
 
   const handleBackArrow = () => router.back();
 
-  // 🖼 Pick image from gallery
+  // Pick image from gallery
   const pickImage = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== "granted") {
@@ -63,7 +63,7 @@ const AddProduct = () => {
     }
   };
 
-  // ☁️ Upload image to Supabase bucket
+  // Upload image to Supabase bucket
   const getMimeTypeFromUri = (uri) => {
     const ext = uri.split('.').pop()?.toLowerCase() || '';
     const map = {
@@ -117,7 +117,7 @@ const AddProduct = () => {
     }
   };
 
-  // ✅ Save product to Supabase table
+  // Save product to Supabase table
   const handleSaveProduct = async () => {
     if (!form.productName || !form.price || !form.stockQuantity || !selectedCategory) {
       Alert.alert("Missing Fields", "Please fill in all required fields.");
