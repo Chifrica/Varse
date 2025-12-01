@@ -15,7 +15,7 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Svg, { Path } from "react-native-svg";
-import { getAllItem } from "../../../../api/varse";
+import { getItemsForBuyers } from "../../../../api/varse";
 import { categories, categoriesItems, featuredShops, popularItems, trendingProducts } from "./_data";
 
 const Home = () => {
@@ -31,7 +31,7 @@ const Home = () => {
     const fetchItems = async () => {
       try {
         setLoading(true);
-        const allItems = await getAllItem();
+        const allItems = await getItemsForBuyers();
 
         setPopularMeals(
           allItems.filter((item) =>

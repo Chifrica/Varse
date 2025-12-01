@@ -1,7 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
-import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, useColorScheme, View } from "react-native";
+import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { supabase } from "../../../../utils/supabase";
 
@@ -49,26 +49,12 @@ const Home = () => {
     loadProfile();
   }, []); 
 
-  const colorScheme = useColorScheme();
-
   const router = useRouter();
 
   const handleAddProduct = () => {
     router.push("/vendor/(root)/src/product/myProduct");
   }
 
-  // useEffect(() => {
-  //   const auth = getAuth();
-  //   const unsubscribe = onAuthStateChanged(auth, (user) => {
-  //     if (user) {
-  //       // Prefer displayName; fallback to email if displayName is null
-  //       setUserName(user.displayName || user.email?.split("@")[0] || "User");
-  //     } else {
-  //       setUserName("User");
-  //     }
-  //   });
-  //   return unsubscribe; // cleanup listener on unmount
-  // }, []);
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false}>

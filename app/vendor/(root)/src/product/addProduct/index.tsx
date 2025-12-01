@@ -142,7 +142,8 @@ const AddProduct = () => {
         color: form.color.trim(),
         image_url: imageUrl || "https://via.placeholder.com/150",
         shopName: form.shopName.trim(),
-        location: form.location.trim()
+        location: form.location.trim(),
+        vendor_id: null, // vendor_id will be set in createItem function
       });
 
       Alert.alert("Success", "Product uploaded successfully!");
