@@ -1,62 +1,227 @@
+import FontAwesome from "@expo/vector-icons/FontAwesome";
+import * as Google from "expo-auth-session/providers/google";
+import Checkbox from "expo-checkbox";
 import { useRouter } from "expo-router";
-import { Text, TextInput, TouchableOpacity, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import styles from "../signup/style";
+import * as WebBrowser from "expo-web-browser";
+import { useState } from "react";
+import {
+  Alert,
+  Image,
+  KeyboardAvoidingView,
+  ScrollView,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { supabase } from "../../utils/supabase";
+import styles from "./style";
+
+WebBrowser.maybeCompleteAuthSession();
 
 const SignUp = () => {
+  const router = useRouter();
 
-    const router = useRouter();
+  // Form states
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [isChecked, setChecked] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
-    const handleLogin = () => {
-        router.push('/');
+  // Google Auth Configuration
+  const [request, response, promptAsync] = Google.useAuthRequest({
+    clientId: "853543512665-gcfohtk0dnkfjvodgeuosv96tnnf9933.apps.googleusercontent.com",
+    webClientId: "853543512665-gcfohtk0dnkfjvodgeuosv96tnnf9933.apps.googleusercontent.com",
+  });
+
+  async function signUpBuyer() {
+    if (!email || !password || !confirmPassword) {
+      Alert.alert("All fields are required.");
+      return;
     }
 
-    const handleRegister = () => {
-        router.push('/buyer/(root)/(tab)/homePage/home');
+    if (password !== confirmPassword) {
+      Alert.alert("Passwords do not match.");
+      return;
     }
 
-    const loginTxt = { text: "  Login", onPress: handleLogin };
+    if (!isChecked) {
+      Alert.alert("Please agree to the Terms and Privacy Policy.");
+      return;
+    }
+
+    try {
+      setLoading(true);
+
+      // Create Auth user
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+      });
+
+      if (error) {
+        Alert.alert(error.message);
+        setLoading(false);
+        return;
+      }
+
+      const user = data.user;
+
+      if (!user) {
+        Alert.alert("Please verify your email.");
+        setLoading(false);
+        return;
+      }
+
+      // Insert into profiles table with role: "buyer"
+      const { error: profileError } = await supabase.from("profiles").insert([
+        {
+          id: user.id,
+          email: user.email,
+          role: "buyer",
+        },
+      ]);
+
+      if (profileError) {
+        Alert.alert(profileError.message);
+        setLoading(false);
+        return;
+      }
+
+      Alert.alert("Account created! Please verify your email.");
+      router.push("/buyer/signin/signin")
+
+    } catch (err) {
+      Alert.alert(err.message);
+    } finally {
+      setLoading(false);
+    }
+  }
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>Varse Market</Text>
-        <Text style={styles.subTitle}>{`Join us and start shopping!`}</Text>
-      </View>
-
-      <View>
-        <View>
-          <TextInput placeholder="Full Name" style={styles.input} />
+    <KeyboardAvoidingView behavior="padding" style={styles.container}>
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <View style={styles.header}>
+          <Image source={require("../../../assets/icons/logo.png")} />
+          <Text style={styles.title}>Welcome to Varse Buyer</Text>
+          <Text style={styles.subTitle}>Your Marketplace, Your Control</Text>
         </View>
 
+        {/* Email/Password Inputs */}
         <View>
-          <TextInput placeholder="Email Address" style={styles.input} />
-        </View>
+          <TextInput
+            placeholder="Enter Email"
+            style={styles.input}
+            value={email}
+            onChangeText={setEmail}
+          />
 
-        <View>
-          <TextInput placeholder="Password" secureTextEntry={true} style={styles.input} />
-        </View>
+          <View style={{ position: "relative", justifyContent: "center" }}>
+            <TextInput
+              placeholder="Enter Password"
+              secureTextEntry={!showPassword}
+              style={styles.input}
+              value={password}
+              onChangeText={setPassword}
+            />
 
-        <View>
-          <TextInput placeholder="Confirm Password" secureTextEntry={true} style={styles.input} />
-        </View>
-
-      </View>
-
-      <View>
-        <TouchableOpacity style={styles.button} onPress={handleRegister}>
-          <Text style={styles.buttonText}>Register</Text>
-        </TouchableOpacity>
-      </View>
-
-      <View style={{marginTop: 20, flexDirection: 'row', alignItems: 'center'}}>
-        <Text style={styles.loginText1}>Already have an account?  
-            <TouchableOpacity onPress={loginTxt.onPress}> 
-                <Text style={styles.loginText2}>{loginTxt.text}</Text> 
+            <TouchableOpacity
+              onPress={() => setShowPassword(!showPassword)}
+              style={{ position: "absolute", right: 20, top: 15 }}
+            >
+              <FontAwesome
+                name={showPassword ? "eye" : "eye-slash"}
+                size={20}
+                color="#888"
+              />
             </TouchableOpacity>
-        </Text>
-      </View>
-    </SafeAreaView>
+          </View>
+
+          <View style={{ position: "relative", justifyContent: "center" }}>
+            <TextInput
+              placeholder="Confirm Password"
+              secureTextEntry={!showPassword}
+              style={styles.input}
+              value={confirmPassword}
+              onChangeText={setConfirmPassword}
+            />
+
+            <TouchableOpacity
+              onPress={() => setShowPassword(!showPassword)}
+              style={{ position: "absolute", right: 20, top: 15 }}
+            >
+              <FontAwesome
+                name={showPassword ? "eye" : "eye-slash"}
+                size={20}
+                color="#888"
+              />
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        {/* Divider */}
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            marginVertical: 20,
+            width: "90%",
+          }}
+        >
+          <View style={styles.horizontalLine} />
+          <Text style={styles.orTxt}>OR</Text>
+          <View style={styles.horizontalLine} />
+        </View>
+
+        <Text style={{ fontSize: 18, color: "#666", fontWeight: "700" }}>Sign up with</Text>
+
+        {/* Social Icons */}
+        <View style={styles.socialIcons}>
+          <TouchableOpacity
+            style={styles.iconBox}
+            onPress={() => promptAsync()}
+            disabled={!request}
+          >
+            <FontAwesome name="google" size={24} color="#DB4437" />
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.iconBox}>
+            <FontAwesome name="apple" size={24} color="#000" />
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.iconBox}>
+            <FontAwesome name="facebook" size={24} color="#1877F2" />
+          </TouchableOpacity>
+        </View>
+
+        {/* Terms Checkbox */}
+        <View style={styles.agreementContainer}>
+          <Checkbox
+            value={isChecked}
+            onValueChange={setChecked}
+            color={isChecked ? "#FF8800" : undefined}
+          />
+          <Text style={styles.agreementText}>
+            {"  "}I agree to the{" "}
+            <Text style={styles.linkText}>Terms and Privacy Policy</Text>
+          </Text>
+        </View>
+
+        {/* Register Button */}
+        <TouchableOpacity
+          style={styles.button}
+          onPress={signUpBuyer}
+          disabled={loading}
+        >
+          <Text style={styles.buttonText}>
+            {loading ? "Creating account..." : "Register"}
+          </Text>
+        </TouchableOpacity>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
-}
+};
+
 export default SignUp;

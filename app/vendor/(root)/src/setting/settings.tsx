@@ -1,8 +1,9 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
-import { ScrollView, StyleSheet, Switch, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, ScrollView, StyleSheet, Switch, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { supabase } from '../../../../utils/supabase';
 
 const Settings = () => {
   const router = useRouter();
@@ -22,31 +23,38 @@ const Settings = () => {
     setNotifications((prev) => ({ ...prev, [key]: !prev[key] }));
   };
 
-  // -----------------------------
-  // LOGOUT HANDLER
-  // -----------------------------
-  // const handleLogOut = () => {
-  //   Alert.alert(
-  //     "Logout Confirmation",
-  //     "Are you sure you want to logout?",
-  //     [
-  //       { text: "No", style: "cancel" },
-  //       {
-  //         text: "Yes",
-  //         onPress: async () => {
-  //           try {
-  //             await signOut(auth);
-  //             alert("Logged out successfully");
-  //             router.replace("/vendor/signin/signin");
-  //           } catch (error) {
-  //             console.error("Error logging out:", error.message);
-  //             alert("Failed to log out. Try again.");
-  //           }
-  //         },
-  //       },
-  //     ]
-  //   );
-  // };
+  const handleDeleteAccount = () => {
+    Alert.alert(
+      "Delete Account",
+      "This action cannot be undone. Do you want to continue?",
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Delete",
+          style: "destructive",
+          onPress: async () => {
+            try {
+              // Call your Edge Function
+              const { error } = await supabase.functions.invoke("delete-user", {});
+
+              if (error) {
+                Alert.alert("Error", error.message);
+                return;
+              }
+
+              // Log out after deletion
+              await supabase.auth.signOut();
+
+              Alert.alert("Deleted", "Your account has been permanently removed.");
+              router.replace("/vendor/signin/signin");
+            } catch (err) {
+              Alert.alert("Error", "Something went wrong.");
+            }
+          },
+        },
+      ]
+    );
+  };
 
   // -----------------------------
   // DELETE ACCOUNT HANDLER
@@ -173,7 +181,7 @@ const Settings = () => {
               <Text style={[styles.item, { color: '#f59e0b' }]}>Log Out</Text>
             </TouchableOpacity>
             <View style={styles.line} />
-            <TouchableOpacity onPress={() => ""}>
+            <TouchableOpacity onPress={handleDeleteAccount}>
               <Text style={[styles.item, { color: 'red' }]}>Delete Account</Text>
             </TouchableOpacity>
           </View>
@@ -245,19 +253,19 @@ const styles = StyleSheet.create({
 
 
 
-  // Handle Google login response
-  // useEffect(() => {
-  //   if (response?.type === "success") {
-  //     const { id_token } = response.params;
-  //     const credential = GoogleAuthProvider.credential(id_token);
-  //     signInWithCredential(auth, credential)
-  //       .then(() => {
-  //         Alert.alert("Success", "Signed up successfully with Google!");
-  //         router.push("/vendor/signup/kycRegistration/kyc");
-  //       })
-  //       .catch((error) => {
-  //         console.error(error);
-  //         Alert.alert("Google Sign-In Failed", error.message);
-  //       });
-  //   }
-  // }, [response]);
+// Handle Google login response
+// useEffect(() => {
+//   if (response?.type === "success") {
+//     const { id_token } = response.params;
+//     const credential = GoogleAuthProvider.credential(id_token);
+//     signInWithCredential(auth, credential)
+//       .then(() => {
+//         Alert.alert("Success", "Signed up successfully with Google!");
+//         router.push("/vendor/signup/kycRegistration/kyc");
+//       })
+//       .catch((error) => {
+//         console.error(error);
+//         Alert.alert("Google Sign-In Failed", error.message);
+//       });
+//   }
+// }, [response]);

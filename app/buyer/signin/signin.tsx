@@ -4,12 +4,12 @@ import React, { useState } from "react";
 import {
   Alert,
   Image,
+  KeyboardAvoidingView,
   Text,
   TextInput,
   TouchableOpacity,
-  View,
+  View
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { supabase } from "../../utils/supabase";
 import styles from "./style";
 
@@ -22,58 +22,102 @@ const Index = () => {
   const router = useRouter();
 
   async function signInWithEmail() {
-    setLoading(true)
-    const { error, data: { session } } = await supabase.auth.signInWithPassword({
-      email: email,
-      password: password,
-    })
-    if (session) {
-      router.push("/vendor/(root)/(tab)/homePage/home")
+    try {
+      setLoading(true);
+
+      // STEP 1 — Sign in using email & password
+      const { data: { session }, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (error) {
+        Alert.alert(error.message);
+        return;
+      }
+
+      const userId = session.user.id;
+
+      // Check if profile exists
+      let { data: profile } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", userId)
+        .single();
+
+      // If no profile, create one
+      if (!profile) {
+        await supabase.from("profiles").insert([
+          {
+            id: userId,
+            email: session.user.email,
+            role: "buyer",
+          }
+        ]);
+
+        const { data: newProfile } = await supabase
+          .from("profiles")
+          .select("*")
+          .eq("id", userId)
+          .single();
+
+        profile = newProfile;
+      }
+
+      // Block vendors from using buyer login
+      if (profile.role !== "buyer") {
+        Alert.alert("This account is a Vendor'.");
+        return;
+      }
+
+      // STEP 4 — Navigate to Buyer home if role is correct
+      router.push("/buyer/(root)/(tab)/homePage/home");
+
+    } catch (err) {
+      Alert.alert("Something went wrong. Try again.");
+    } finally {
+      setLoading(false);
     }
-    if (error) Alert.alert(error.message)
-    setLoading(false)
   }
 
   const handleSignUp = () => {
     router.push("/buyer/signup/signup");
   };
 
-  const signupTxt = { text: "SignUp", onPress: handleSignUp };
-
   return (
-    <SafeAreaView style={styles.container}>
+    <KeyboardAvoidingView behavior="padding" style={styles.container}>
       <View style={styles.header}>
         <Image source={require("../../../assets/icons/logo.png")} />
-        <Text style={styles.title}>Welcome Back !</Text>
-        <Text style={styles.subTitle}>
-          Your Marketplace, Your Control.
-        </Text>
+        <Text style={styles.title}>Welcome Back!</Text>
+        <Text style={styles.subTitle}>Shop Smart. Shop Easy.</Text>
       </View>
 
       <View>
-        <View>
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <FontAwesome 
-              name="envelope" 
-              size={20} color="#888" 
-              style={{ position: "absolute",left: 20, top: 15, }} 
-            />
+        {/* Email */}
+        <View style={{ flexDirection: "row", alignItems: "center" }}>
+          <FontAwesome
+            name="envelope"
+            size={20}
+            color="#888"
+            style={{ position: "absolute", left: 20, top: 15 }}
+          />
 
-            <TextInput
-              placeholder="Enter Email"
-              style={[styles.input, { flex: 1 }]}
-              value={email}
-              onChangeText={setEmail}
-            />
-          </View>
+          <TextInput
+            placeholder="Enter Email"
+            style={[styles.input, { flex: 1 }]}
+            value={email}
+            onChangeText={setEmail}
+          />
         </View>
 
+        {/* Password */}
         <View style={{ position: "relative", justifyContent: "center" }}>
-          <FontAwesome 
-              name="lock" 
-              size={20} color="#888" 
-              style={{ position: "absolute",left: 20, top: 15, }} 
-            />
+          <FontAwesome
+            name="lock"
+            size={20}
+            color="#888"
+            style={{ position: "absolute", left: 20, top: 15 }}
+          />
 
           <TextInput
             placeholder="Enter Password"
@@ -85,11 +129,7 @@ const Index = () => {
 
           <TouchableOpacity
             onPress={() => setShowPassword(!showPassword)}
-            style={{
-              position: "absolute",
-              right: 20,
-              top: 15,
-            }}
+            style={{ position: "absolute", right: 20, top: 15 }}
           >
             <FontAwesome
               name={showPassword ? "eye" : "eye-slash"}
@@ -100,59 +140,23 @@ const Index = () => {
         </View>
       </View>
 
-      {/* Horizontal Line */}
-      <View
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          marginVertical: 20,
-          width: "90%",
-        }}
-      >
-        <View style={styles.horizontalLine} />
-        <Text style={styles.orTxt}>OR</Text>
-        <View style={styles.horizontalLine} />
-      </View>
+      {/* Sign In Button */}
+      <TouchableOpacity style={styles.button} onPress={signInWithEmail}>
+        <Text style={styles.buttonText}>
+          {loading ? "Signing in..." : "Sign in"}
+        </Text>
+      </TouchableOpacity>
 
-      <Text style={{ fontSize: 18, color: "#666", fontWeight: "700" }}>
-        Log in with
-      </Text>
-
-      <View style={styles.socialIcons}>
-        <TouchableOpacity style={styles.iconBox}>
-          <FontAwesome name="google" size={24} color="#DB4437" />
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.iconBox}>
-          <FontAwesome name="apple" size={24} color="#000000" />
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.iconBox}>
-          <FontAwesome name="facebook" size={24} color="#1877F2" />
-        </TouchableOpacity>
-      </View>
-
-      <View>
-        <TouchableOpacity style={styles.button} onPress={signInWithEmail}>
-          <Text style={styles.buttonText}>Sign in</Text>
-        </TouchableOpacity>
-      </View>
-
-      <View
-        style={{
-          marginTop: 15,
-          flexDirection: "row",
-          alignItems: "center",
-        }}
-      >
+      {/* Sign Up */}
+      <View style={{ marginTop: 15, flexDirection: "row", alignItems: "center" }}>
         <Text style={styles.signUpTxt1}>
           Don't have an account?
-          <TouchableOpacity onPress={signupTxt.onPress}>
-            <Text style={styles.signUpText2}> {signupTxt.text}</Text>
+          <TouchableOpacity onPress={handleSignUp}>
+            <Text style={styles.signUpText2}> SignUp</Text>
           </TouchableOpacity>
         </Text>
       </View>
-    </SafeAreaView>
+    </KeyboardAvoidingView>
   );
 };
 

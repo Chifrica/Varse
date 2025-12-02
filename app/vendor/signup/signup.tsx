@@ -7,6 +7,7 @@ import { useState } from "react";
 import {
   Alert,
   Image,
+  ScrollView,
   Text,
   TextInput,
   TouchableOpacity,
@@ -36,144 +37,193 @@ const SignUp = () => {
   });
 
   async function signUpWithEmail() {
-    setLoading(true)
-    const {
-      data: { session },
-      error,
-    } = await supabase.auth.signUp({
-      email: email,
-      password: password,
-    })
-    if (session) {
-      router.push("/vendor/homePage/home")
+    if (!email || !password || !confirmPassword) {
+      Alert.alert("All fields are required.");
+      return;
     }
-    if (error) Alert.alert(error.message)
-    if (!session) Alert.alert('Please check your inbox for email verification!')
-    setLoading(false)
+
+    if (password !== confirmPassword) {
+      Alert.alert("Passwords do not match.");
+      return;
+    }
+
+    if (!isChecked) {
+      Alert.alert("Please agree to the Terms and Privacy Policy.");
+      return;
+    }
+
+    try {
+      setLoading(true);
+
+      // Create Auth user
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+      });
+
+      if (error) {
+        Alert.alert(error.message);
+        setLoading(false);
+        return;
+      }
+
+      const user = data.user;
+
+      if (!user) {
+        Alert.alert("Please verify your email.");
+        setLoading(false);
+        return;
+      }
+
+      // Insert into profiles table with role: "vendor"
+      const { error: profileError } = await supabase.from("profiles").insert([
+        {
+          id: user.id,
+          email: user.email,
+          role: "vendor",
+        },
+      ]);
+
+      if (profileError) {
+        Alert.alert(profileError.message);
+        setLoading(false);
+        return;
+      }
+
+      Alert.alert("Account created! Please verify your email.");
+      router.push("/vendor/signin/signin")
+
+    } catch (err) {
+      Alert.alert(err.message);
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <Image source={require("../../../assets/icons/logo.png")} />
-        <Text style={styles.title}>Welcome to Varse Vendor</Text>
-        <Text style={styles.subTitle}>Your Marketplace, Your Control</Text>
-      </View>
-
-      {/* Email/Password Inputs */}
-      <View>
-        <TextInput
-          placeholder="Enter Email"
-          style={styles.input}
-          value={email}
-          onChangeText={setEmail}
-        />
-
-        <View style={{ position: "relative", justifyContent: "center" }}>
-          <TextInput
-            placeholder="Enter Password"
-            secureTextEntry={!showPassword}
-            style={styles.input}
-            value={password}
-            onChangeText={setPassword}
-          />
-
-          <TouchableOpacity
-            onPress={() => setShowPassword(!showPassword)}
-            style={{
-              position: "absolute",
-              right: 20,
-              top: 15,
-            }}
-          >
-            <FontAwesome
-              name={showPassword ? "eye" : "eye-slash"}
-              size={20}
-              color="#888"
-            />
-          </TouchableOpacity>
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <View style={styles.header}>
+          <Image source={require("../../../assets/icons/logo.png")} />
+          <Text style={styles.title}>Welcome to Varse Vendor</Text>
+          <Text style={styles.subTitle}>Your Marketplace, Your Control</Text>
         </View>
 
-        <View style={{ position: "relative", justifyContent: "center" }}>
+        {/* Email/Password Inputs */}
+        <View>
           <TextInput
-            placeholder="Enter Password"
-            secureTextEntry={!showPassword}
+            placeholder="Enter Email"
             style={styles.input}
-            value={confirmPassword}
-            onChangeText={setConfirmPassword}
+            value={email}
+            onChangeText={setEmail}
           />
 
-          <TouchableOpacity
-            onPress={() => setShowPassword(!showPassword)}
-            style={{
-              position: "absolute",
-              right: 20,
-              top: 15,
-            }}
-          >
-            <FontAwesome
-              name={showPassword ? "eye" : "eye-slash"}
-              size={20}
-              color="#888"
+          <View style={{ position: "relative", justifyContent: "center" }}>
+            <TextInput
+              placeholder="Enter Password"
+              secureTextEntry={!showPassword}
+              style={styles.input}
+              value={password}
+              onChangeText={setPassword}
             />
-          </TouchableOpacity>
+
+            <TouchableOpacity
+              onPress={() => setShowPassword(!showPassword)}
+              style={{
+                position: "absolute",
+                right: 20,
+                top: 15,
+              }}
+            >
+              <FontAwesome
+                name={showPassword ? "eye" : "eye-slash"}
+                size={20}
+                color="#888"
+              />
+            </TouchableOpacity>
+          </View>
+
+          <View style={{ position: "relative", justifyContent: "center" }}>
+            <TextInput
+              placeholder="Enter Password"
+              secureTextEntry={!showPassword}
+              style={styles.input}
+              value={confirmPassword}
+              onChangeText={setConfirmPassword}
+            />
+
+            <TouchableOpacity
+              onPress={() => setShowPassword(!showPassword)}
+              style={{
+                position: "absolute",
+                right: 20,
+                top: 15,
+              }}
+            >
+              <FontAwesome
+                name={showPassword ? "eye" : "eye-slash"}
+                size={20}
+                color="#888"
+              />
+            </TouchableOpacity>
+          </View>
         </View>
-      </View>
 
-      {/* Divider */}
-      <View
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          marginVertical: 20,
-          width: "90%",
-        }}
-      >
-        <View style={styles.horizontalLine} />
-        <Text style={styles.orTxt}>OR</Text>
-        <View style={styles.horizontalLine} />
-      </View>
-
-      <Text style={{ fontSize: 18, color: "#666", fontWeight: "700" }}>
-        Sign up with
-      </Text>
-
-      {/* Social Icons */}
-      <View style={styles.socialIcons}>
-        <TouchableOpacity
-          style={styles.iconBox}
-          onPress={() => promptAsync()}
-          disabled={!request}
+        {/* Divider */}
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            marginVertical: 20,
+            width: "90%",
+          }}
         >
-          <FontAwesome name="google" size={24} color="#DB4437" />
-        </TouchableOpacity>
+          <View style={styles.horizontalLine} />
+          <Text style={styles.orTxt}>OR</Text>
+          <View style={styles.horizontalLine} />
+        </View>
 
-        <TouchableOpacity style={styles.iconBox}>
-          <FontAwesome name="apple" size={24} color="#000" />
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.iconBox}>
-          <FontAwesome name="facebook" size={24} color="#1877F2" />
-        </TouchableOpacity>
-      </View>
-
-      {/* Terms Checkbox */}
-      <View style={styles.agreementContainer}>
-        <Checkbox
-          value={isChecked}
-          onValueChange={setChecked}
-          color={isChecked ? "#FF8800" : undefined}
-        />
-        <Text style={styles.agreementText}>
-          {"  "}I agree to the{" "}
-          <Text style={styles.linkText}>Terms and Privacy Policy</Text>
+        <Text style={{ fontSize: 18, color: "#666", fontWeight: "700" }}>
+          Sign up with
         </Text>
-      </View>
 
-      {/* Register Button */}
-      <TouchableOpacity style={styles.button} onPress={signUpWithEmail}>
-        <Text style={styles.buttonText}>Register</Text>
-      </TouchableOpacity>
+        {/* Social Icons */}
+        <View style={styles.socialIcons}>
+          <TouchableOpacity
+            style={styles.iconBox}
+            onPress={() => promptAsync()}
+            disabled={!request}
+          >
+            <FontAwesome name="google" size={24} color="#DB4437" />
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.iconBox}>
+            <FontAwesome name="apple" size={24} color="#000" />
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.iconBox}>
+            <FontAwesome name="facebook" size={24} color="#1877F2" />
+          </TouchableOpacity>
+        </View>
+
+        {/* Terms Checkbox */}
+        <View style={styles.agreementContainer}>
+          <Checkbox
+            value={isChecked}
+            onValueChange={setChecked}
+            color={isChecked ? "#FF8800" : undefined}
+          />
+          <Text style={styles.agreementText}>
+            {"  "}I agree to the{" "}
+            <Text style={styles.linkText}>Terms and Privacy Policy</Text>
+          </Text>
+        </View>
+
+        {/* Register Button */}
+        <TouchableOpacity style={styles.button} onPress={signUpWithEmail}>
+          <Text style={styles.buttonText}>Register</Text>
+        </TouchableOpacity>
+      </ScrollView>
     </SafeAreaView>
   );
 };
