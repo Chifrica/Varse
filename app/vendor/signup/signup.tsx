@@ -32,8 +32,8 @@ const SignUp = () => {
 
   // Google Auth Configuration
   const [request, response, promptAsync] = Google.useAuthRequest({
-    clientId: "853543512665-gcfohtk0dnkfjvodgeuosv96tnnf9933.apps.googleusercontent.com",
-    webClientId: "853543512665-gcfohtk0dnkfjvodgeuosv96tnnf9933.apps.googleusercontent.com",
+    clientId: "EXPO_PUBLIC_SUPABASE_CLIENT_ID",
+    webClientId: "EXPO_PUBLIC_SUPABASE_CLIENT_ID",
   });
 
   async function signUpWithEmail() {
