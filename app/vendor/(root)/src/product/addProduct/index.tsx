@@ -7,6 +7,7 @@ import {
   ActivityIndicator,
   Alert,
   Image,
+  KeyboardAvoidingView,
   ScrollView,
   Text,
   TextInput,
@@ -158,6 +159,7 @@ const AddProduct = () => {
 
   return (
     <SafeAreaView style={styles.container}>
+    <KeyboardAvoidingView behavior="padding">
       <ScrollView showsVerticalScrollIndicator={false}>
         {/* Header */}
         <View style={styles.header}>
@@ -349,6 +351,7 @@ const AddProduct = () => {
           </Text>
         </TouchableOpacity>
       </ScrollView>
+    </KeyboardAvoidingView>
     </SafeAreaView>
   );
 };

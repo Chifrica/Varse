@@ -33,10 +33,11 @@ const SignUp = () => {
   // Google Auth Configuration
   const [request, response, promptAsync] = Google.useAuthRequest({
     clientId: "853543512665-gcfohtk0dnkfjvodgeuosv96tnnf9933.apps.googleusercontent.com",
-    webClientId: "853543512665-gcfohtk0dnkfjvodgeuosv96tnnf9933.apps.googleusercontent.com", // from Firebase
+    webClientId: "853543512665-gcfohtk0dnkfjvodgeuosv96tnnf9933.apps.googleusercontent.com",
   });
 
   async function signUpWithEmail() {
+    // Basic validations
     if (!email || !password || !confirmPassword) {
       Alert.alert("All fields are required.");
       return;
@@ -48,14 +49,13 @@ const SignUp = () => {
     }
 
     if (!isChecked) {
-      Alert.alert("Please agree to the Terms and Privacy Policy.");
+      Alert.alert("Please accept the Terms and Privacy Policy.");
       return;
     }
 
     try {
       setLoading(true);
 
-      // Create Auth user
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
@@ -69,32 +69,35 @@ const SignUp = () => {
 
       const user = data.user;
 
+      await supabase.from("profiles").upsert({
+        id: user?.id,
+        email: user?.email,
+        role: "vendor", 
+        updated_at: new Date().toISOString(),
+      });
+
       if (!user) {
-        Alert.alert("Please verify your email.");
+        Alert.alert(
+          "Verify your email",
+          "A verification email has been sent to your inbox."
+        );
         setLoading(false);
         return;
       }
 
-      // Insert into profiles table with role: "vendor"
-      const { error: profileError } = await supabase.from("profiles").insert([
-        {
-          id: user.id,
-          email: user.email,
-          role: "vendor",
-        },
-      ]);
-
-      if (profileError) {
-        Alert.alert(profileError.message);
-        setLoading(false);
-        return;
-      }
-
-      Alert.alert("Account created! Please verify your email.");
-      router.push("/vendor/signin/signin")
+      Alert.alert(
+        "Verify your email",
+        "Account created successfully. Please check your email.",
+        [
+          {
+            text: "OK",
+            onPress: () => router.replace("/vendor/signin/signin"),
+          },
+        ]
+      );
 
     } catch (err) {
-      Alert.alert(err.message);
+      Alert.alert("Something went wrong. Try again.");
     } finally {
       setLoading(false);
     }
@@ -221,7 +224,7 @@ const SignUp = () => {
 
         {/* Register Button */}
         <TouchableOpacity style={styles.button} onPress={signUpWithEmail}>
-          <Text style={styles.buttonText}>Register</Text>
+          <Text style={styles.buttonText}>{loading ? "Registering...." : "Register"}</Text>
         </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>

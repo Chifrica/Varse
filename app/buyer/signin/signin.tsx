@@ -22,63 +22,62 @@ const Index = () => {
   const router = useRouter();
 
   async function signInWithEmail() {
-    try {
-      setLoading(true);
-
-      // STEP 1 — Sign in using email & password
-      const { data: { session }, error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
-
-      if (error) {
-        Alert.alert(error.message);
-        return;
-      }
-
-      const userId = session.user.id;
-
-      // Check if profile exists
-      let { data: profile } = await supabase
-        .from("profiles")
-        .select("*")
-        .eq("id", userId)
-        .single();
-
-      // If no profile, create one
-      if (!profile) {
-        await supabase.from("profiles").insert([
-          {
-            id: userId,
-            email: session.user.email,
-            role: "buyer",
-          }
-        ]);
-
-        const { data: newProfile } = await supabase
+      try {
+        setLoading(true);
+  
+        // Sign user in with Supabase Auth
+        const { data: { session }, error } = await supabase.auth.signInWithPassword({
+          email,
+          password,
+        });
+  
+        if (error) {
+          Alert.alert(error.message);
+          return;
+        }
+  
+        const userId = session.user.id;
+  
+        // Fetch or create profile
+        let { data: profile } = await supabase
           .from("profiles")
           .select("*")
           .eq("id", userId)
           .single();
-
-        profile = newProfile;
+  
+        if (!profile) {
+          await supabase.from("profiles").insert([
+            {
+              id: userId,
+              email: session.user.email,
+              role: "buyer",
+            }
+          ]);
+  
+          const { data: newProfile } = await supabase
+            .from("profiles")
+            .select("*")
+            .eq("id", userId)
+            .single();
+  
+          profile = newProfile;
+        }
+  
+        // Restrict login
+        if (profile.role !== "buyer") {
+          Alert.alert("You're not Buyer'.");
+          return;
+        }
+  
+        // Correct role, now navigate to vendor home
+        router.push("/buyer/(root)/(tab)/homePage/home");
+  
+      } catch (err) {
+        Alert.alert("Something went wrong.");
+      } finally {
+        setLoading(false);
       }
-
-      // Block vendors from using buyer login
-      if (profile.role !== "buyer") {
-        Alert.alert("This account is a Vendor'.");
-        return;
-      }
-
-      // STEP 4 — Navigate to Buyer home if role is correct
-      router.push("/buyer/(root)/(tab)/homePage/home");
-
-    } catch (err) {
-      Alert.alert("Something went wrong. Try again.");
-    } finally {
-      setLoading(false);
     }
-  }
 
   const handleSignUp = () => {
     router.push("/buyer/signup/signup");

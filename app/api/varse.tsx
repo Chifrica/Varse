@@ -76,7 +76,7 @@ export const deleteItem = async (id) => {
     }
 }
 
-export const updateProfile = async (full_name, id, email, phone_number, address, avatar_url, updated_at) => {
+export const updateProfile = async (full_name, id, email, phone_number, address, avatar_url, updated_at, role) => {
     const { data, error } = await supabase
         .from("profiles")
         .update({
@@ -85,7 +85,8 @@ export const updateProfile = async (full_name, id, email, phone_number, address,
             phone_number,
             address,
             avatar_url,
-            updated_at
+            updated_at,
+            role
         })
         .eq("id", id)
 

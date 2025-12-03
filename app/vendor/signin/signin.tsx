@@ -25,7 +25,7 @@ const Index = () => {
     try {
       setLoading(true);
 
-      // Step 1: Sign user in with Supabase Auth
+      // Sign user in with Supabase Auth
       const { data: { session }, error } = await supabase.auth.signInWithPassword({
         email,
         password,
@@ -66,10 +66,11 @@ const Index = () => {
       // Restrict login
       if (profile.role !== "vendor") {
         Alert.alert("You're not Vendor'.");
+        console.log(profile)
         return;
       }
 
-      // Step 4: Correct role, now navigate to vendor home
+      // Correct role, now navigate to vendor home
       router.push("/vendor/(root)/(tab)/homePage/home");
 
     } catch (err) {
