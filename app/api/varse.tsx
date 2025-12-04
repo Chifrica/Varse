@@ -1,4 +1,4 @@
-import { supabase } from "../utils/supabase";
+import supabase from "../utils/supabase";
 
 // get all items for the logged-in vendor
 export const getAllItem = async () => {
@@ -76,7 +76,7 @@ export const deleteItem = async (id) => {
     }
 }
 
-export const updateProfile = async (full_name, id, email, phone_number, address, avatar_url, updated_at, role) => {
+const updateProfile = async (full_name, id, email, phone_number, address, avatar_url, updated_at, role) => {
     const { data, error } = await supabase
         .from("profiles")
         .update({
@@ -96,3 +96,4 @@ export const updateProfile = async (full_name, id, email, phone_number, address,
     return data
 }
 
+export default updateProfile;

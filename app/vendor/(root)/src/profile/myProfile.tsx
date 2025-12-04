@@ -11,7 +11,7 @@ import {
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { supabase } from '../../../../utils/supabase';
+import supabase from '../../../../utils/supabase';
 
 const MyProfile = () => {
   const [profile, setProfile] = useState(null);

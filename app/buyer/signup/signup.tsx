@@ -14,7 +14,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { supabase } from "../../utils/supabase";
+import supabase from "../../utils/supabase";
 import styles from "./style";
 
 WebBrowser.maybeCompleteAuthSession();

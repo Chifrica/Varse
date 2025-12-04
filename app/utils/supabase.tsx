@@ -6,7 +6,7 @@ const { createClient, processLock } = require("@supabase/supabase-js");
 const supabaseURL = process.env.EXPO_PUBLIC_SUPABASE_URL
 const supabaseKey = process.env.EXPO_PUBLIC_SUPABASE_KEY
 
-export const supabase = createClient(supabaseURL, supabaseKey, {
+const supabase = createClient(supabaseURL, supabaseKey, {
   auth: {
     storage: AsyncStorage,
     autoRefreshToken: true,
@@ -17,11 +17,12 @@ export const supabase = createClient(supabaseURL, supabaseKey, {
 })
 
 // if (Platform.OS !== "web") {
-  AppState.addEventListener('change', (state) => {
-    if (state === 'active') {
-      supabase.auth.startAutoRefresh()
-    } else {
-      supabase.auth.stopAutoRefresh()
-    }
-  })
-// }
+AppState.addEventListener('change', (state) => {
+  if (state === 'active') {
+    supabase.auth.startAutoRefresh()
+  } else {
+    supabase.auth.stopAutoRefresh()
+  }
+})
+
+export default supabase;

@@ -16,8 +16,8 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { createItem } from "../../../../../api/varse";
-import { supabase } from "../../../../../utils/supabase";
-import { styles } from "./style";
+import supabase from "../../../../../utils/supabase";
+import styles from "./style";
 
 const AddProduct = () => {
   const router = useRouter();

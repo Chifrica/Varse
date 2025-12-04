@@ -11,14 +11,13 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { styles } from "./_style";
+import styles from "./style";
 
 const KYCSetUp = () => {
   const [activeTab, setActiveTab] = useState("basic");
   const [showCategories, setShowCategories] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("");
   const [businessName, setBusinessName] = useState("");
-  const [category, setCategory] = useState("");
   const [fullName, setFullName] = useState("");
   const [address, setAddress] = useState("");
 
