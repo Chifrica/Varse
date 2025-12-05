@@ -1,8 +1,11 @@
 const { getDefaultConfig } = require("@expo/metro-config");
 
-const defaultConfig = getDefaultConfig(__dirname);
-
-// Add .cjs support
-defaultConfig.resolver.sourceExts.push("cjs");
-
-module.exports = defaultConfig;
+module.exports = (() => {
+  const config = getDefaultConfig(__dirname);
+  config.resolver.assetExts.push("png");
+  config.resolver.sourceExts.push("cjs");
+  config.resolver.extraNodeModules = {
+    assets: require("path").resolve(__dirname + "/assets"),
+  };
+  return config;
+})();

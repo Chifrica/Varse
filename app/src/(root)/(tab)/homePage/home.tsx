@@ -3,7 +3,7 @@ import { useRouter } from 'expo-router';
 import React, { useEffect, useRef, useState } from 'react';
 import { Dimensions, FlatList, Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { cardImages, categories, featuredShops, trendingProducts } from './datas';
+import { cardImages, categories, featuredShops, trendingProducts } from './data';
 
 const width = Dimensions.get('window').width; // You can use Dimensions.get('window').width for dynamic width
 const Home = () => {

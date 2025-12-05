@@ -18,6 +18,7 @@ import Svg, { Path } from "react-native-svg";
 import { getItemsForBuyers } from "../../../../api/varse";
 import { categories, categoriesItems, featuredShops, popularItems, trendingProducts } from "./_data";
 
+
 const Home = () => {
 
   const [searchQuery, setSearchQuery] = useState("");

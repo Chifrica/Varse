@@ -32,7 +32,7 @@ const Index = () => {
       });
 
       if (error) {
-        Alert.alert(error.message);
+        Alert.alert("Missing credentials or invalid credentials.");
         return;
       }
 
@@ -81,7 +81,7 @@ const Index = () => {
   }
 
   const handleSignUp = () => {
-    router.push("/vendor/signup/signup");
+    router.push("/vendor/signup");
   };
 
   return (

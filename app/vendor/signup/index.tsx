@@ -62,7 +62,7 @@ const SignUp = () => {
       });
 
       if (error) {
-        Alert.alert(error.message);
+        Alert.alert("Missing credentials or invalid credentials.");
         setLoading(false);
         return;
       }
@@ -91,7 +91,7 @@ const SignUp = () => {
         [
           {
             text: "OK",
-            onPress: () => router.replace("/vendor/signin/signin"),
+            onPress: () => router.replace("/vendor/signin"),
           },
         ]
       );

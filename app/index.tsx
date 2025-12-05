@@ -8,7 +8,7 @@ const Index = () => {
   const router = useRouter();
 
   const handleSignInAsBuyer = () => {
-    router.push('/buyer/signin/signin');
+    router.push('/buyer/signin');
   }
 
   const handleSignInAsRider = () => {
@@ -16,7 +16,7 @@ const Index = () => {
   }
 
   const handleSignInAsVendor = () => {
-    router.push('/vendor/signin/signin');
+    router.push('/vendor/signin');
   }
 
   return (
