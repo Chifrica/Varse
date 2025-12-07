@@ -84,7 +84,7 @@ const Menu = () => {
             try {
               await supabase.auth.signOut();
               alert("Logged out successfully");
-              router.replace("/vendor/signin/signin");
+              router.replace("/vendor/signin");
             } catch (error) {
               console.error("Error logging out:", error.message);
               alert("Failed to log out. Try again.");

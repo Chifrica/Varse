@@ -54,19 +54,19 @@ const Menu = () => {
   }, [])
 
   const handleProfile = () => {
-    router.navigate("/vendor/src/profile/myProfile")
+    router.navigate("/buyer/src/profile/myProfile")
   }
 
   const handleContact = () => {
-    router.navigate("/vendor/(root)/src/contact/contactUs")
+    router.navigate("/buyer/src/contact/contactUs")
   }
 
   const handleSetting = () => {
-    router.navigate("/vendor/(root)/src/setting/settings")
+    router.navigate("/buyer/src/setting/settings")
   }
 
   const handleAddress = () => {
-    router.navigate("/vendor/(root)/src/address/address")
+    router.navigate("/buyer/src/address/address")
   }
 
   const handleLogOut = async () => {
@@ -84,7 +84,7 @@ const Menu = () => {
             try {
               await supabase.auth.signOut();
               alert("Logged out successfully");
-              router.replace("/vendor/signin/signin");
+              router.replace("/buyer/signin");
             } catch (error) {
               console.error("Error logging out:", error.message);
               alert("Failed to log out. Try again.");
