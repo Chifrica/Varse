@@ -31,7 +31,7 @@ const Social = () => {
             style={styles.iconLeft}
           />
           <Text style={styles.contactText}>WhatsApp</Text>
-          <Ionicons name="share-outline" size={22} color="#FF8800" />
+          <Ionicons name="share-social-outline" size={22} color="#FF8800" />
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.contactBox}>
@@ -42,7 +42,7 @@ const Social = () => {
             style={styles.iconLeft}
           />
           <Text style={styles.contactText}>Facebook</Text>
-          <Ionicons name="share-outline" size={22} color="#FF8800" />
+          <Ionicons name="share-social-outline" size={22} color="#FF8800" />
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.contactBox}>
@@ -53,7 +53,7 @@ const Social = () => {
             style={styles.iconLeft}
           />
           <Text style={styles.contactText}>LinkedIn</Text>
-          <Ionicons name="share-outline" size={22} color="#FF8800" />
+          <Ionicons name="share-social-outline" size={22} color="#FF8800" />
         </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>

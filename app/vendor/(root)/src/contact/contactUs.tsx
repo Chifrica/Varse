@@ -38,19 +38,19 @@ const ContactUs = () => {
         <TouchableOpacity style={styles.contactBox} onPress={handleEmailScreen}>
           <Ionicons name="mail-outline" size={24} color="#FF8800" style={{backgroundColor: "#eee", borderRadius: 50, padding: 10}} />
           <Text style={styles.contactText}>Via Email</Text>
-          <Ionicons name="share-outline" size={22} color="#FF8800" />
+          <Ionicons name="share-social-outline" size={22} color="#FF8800" />
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.contactBox}>
           <Ionicons name="call-outline" size={24} color="#FF8800" style={{backgroundColor: "#eee", borderRadius: 50, padding: 10}} />
           <Text style={styles.contactText}>Mobile</Text>
-          <Ionicons name="share-outline" size={22} color="#FF8800" />
+          <Ionicons name="share-social-outline" size={22} color="#FF8800" />
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.contactBox} onPress={handleSocials} >
           <Ionicons name="people" size={24} color="#FF8800" style={{backgroundColor: "#eee", borderRadius: 50, padding: 10}} />
           <Text style={styles.contactText}>Socials</Text>
-          <Ionicons name="share-outline" size={22} color="#FF8800" />
+          <Ionicons name="share-social-outline" size={22} color="#FF8800" />
         </TouchableOpacity>
 
       </ScrollView>
