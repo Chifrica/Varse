@@ -9,6 +9,7 @@ const Home = () => {
 
   const [profile, setProfile] = useState(null);
   const [recentOrders, setRecentOrders] = useState([]);
+  const [activeProductsCount, setActiveProductsCount] = useState(0);
 
   useEffect(() => {
     const loadOrders = async () => {
@@ -31,7 +32,7 @@ const Home = () => {
   useEffect(() => {
     const loadProfile = async () => {
       const { data: { user } } = await supabase.auth.getUser();
-      if(!user) return;
+      if (!user) return;
 
       const { data, error } = await supabase
         .from("profiles")
@@ -47,7 +48,31 @@ const Home = () => {
     };
 
     loadProfile();
-  }, []); 
+  }, []);
+
+  // fetching active products
+  useEffect(() => {
+    const fetchActiveProducts = async () => {
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) return;
+
+        const { data, error } = await supabase
+          .from("productsUpload")
+          .select("*")
+          .eq("vendor_id", user.id);
+
+        if (error) throw new Error(error.message);
+
+        setActiveProductsCount(data.length);
+      } catch (error) {
+        console.error("Error fetching active products:", error.message);
+      }
+    };
+
+    fetchActiveProducts();
+
+  }, []);
 
   const router = useRouter();
 
@@ -99,7 +124,7 @@ const Home = () => {
             <View>
               <Text style={styles.cardTitle}>
                 Active Products
-                <Text style={styles.cardValue}>{`    10`}</Text>
+                <Text style={styles.cardValue}>{`   ${activeProductsCount}`}</Text>
               </Text>
             </View>
           </View>
@@ -144,23 +169,7 @@ const Home = () => {
           <Text style={styles.recentTitle}>Recent Orders</Text>
           <Text style={styles.seeAll}>See all</Text>
         </View>
-        <View style={{ marginTop: 20 }}>
-          {recentOrders.length === 0 ? (
-            <Text style={{ textAlign: "center", padding: 10 }}>No recent orders yet</Text>
-          ) : (
-            recentOrders.map((order, index) => (
-              <TouchableOpacity
-                key={index}
-                style={styles.orderRow}
-              // onPress={handleOderReview}
-              >
-                <Text style={styles.orderName}>{order.name}</Text>
-                <Text style={{ color: "#22C55E", fontWeight: "700" }}>Paid</Text>
-              </TouchableOpacity>
-            ))
-          )}
-        </View>
-
+        
         <View style={styles.recentOrders}>
 
           <View style={styles.tableHeader}>
@@ -382,3 +391,5 @@ const styles = StyleSheet.create({
   },
 
 });
+
+

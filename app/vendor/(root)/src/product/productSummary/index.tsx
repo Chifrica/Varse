@@ -33,7 +33,7 @@ const Products = () => {
         .single();
 
       if (error) {
-        console.error("Error fetching product:", error.message);
+        console.error("Error fetching product:", "There's an error in fetching products.");
         Alert.alert("Error", "Unable to fetch latest product.");
       } else {
         setProduct(data);

@@ -8,19 +8,19 @@ const ContactUs = () => {
   const router = useRouter();
 
   const handleBackArrow = () => {
-    router.navigate("/vendor/(root)/(tab)/menu/menu");
+    router.navigate("/buyer/(root)/(tab)/menu/menu");
   };
 
   const handleEmailScreen = () => {
-    router.navigate("/vendor/(root)/src/contact/email")
+    router.navigate("/buyer/src/contact/email")
   }
 
   const handleMobile = () => {
-    router.navigate("/vendor/(root)/src/contact/email")
+    router.navigate("/buyer/src/contact/email")
   }
 
   const handleSocials = () => {
-    router.navigate("/vendor/(root)/src/contact/social")
+    router.navigate("/buyer/src/contact/social")
   }
 
   return (

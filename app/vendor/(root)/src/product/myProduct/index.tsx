@@ -13,7 +13,7 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { deleteItem, getAllItem } from "../../../../../api/varse";
-import { styles } from "./_style";
+import styles from "./_style";
 
 const formatCurrency = (amount, currency = "NGN") => {
   if (isNaN(amount)) return "₦0";

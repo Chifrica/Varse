@@ -1,6 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import React from "react";
+import React, { useState } from "react";
 import {
   Dimensions,
   Image,
@@ -17,6 +17,8 @@ const screenWidth = Dimensions.get("window").width;
 
 const Order = () => {
   const router = useRouter();
+
+  const [product, setProduct] = useState(null)
 
   const handleBackArrow = () => {
     router.back();
@@ -142,7 +144,7 @@ const Order = () => {
                 />
                 <View style={styles.productDetails}>
                   <Text style={styles.productName}>Product Name</Text>
-                  <Text style={styles.orderId}>Order Id: #VAR102ABC</Text>
+                  <Text style={styles.orderId}>Order Id: </Text>
                 </View>
                 <Text style={[styles.orderStatus, { color: order.color }]}>
                   {order.status}
