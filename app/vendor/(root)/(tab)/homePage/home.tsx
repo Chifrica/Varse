@@ -197,7 +197,7 @@ const Home = () => {
                 <View>
                   <Text style={styles.orderTitle}>{order.name}</Text>
                   <Text style={styles.orderDetails}>
-                    Price: ₦{order.totalPrice} | ID: {order.id}
+                    {` Price: ₦ ${order.total_price} \n Product ID: ${order.product_id}`}
                   </Text>
                 </View>
 
