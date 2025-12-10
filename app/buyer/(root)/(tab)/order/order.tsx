@@ -115,12 +115,22 @@ const Cart = () => {
   const handleCheckout = async () => {
     const { data: { user } } = await supabase.auth.getUser();
 
-    for (const item of cartItems) {
+    // Filter items that are not paid
+    const unpaidItems = cartItems.filter((item) => !item.paid);
+
+    if (unpaidItems.length === 0) {
+      Alert.alert("No new orders", "There are no new items to proceed to checkout.");
+      return;
+    }
+
+    let hasError = false;
+
+    for (const item of unpaidItems) {
       const { error } = await supabase
         .from("orders")
         .insert({
-          buyer_id: item.userId,      // buyer id
-          vendor_id: item.vendorId || user.id,
+          buyer_id: user.id,
+          vendor_id: item.vendor_id,
           product_id: item.id,
           name: item.name,
           qty: item.qty,
@@ -128,14 +138,21 @@ const Cart = () => {
           extras_total: item.extrasTotal || 0,
           total_price: item.totalPrice,
           image: item.image,
-          paid: true
+          paid: true, // Mark as paid
         });
 
-      if (error) console.log("Insert error:", error);
+      if (error) {
+        hasError = true;
+        console.error("Error inserting order:", error.message);
+      }
     }
 
-    Alert.alert("Success", "Order placed successfully!");
-    router.push("/buyer/src/checkout/checkout");
+    if (hasError) {
+      Alert.alert("Error", "Some items could not be processed. Please try again.");
+    } else {
+      // Alert.alert("Success", "Order placed successfully!");
+      router.push("/buyer/src/checkout/checkout");
+    }
   };
 
   return (
@@ -143,9 +160,9 @@ const Cart = () => {
 
       {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.navigate("/buyer/homePage/home")}>
+        {/* <TouchableOpacity onPress={() => router.back()}>
           <Ionicons name="arrow-back" size={24} />
-        </TouchableOpacity>
+        </TouchableOpacity> */}
         <Text style={styles.headerTitle}>My Cart</Text>
       </View>
 
@@ -206,7 +223,7 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 20,
     fontWeight: "700",
-    marginLeft: 140,
+    marginLeft: 150,
   },
   cartItem: {
     flexDirection: "row",
@@ -323,3 +340,4 @@ const styles = StyleSheet.create({
     fontWeight: "700",
   },
 });
+

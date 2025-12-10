@@ -15,15 +15,26 @@ const Home = () => {
     const loadOrders = async () => {
       const { data: { user } } = await supabase.auth.getUser();
 
-      if (!user) return;
+      if (!user) {
+        console.error("No user found");
+        return;
+      }
 
       const { data, error } = await supabase
         .from("orders")
         .select("*")
-        .eq("vendor_id", user.id)   // your vendor ID
+        .eq("vendor_id", user.id) // Filter by vendor ID
+        .eq("paid", true) // Only include paid orders
         .order("created_at", { ascending: false });
 
-      if (!error) setRecentOrders(data);
+      if (error) {
+        console.error("Error fetching orders:", error.message);
+      } else {
+        console.log("Fetched orders:", data); // Debug log
+        console.log("User ID:", user.id); // Debug log
+      }
+
+      setRecentOrders(data || []);
     };
 
     loadOrders();
@@ -169,7 +180,6 @@ const Home = () => {
           <Text style={styles.recentTitle}>Recent Orders</Text>
           <Text style={styles.seeAll}>See all</Text>
         </View>
-        
         <View style={styles.recentOrders}>
 
           <View style={styles.tableHeader}>

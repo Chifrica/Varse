@@ -25,7 +25,11 @@ const Home = () => {
   const [popularMeals, setPopularMeals] = useState([]);
   const [electronics, setElectronics] = useState([]);
   const [fashions, setFashion] = useState([]);
+  const [accessories, setAccessories] = useState([]);
+  const [homeAppliancies, setHomeAppliancies] = useState([]);
+
   const [loading, setLoading] = useState(true);
+
 
   // Fetch popular meals from Supabase
   useEffect(() => {
@@ -48,7 +52,19 @@ const Home = () => {
 
         setElectronics(
           allItems.filter((item) =>
-            ["electronics", "appliances"].includes(item.category?.toLowerCase())
+            ["electronics", "home appliances", "accessories"].includes(item.category?.toLowerCase())
+          )
+        );
+
+        setAccessories(
+          allItems.filter((item) =>
+            ["accessories"].includes(item.category?.toLowerCase())
+          )
+        );
+
+        setHomeAppliancies(
+          allItems.filter((item) =>
+            ["home appliances"].includes(item.category?.toLowerCase())
           )
         );
       } catch (error) {
@@ -82,6 +98,23 @@ const Home = () => {
       image: { uri: item.image },
       price: item.price,
     })),
+    ...popularItems.map((item) => ({
+      id: `pop-${item.id}`,
+      name: item.name,
+      image: item.image,
+      price: item.price,
+    })),...popularItems.map((item) => ({
+      id: `pop-${item.id}`,
+      name: item.name,
+      image: item.image,
+      price: item.price,
+    })),
+    // ...categoriesItems.map((item) => ({
+    //   id: `pop-${item.id}`,
+    //   name: item.name,
+    //   image: item.image,
+    //   price: item.price,
+    // })),
     ...popularItems.map((item) => ({
       id: `pop-${item.id}`,
       name: item.name,
@@ -322,7 +355,71 @@ const Home = () => {
           ) : (
             <Text style={{ color: "#888" }}>No electronics found</Text>
           )}
-      </ScrollView>
+        </ScrollView>
+
+        {/* Accossories
+        <Text style={styles.sectionTitle}>Accessories</Text>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          style={styles.popularScroll}
+        >
+          {accessories.length > 0 ? (
+            accessories.map((item) => (
+              <TouchableOpacity
+                key={item.id}
+                style={styles.popularCard}
+                onPress={() => handleProductPress(item)}
+              >
+                <Image
+                  source={{ uri: item.image_url }}
+                  style={styles.popularImage}
+                />
+                <View style={styles.popularInfo}>
+                  <Text style={styles.popularName}>{item.productName}</Text>
+                  <Text style={styles.shopName}>{item.shopName}</Text>
+                  <Text style={styles.popularPrice}>
+                    {formatCurrency(item.price, "NGN")}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            ))
+          ) : (
+            <Text style={{ color: "#888" }}>No fashions found</Text>
+          )}
+        </ScrollView> */}
+
+        {/* Home Appliances
+        <Text style={styles.sectionTitle}>Home Appliances</Text>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          style={styles.popularScroll}
+        >
+          {homeAppliancies.length > 0 ? (
+            homeAppliancies.map((item) => (
+              <TouchableOpacity
+                key={item.id}
+                style={styles.popularCard}
+                onPress={() => handleProductPress(item)}
+              >
+                <Image
+                  source={{ uri: item.image_url }}
+                  style={styles.popularImage}
+                />
+                <View style={styles.popularInfo}>
+                  <Text style={styles.popularName}>{item.productName}</Text>
+                  <Text style={styles.shopName}>{item.shopName}</Text>
+                  <Text style={styles.popularPrice}>
+                    {formatCurrency(item.price, "NGN")}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            ))
+          ) : (
+            <Text style={{ color: "#888" }}>No electronics found</Text>
+          )}
+        </ScrollView> */}
       </ScrollView>
     </SafeAreaView>
   );
