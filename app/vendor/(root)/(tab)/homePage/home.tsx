@@ -10,6 +10,7 @@ const Home = () => {
   const [profile, setProfile] = useState(null);
   const [recentOrders, setRecentOrders] = useState([]);
   const [activeProductsCount, setActiveProductsCount] = useState(0);
+  const [walletBalance, setWalletBalance] = useState(0);
 
   useEffect(() => {
     const loadOrders = async () => {
@@ -35,6 +36,9 @@ const Home = () => {
       }
 
       setRecentOrders(data || []);
+
+      const totalBalance = (data || []).reduce((sum, order) => sum + (order.total_price || 0), 0);
+      setWalletBalance(totalBalance);
     };
 
     loadOrders();
@@ -145,7 +149,7 @@ const Home = () => {
             <View>
               <Text style={styles.cardTitle}>
                 Wallet Balance
-                <Text style={styles.cardValue}>{`    $5`}</Text>
+                <Text style={styles.cardValue}>{` ₦ ${walletBalance}`}</Text>
               </Text>
             </View>
           </View>
@@ -194,14 +198,21 @@ const Home = () => {
           ) : (
             recentOrders.map((order, index) => (
               <View key={index} style={styles.orderCard}>
-                <View>
-                  <Text style={styles.orderTitle}>{order.name}</Text>
-                  <Text style={styles.orderDetails}>
-                    {` Price: ₦ ${order.total_price} \n Product ID: ${order.product_id}`}
-                  </Text>
+                <View style={{flexDirection: "row", alignItems: "center", gap: 5}}>
+                  <Image
+                    source={{
+                      uri: order.image
+                    }}
+                    style={styles.orderImage}
+                  />
+                  <View>
+                    <Text style={styles.orderTitle}>{order.name}</Text>
+                    <Text style={styles.orderDetails}>
+                      {`Price: ₦ ${order.total_price} \nProduct ID: ${order.product_id}`}
+                    </Text>
+                  </View>
                 </View>
-
-                <Text style={styles.approved}>Paid</Text>
+                <Text style={styles.approved}>Completed</Text>
               </View>
             ))
           )}
@@ -249,7 +260,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   card: {
-    width: "47%",
+    width: "49%",
     backgroundColor: "#FFF5E5",
     borderRadius: 12,
     paddingVertical: 14,
@@ -398,6 +409,12 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "600",
     color: "#000",
+  },
+  orderImage: {
+    width: 50,
+    height: 50,
+    marginRight: 10,
+    borderRadius: 5
   },
 
 });
