@@ -19,7 +19,6 @@ const screenWidth = Dimensions.get("window").width;
 const Order = () => {
   const router = useRouter();
 
-  const [product, setProduct] = useState(null)
   const [recentOrders, setRecentOrders] = useState([]);
   const [dailyPerformance, setDailyPerformance] = useState([0, 0, 0, 0, 0, 0, 0]);
 
