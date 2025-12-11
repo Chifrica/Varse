@@ -1,6 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Dimensions,
   Image,
@@ -12,6 +12,7 @@ import {
 } from "react-native";
 import { BarChart } from "react-native-chart-kit"; // changed here
 import { SafeAreaView } from "react-native-safe-area-context";
+import supabase from "../../../../utils/supabase";
 
 const screenWidth = Dimensions.get("window").width;
 
@@ -19,10 +20,52 @@ const Order = () => {
   const router = useRouter();
 
   const [product, setProduct] = useState(null)
+  const [recentOrders, setRecentOrders] = useState([]);
+  const [walletBalance, setWalletBalance] = useState(0);
+  const [totalSales, setTotalSales] = useState(0);
 
   const handleBackArrow = () => {
     router.back();
   };
+
+  useEffect(() => {
+    const loadOrders = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+
+      if (!user) {
+        console.error("No user found");
+        return;
+      }
+
+      const sevenDaysAgo = new Date();
+      sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+
+      const { data, error } = await supabase
+        .from("orders")
+        .select("*")
+        .eq("vendor_id", user.id)
+        .eq("paid", true)
+        .gte("created_at", sevenDaysAgo.toISOString())
+        .order("created_at", { ascending: false });
+
+      if (error) {
+        console.error("Error fetching orders:", error.message);
+      } else {
+        console.log("Fetched orders:", data); // Debug log
+        console.log("User ID:", user.id); // Debug log
+      }
+
+      setRecentOrders(data || []);
+
+      const totalBalance = (data || []).reduce((sum, order) => sum + (order.total_price || 0), 0);
+      setWalletBalance(totalBalance);
+
+      const totalItems = (data || []).reduce((sum, order) => sum + (order.qty || 0), 0);
+      setTotalSales(totalItems);
+    };
+
+    loadOrders();
+  }, []);
 
   const handleOderReview = () => {
     router.navigate("/vendor/(root)/src/order/orderReview")
@@ -95,7 +138,7 @@ const Order = () => {
             width={screenWidth - 50}
             height={220}
             fromZero
-            yAxisLabel=""        
+            yAxisLabel=""
             yAxisSuffix=""
             chartConfig={{
               backgroundColor: "#fff",
@@ -128,35 +171,37 @@ const Order = () => {
         <View style={styles.recentOrdersContainer}>
           <Text style={styles.recentOrdersTitle}>Recent Orders</Text>
 
-          {[
-            { status: "Completed", color: "#22C55E", onPress: handleOderReview },
-            { status: "In Progress", color: "#3B82F6" },
-            { status: "Cancelled", color: "#EF4444" },
-            { status: "Pending", color: "#FF8800" },
-          ].map((order, index) => (
-            <TouchableOpacity onPress={order.onPress} key={index} style={styles.orderCard}>
-              <View style={styles.orderRow}>
-                <Image
-                  source={{
-                    uri: "https://waziri.ng/wp-content/uploads/2024/01/Versace-Leather-White-Shoe-for-Men.jpg",
-                  }}
-                  style={styles.productImage}
-                />
-                <View style={styles.productDetails}>
-                  <Text style={styles.productName}>Product Name</Text>
-                  <Text style={styles.orderId}>Order Id: </Text>
+          {recentOrders.length === 0 ? (
+            <Text style={{ textAlign: "center", padding: 10 }}>No recent orders yet</Text>
+          ) : (
+            recentOrders.map((order, index) => (
+              <TouchableOpacity key={index} style={styles.orderCard} onPress={handleOderReview}>
+                <View style={styles.orderRow}>
+                  <Image
+                    source={{
+                      uri: order.image
+                    }}
+                    style={styles.productImage}
+                  />
+                  <View style={styles.productDetails}>
+                    <Text style={styles.productName}>Product Name: {`  ${order.name}`}</Text>
+                    <Text style={styles.orderId}>
+                      {`Price: ₦ ${order.total_price} \nProduct ID: ${order.product_id}`}
+                    </Text>
+                  </View>
+                  <Text style={[styles.orderStatus, { color: order.color }]}>
+                    {order.status}
+                  </Text>
+                  <Ionicons
+                    name="chevron-forward-outline"
+                    size={20}
+                    color="#000"
+                  />
                 </View>
-                <Text style={[styles.orderStatus, { color: order.color }]}>
-                  {order.status}
-                </Text>
-                <Ionicons
-                  name="chevron-forward-outline"
-                  size={20}
-                  color="#000"
-                />
-              </View>
-            </TouchableOpacity>
-          ))}
+                {/* <Text style={styles.approved}>Completed</Text> */}
+              </TouchableOpacity>
+            ))
+          )}
         </View>
       </ScrollView>
     </SafeAreaView>

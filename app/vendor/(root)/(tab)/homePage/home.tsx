@@ -11,6 +11,7 @@ const Home = () => {
   const [recentOrders, setRecentOrders] = useState([]);
   const [activeProductsCount, setActiveProductsCount] = useState(0);
   const [walletBalance, setWalletBalance] = useState(0);
+  const [totalSales, setTotalSales] = useState(0);
 
   useEffect(() => {
     const loadOrders = async () => {
@@ -27,8 +28,8 @@ const Home = () => {
       const { data, error } = await supabase
         .from("orders")
         .select("*")
-        .eq("vendor_id", user.id) 
-        .eq("paid", true) 
+        .eq("vendor_id", user.id)
+        .eq("paid", true)
         .gte("created_at", sevenDaysAgo.toISOString())
         .order("created_at", { ascending: false });
 
@@ -43,6 +44,9 @@ const Home = () => {
 
       const totalBalance = (data || []).reduce((sum, order) => sum + (order.total_price || 0), 0);
       setWalletBalance(totalBalance);
+
+      const totalItems = (data || []).reduce((sum, order) => sum + (order.qty || 0), 0);
+      setTotalSales(totalItems);
     };
 
     loadOrders();
@@ -123,8 +127,8 @@ const Home = () => {
             <View>
               <Text style={styles.cardTitle}>
                 Total Sales
-                <Text style={styles.cardValue}>{`    1`}</Text>
               </Text>
+              <Text style={styles.cardValue}>{`   ${totalSales}`}</Text>
             </View>
           </View>
 
@@ -133,8 +137,8 @@ const Home = () => {
             <View>
               <Text style={styles.cardTitle}>
                 Pending Orders
-                <Text style={styles.cardValue}>{`    14`}</Text>
               </Text>
+              <Text style={styles.cardValue}>{`    14`}</Text>
             </View>
           </View>
 
