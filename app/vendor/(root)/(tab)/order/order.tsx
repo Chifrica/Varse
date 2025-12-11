@@ -10,7 +10,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { BarChart } from "react-native-chart-kit"; // changed here
+import { LineChart } from "react-native-chart-kit"; // changed here
 import { SafeAreaView } from "react-native-safe-area-context";
 import supabase from "../../../../utils/supabase";
 
@@ -21,8 +21,7 @@ const Order = () => {
 
   const [product, setProduct] = useState(null)
   const [recentOrders, setRecentOrders] = useState([]);
-  const [walletBalance, setWalletBalance] = useState(0);
-  const [totalSales, setTotalSales] = useState(0);
+  const [dailyPerformance, setDailyPerformance] = useState([0, 0, 0, 0, 0, 0, 0]);
 
   const handleBackArrow = () => {
     router.back();
@@ -56,16 +55,28 @@ const Order = () => {
       }
 
       setRecentOrders(data || []);
-
-      const totalBalance = (data || []).reduce((sum, order) => sum + (order.total_price || 0), 0);
-      setWalletBalance(totalBalance);
-
-      const totalItems = (data || []).reduce((sum, order) => sum + (order.qty || 0), 0);
-      setTotalSales(totalItems);
+      calculateDailyPerformance(data || [])
     };
 
     loadOrders();
   }, []);
+
+  const calculateDailyPerformance = (orders) => {
+    const performance = [0, 0, 0, 0, 0, 0, 0]; // Initialize array for 7 days (Mon-Sun)
+
+    orders.forEach((order) => {
+      const orderDate = new Date(order.created_at);
+      const dayOfWeek = orderDate.getDay(); // Get day of the week (0 = Sunday, 1 = Monday, ..., 6 = Saturday)
+
+      // Increment the count for the corresponding day
+      performance[dayOfWeek] += 1;
+    });
+
+    // Shift the array to start from Monday (if needed)
+    const adjustedPerformance = [...performance.slice(1), performance[0]];
+
+    setDailyPerformance(adjustedPerformance);
+  }
 
   const handleOderReview = () => {
     router.navigate("/vendor/(root)/src/order/orderReview")
@@ -126,12 +137,12 @@ const Order = () => {
             <Text style={styles.performanceSub}>Last 7 days</Text>
           </View>
 
-          <BarChart
+          <LineChart
             data={{
               labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
               datasets: [
                 {
-                  data: [5, 9, 7, 15, 8, 6, 8],
+                  data: dailyPerformance,
                 },
               ],
             }}
@@ -151,20 +162,6 @@ const Order = () => {
             }}
             style={styles.chartStyle}
           />
-
-          <View
-            style={{
-              position: "absolute",
-              left: (screenWidth - 50) / 7 * 4.2,
-              bottom: 55,
-              width: 20,
-              height: 165,
-              backgroundColor: "#FF7A00",
-              opacity: 0.4,
-            }}
-          />
-
-
         </View>
 
         {/* Recent Orders */}
@@ -186,7 +183,7 @@ const Order = () => {
                   <View style={styles.productDetails}>
                     <Text style={styles.productName}>Product Name: {`  ${order.name}`}</Text>
                     <Text style={styles.orderId}>
-                      {`Price: ₦ ${order.total_price} \nProduct ID: ${order.product_id}`}
+                      {`Price: ₦ ${order.total_price} \nProduct ID: ${order.product_id} \nDate of Order Placed: ${new Date(order.created_at).toLocaleDateString()}`}
                     </Text>
                   </View>
                   <Text style={[styles.orderStatus, { color: order.color }]}>
@@ -198,7 +195,6 @@ const Order = () => {
                     color="#000"
                   />
                 </View>
-                {/* <Text style={styles.approved}>Completed</Text> */}
               </TouchableOpacity>
             ))
           )}
