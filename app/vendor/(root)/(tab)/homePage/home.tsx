@@ -21,11 +21,15 @@ const Home = () => {
         return;
       }
 
+      const sevenDaysAgo = new Date();
+      sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+
       const { data, error } = await supabase
         .from("orders")
         .select("*")
-        .eq("vendor_id", user.id) // Filter by vendor ID
-        .eq("paid", true) // Only include paid orders
+        .eq("vendor_id", user.id) 
+        .eq("paid", true) 
+        .gte("created_at", sevenDaysAgo.toISOString())
         .order("created_at", { ascending: false });
 
       if (error) {
@@ -139,8 +143,8 @@ const Home = () => {
             <View>
               <Text style={styles.cardTitle}>
                 Active Products
-                <Text style={styles.cardValue}>{`   ${activeProductsCount}`}</Text>
               </Text>
+              <Text style={styles.cardValue}>{`   ${activeProductsCount}`}</Text>
             </View>
           </View>
 
@@ -149,8 +153,8 @@ const Home = () => {
             <View>
               <Text style={styles.cardTitle}>
                 Wallet Balance
-                <Text style={styles.cardValue}>{` ₦ ${walletBalance}`}</Text>
               </Text>
+              <Text style={styles.cardValue}>{` ₦ ${walletBalance}`}</Text>
             </View>
           </View>
         </View>
@@ -198,7 +202,7 @@ const Home = () => {
           ) : (
             recentOrders.map((order, index) => (
               <View key={index} style={styles.orderCard}>
-                <View style={{flexDirection: "row", alignItems: "center", gap: 5}}>
+                <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
                   <Image
                     source={{
                       uri: order.image
@@ -283,8 +287,8 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "700",
     color: "#FF8800",
-    marginLeft: 4,
-    paddingLeft: 10
+    // marginLeft: 4,
+    // paddingLeft: 10
   },
 
   // Actions Row
@@ -418,5 +422,3 @@ const styles = StyleSheet.create({
   },
 
 });
-
-
