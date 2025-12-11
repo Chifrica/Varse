@@ -62,17 +62,15 @@ const Order = () => {
   }, []);
 
   const calculateDailyPerformance = (orders) => {
-    const performance = [0, 0, 0, 0, 0, 0, 0]; // Initialize array for 7 days (Mon-Sun)
+    const performance = [0, 0, 0, 0, 0, 0, 0];
 
     orders.forEach((order) => {
       const orderDate = new Date(order.created_at);
-      const dayOfWeek = orderDate.getDay(); // Get day of the week (0 = Sunday, 1 = Monday, ..., 6 = Saturday)
+      const dayOfWeek = orderDate.getDay(); 
 
-      // Increment the count for the corresponding day
       performance[dayOfWeek] += 1;
     });
 
-    // Shift the array to start from Monday (if needed)
     const adjustedPerformance = [...performance.slice(1), performance[0]];
 
     setDailyPerformance(adjustedPerformance);
