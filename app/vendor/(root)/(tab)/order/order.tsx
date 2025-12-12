@@ -65,7 +65,7 @@ const Order = () => {
 
     orders.forEach((order) => {
       const orderDate = new Date(order.created_at);
-      const dayOfWeek = orderDate.getDay(); 
+      const dayOfWeek = orderDate.getDay();
 
       performance[dayOfWeek] += 1;
     });
@@ -75,9 +75,19 @@ const Order = () => {
     setDailyPerformance(adjustedPerformance);
   }
 
-  const handleOderReview = () => {
-    router.navigate("/vendor/(root)/src/order/orderReview")
-  }
+  const handleOderReview = (order) => {
+    router.push({
+      pathname: "/vendor/(root)/src/order/orderReview",
+      params: { order: JSON.stringify(order) },
+    });
+  };
+
+  const formatCurrency = (amount, currency = "NGN") => {
+    if (isNaN(amount)) return "₦0";
+    const formatted = amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    return currency === "NGN" ? `₦ ${formatted}` : formatted;
+  };
+
 
   const handleCancelledOrder = () => {
     router.navigate("/vendor/(root)/src/order/cancelOrder/cancelledOrder")
@@ -155,8 +165,14 @@ const Order = () => {
               decimalPlaces: 0,
               color: (opacity = 1) => `rgba(255, 140, 0, ${opacity})`,
               labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-              barPercentage: 0.6,
+              // barPercentage: 0.6,
+              propsForDots: {
+                r: "3",
+                strokeWidth: "0.1",
+                stroke: "#ffa726",
+              },
             }}
+            bezier
             style={styles.chartStyle}
           />
         </View>
@@ -169,7 +185,7 @@ const Order = () => {
             <Text style={{ textAlign: "center", padding: 10 }}>No recent orders yet</Text>
           ) : (
             recentOrders.map((order, index) => (
-              <TouchableOpacity key={index} style={styles.orderCard} onPress={handleOderReview}>
+              <TouchableOpacity key={index} style={styles.orderCard} onPress={() => handleOderReview(order)}>
                 <View style={styles.orderRow}>
                   <Image
                     source={{
@@ -180,7 +196,7 @@ const Order = () => {
                   <View style={styles.productDetails}>
                     <Text style={styles.productName}>Product Name: {`  ${order.name}`}</Text>
                     <Text style={styles.orderId}>
-                      {`Price: ₦ ${order.total_price} \nProduct ID: ${order.product_id} \nDate of Order Placed: ${new Date(order.created_at).toLocaleDateString()}`}
+                      {`Price: ${formatCurrency(order.total_price)} \nProduct ID: ${order.product_id} \nDate of Order Placed: ${new Date(order.created_at).toLocaleDateString()}`}
                     </Text>
                   </View>
                   <Text style={[styles.orderStatus, { color: order.color }]}>

@@ -22,62 +22,66 @@ const Index = () => {
   const router = useRouter();
 
   async function signInWithEmail() {
-      try {
-        setLoading(true);
-  
-        // Sign user in with Supabase Auth
-        const { data: { session }, error } = await supabase.auth.signInWithPassword({
-          email,
-          password,
-        });
-  
-        if (error) {
+    try {
+      setLoading(true);
+
+      // Sign user in with Supabase Auth
+      const { data: { session }, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (error) {
+        if (error.message.include("Network")) {
+          Alert.alert("Network error. Please check your internet connection.");
+        } else {
           Alert.alert("Missing credentials or invalid credentials.");
-          return;
         }
-  
-        const userId = session.user.id;
-  
-        // Fetch or create profile
-        let { data: profile } = await supabase
+        return;
+      }
+
+      const userId = session.user.id;
+
+      // Fetch or create profile
+      let { data: profile } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", userId)
+        .single();
+
+      if (!profile) {
+        await supabase.from("profiles").insert([
+          {
+            id: userId,
+            email: session.user.email,
+            role: "buyer",
+          }
+        ]);
+
+        const { data: newProfile } = await supabase
           .from("profiles")
           .select("*")
           .eq("id", userId)
           .single();
-  
-        if (!profile) {
-          await supabase.from("profiles").insert([
-            {
-              id: userId,
-              email: session.user.email,
-              role: "buyer",
-            }
-          ]);
-  
-          const { data: newProfile } = await supabase
-            .from("profiles")
-            .select("*")
-            .eq("id", userId)
-            .single();
-  
-          profile = newProfile;
-        }
-  
-        // Restrict login
-        if (profile.role !== "buyer") {
-          Alert.alert("You're not Buyer'.");
-          return;
-        }
-  
-        // Correct role, now navigate to vendor home
-        router.push("/buyer/(root)/(tab)/homePage/home");
-  
-      } catch (err) {
-        Alert.alert("Something went wrong.");
-      } finally {
-        setLoading(false);
+
+        profile = newProfile;
       }
+
+      // Restrict login
+      if (profile.role !== "buyer") {
+        Alert.alert("You're not Buyer'.");
+        return;
+      }
+
+      // Correct role, now navigate to vendor home
+      router.push("/buyer/(root)/(tab)/homePage/home");
+
+    } catch (err) {
+      Alert.alert("Something went wrong.");
+    } finally {
+      setLoading(false);
     }
+  }
 
   const handleSignUp = () => {
     router.push("/buyer/signup");

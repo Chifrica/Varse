@@ -32,7 +32,11 @@ const Index = () => {
       });
 
       if (error) {
+        if(error.message.include("Network")){
+          Alert.alert("Network error. Please check your internet connection.");
+        } else {
         Alert.alert("Missing credentials or invalid credentials.");
+        }
         return;
       }
 

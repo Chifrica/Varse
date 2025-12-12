@@ -1,53 +1,29 @@
 import { Ionicons } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
-import React, { useEffect } from "react";
+import { useLocalSearchParams, useRouter } from "expo-router";
+import React from "react";
 import { Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import supabase from "../../../../../utils/supabase";
 import styles from "./_style";
 
 const Index = () => {
     const router = useRouter();
+    const { order } = useLocalSearchParams<{order?:string}>();
+    const orderData = order ? JSON.parse(order) : null;
 
     const handleBackArrow = () => {
         router.back();
     };
 
-    useEffect(() => {
-        const loadOrders = async () => {
-          const { data: { user } } = await supabase.auth.getUser();
-    
-          if (!user) {
-            console.error("No user found");
-            return;
-          }
-    
-          const sevenDaysAgo = new Date();
-          sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-    
-          const { data, error } = await supabase
-            .from("orders")
-            .select("*")
-            .eq("vendor_id", user.id)
-            .eq("paid", true)
-            .gte("created_at", sevenDaysAgo.toISOString())
-            .order("created_at", { ascending: false });
-    
-          if (error) {
-            console.error("Error fetching orders:", error.message);
-          } else {
-            console.log("Fetched orders:", data); // Debug log
-            console.log("User ID:", user.id); // Debug log
-          }
-    
-        };
-    
-        loadOrders();
-      }, []);
+    const formatCurrency = (amount, currency = "NGN") => {
+        if (isNaN(amount)) return "₦0";
+        const formatted = amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        return currency === "NGN" ? `₦ ${formatted}` : formatted;
+    };
 
     return (
         <SafeAreaView style={styles.container}>
             <ScrollView showsVerticalScrollIndicator={false}>
+
                 {/* Header */}
                 <View style={styles.header}>
                     <TouchableOpacity onPress={handleBackArrow}>
@@ -56,14 +32,17 @@ const Index = () => {
                     <Text style={styles.title}>Order Details</Text>
                 </View>
 
-                {/* Order Info */}
+                {/* Order Summary */}
                 <View style={styles.section}>
                     <Text style={styles.sectionTitle}>Order Summary</Text>
+
                     <Text style={styles.text}>
-                        <Text style={styles.bold}>Order ID:</Text> #VAR102ABC
+                        <Text style={styles.bold}>Order ID:</Text> {orderData?.product_id}
                     </Text>
+
                     <Text style={styles.text}>
-                        <Text style={styles.bold}>Placed on:</Text> 28 November, 2025
+                        <Text style={styles.bold}>Placed on:</Text>{" "}
+                        {new Date(orderData?.created_at).toLocaleDateString()}
                     </Text>
                 </View>
 
@@ -71,37 +50,19 @@ const Index = () => {
                 <View style={styles.section}>
                     <Text style={styles.sectionTitle}>Items Ordered</Text>
 
-                    {/* Item 1 */}
                     <View style={styles.itemRow}>
                         <Image
-                            source={{
-                                uri: "https://store.storeimages.cdn-apple.com/4668/as-images.apple.com/is/MW683?wid=572&hei=572&fmt=jpeg&qlt=95&.v=1693244631287",
-                            }}
+                            source={{ uri: orderData?.image }}
                             style={styles.itemImage}
                         />
                         <View style={styles.itemDetails}>
-                            <Text style={styles.itemName}>iPhone 15 Black Case</Text>
-                            <Text style={styles.itemQty}>QTY: 1</Text>
+                            <Text style={styles.itemName}>{orderData?.name}</Text>
+                            <Text style={styles.itemQty}>QTY: {orderData?.qty}</Text>
                         </View>
-                        <Text style={styles.itemPrice}>$29.99</Text>
+                        <Text style={styles.itemPrice}>{formatCurrency(orderData?.total_price)}</Text>
                     </View>
 
                     <View style={styles.divider} />
-
-                    {/* Item 2 */}
-                    <View style={styles.itemRow}>
-                        <Image
-                            source={{
-                                uri: "https://store.storeimages.cdn-apple.com/4668/as-images.apple.com/is/MW683?wid=572&hei=572&fmt=jpeg&qlt=95&.v=1693244631287",
-                            }}
-                            style={styles.itemImage}
-                        />
-                        <View style={styles.itemDetails}>
-                            <Text style={styles.itemName}>iPhone 15 Transparent Case</Text>
-                            <Text style={styles.itemQty}>QTY: 1</Text>
-                        </View>
-                        <Text style={styles.itemPrice}>$19.99</Text>
-                    </View>
                 </View>
 
                 {/* Delivery Status */}
@@ -111,7 +72,15 @@ const Index = () => {
                             <Ionicons name="car-outline" size={22} color="#FF8800" />
                             <Text style={styles.sectionTitle}>Delivery Status</Text>
                         </View>
-                        <Text style={[styles.statusText, { color: "#22C55E" }]}>Delivered</Text>
+
+                        <Text
+                            style={[
+                                styles.statusText,
+                                { color: orderData?.status === "Delivered" ? "#22C55E" : "#FF8800" }
+                            ]}
+                        >
+                            {orderData?.status || "Processing"}
+                        </Text>
                     </View>
                 </View>
 
@@ -122,7 +91,15 @@ const Index = () => {
                             <Ionicons name="card-outline" size={22} color="#FF8800" />
                             <Text style={styles.sectionTitle}>Payment Status</Text>
                         </View>
-                        <Text style={[styles.statusText, { color: "#22C55E" }]}>Paid</Text>
+
+                        <Text
+                            style={[
+                                styles.statusText,
+                                { color: orderData?.paid ? "#22C55E" : "#EF4444" }
+                            ]}
+                        >
+                            {orderData?.paid ? "Paid" : "Not Paid"}
+                        </Text>
                     </View>
                 </View>
 
@@ -132,5 +109,3 @@ const Index = () => {
 };
 
 export default Index;
-
-
