@@ -2,8 +2,12 @@ import { StyleSheet } from "react-native";
 const styles = StyleSheet.create({
     container: { flex: 1, padding: 16, alignItems: "center", backgroundColor: "#F5F5F5", justifyContent: "center" },
     header: { alignItems: "center", marginBottom: 32 },
-    title: { fontSize: 38, fontWeight: "bold", marginBottom: 16, color: "#FF8800" },
-    subTitle: { fontSize: 20, color: "#666", marginBottom: 32, alignItems: "center", textAlign: "center" },
+    title: { 
+        fontSize: 38, 
+        fontWeight: "bold", 
+        marginBottom: 16, 
+    },
+    subTitle: { fontSize: 20, marginBottom: 32, alignItems: "center", textAlign: "center", fontWeight: "700"},
     input: { borderWidth: 1, borderColor: "#ccc", borderRadius: 4, padding: 12, marginBottom: 12, width: 300, color: "#CCCCCC" },
     inputTxt: {
         fontSize: 18,
@@ -15,16 +19,19 @@ const styles = StyleSheet.create({
         fontSize: 18, 
     },
     button: { 
-        backgroundColor: "#FF8800", 
-        padding: 12, borderRadius: 4, 
+        padding: 12, 
+        borderRadius: 4, 
         width: 300, 
-        marginTop: 16 
+        marginTop: 16, 
+        borderColor: "#FF8800",
+        borderWidth: 1
     },
     buttonText: { 
-        color: "#fff", 
+        color: "#FF8800", 
         elevation: 1, 
-        fontSize: 16, 
+        fontSize: 20, 
         textAlign: "center",
+        fontWeight: "800"
     },
     signUpTxt1: {
         fontSize: 16,
