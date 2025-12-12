@@ -5,7 +5,7 @@ const styles = StyleSheet.create({
         padding: 16, 
         alignItems: "center", 
         backgroundColor: "#F5F5F5", 
-        justifyContent: "center" 
+        marginTop: 80 
     },
     header: { 
         alignItems: "center", 

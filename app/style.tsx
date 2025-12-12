@@ -1,7 +1,7 @@
 import { StyleSheet } from "react-native";
 const styles = StyleSheet.create({
-    container: { flex: 1, padding: 16, alignItems: "center", backgroundColor: "#F5F5F5", justifyContent: "center" },
-    header: { alignItems: "center", marginBottom: 32 },
+    container: { flex: 1, padding: 16, alignItems: "center", backgroundColor: "#F5F5F5", marginTop: 50 },
+    header: { alignItems: "center", marginBottom: "20%" },
     title: { 
         fontSize: 38, 
         fontWeight: "bold", 
@@ -22,9 +22,9 @@ const styles = StyleSheet.create({
         padding: 12, 
         borderRadius: 4, 
         width: 300, 
-        marginTop: 16, 
+        marginTop: 25, 
         borderColor: "#FF8800",
-        borderWidth: 1
+        borderWidth: 1,
     },
     buttonText: { 
         color: "#FF8800", 

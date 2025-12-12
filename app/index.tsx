@@ -11,10 +11,6 @@ const Index = () => {
     router.push('/buyer/signin');
   }
 
-  const handleSignInAsRider = () => {
-    // router.push('/src/(root)/(tab)/riderHome/riderHome');
-  }
-
   const handleSignInAsVendor = () => {
     router.push('/vendor/signin');
   }

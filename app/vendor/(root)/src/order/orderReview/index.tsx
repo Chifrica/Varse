@@ -1,8 +1,9 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import React from "react";
+import React, { useEffect } from "react";
 import { Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import supabase from "../../../../../utils/supabase";
 import styles from "./_style";
 
 const Index = () => {
@@ -11,6 +12,38 @@ const Index = () => {
     const handleBackArrow = () => {
         router.back();
     };
+
+    useEffect(() => {
+        const loadOrders = async () => {
+          const { data: { user } } = await supabase.auth.getUser();
+    
+          if (!user) {
+            console.error("No user found");
+            return;
+          }
+    
+          const sevenDaysAgo = new Date();
+          sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+    
+          const { data, error } = await supabase
+            .from("orders")
+            .select("*")
+            .eq("vendor_id", user.id)
+            .eq("paid", true)
+            .gte("created_at", sevenDaysAgo.toISOString())
+            .order("created_at", { ascending: false });
+    
+          if (error) {
+            console.error("Error fetching orders:", error.message);
+          } else {
+            console.log("Fetched orders:", data); // Debug log
+            console.log("User ID:", user.id); // Debug log
+          }
+    
+        };
+    
+        loadOrders();
+      }, []);
 
     return (
         <SafeAreaView style={styles.container}>
