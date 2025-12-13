@@ -38,10 +38,28 @@ const Cart = () => {
   };
 
   const handleDelete = async (id) => {
+    try {
+      const { error } = await supabase
+      .from("orders")
+      .delete()
+      .eq("id", id);
+
+      if(error) {
+        console.error("Error deleting item:", error.message);
+      Alert.alert("Error", "Failed to delete the item. Please try again.");
+      return;
+      }
+    
     const updatedCart = cartItems.filter((item) => item.id !== id);
     setCartItems(updatedCart);
+
     await AsyncStorage.setItem("cartItems", JSON.stringify(updatedCart));
+    
     Alert.alert("🗑️ Removed", "Item removed from your cart.");
+    } catch (error) {
+      console.error("Error deleting item:", error.message);
+    Alert.alert("Error", "An unexpected error occurred. Please try again.");
+    }
   };
 
   const unpaidItems = cartItems.filter(item => !item.paid);
@@ -160,16 +178,13 @@ const Cart = () => {
 
       {/* Header */}
       <View style={styles.header}>
-        {/* <TouchableOpacity onPress={() => router.back()}>
-          <Ionicons name="arrow-back" size={24} />
-        </TouchableOpacity> */}
         <Text style={styles.headerTitle}>My Cart</Text>
       </View>
 
       {/* Empty State */}
       {cartItems.length === 0 ? (
         <View style={{ alignItems: "center", marginTop: 50 }}>
-          <Text>Your cart is empty 🛒</Text>
+          <Text style={{ fontSize: 18, color: "#333" }}>Your cart is empty 🛒</Text>
         </View>
       ) : (
         <FlatList
@@ -216,9 +231,10 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   header: {
-    flexDirection: "row",
-    alignItems: "center",
+    // flexDirection: "row",
+    // alignItems: "center",
     marginBottom: 20,
+    justifyContent: "center"
   },
   headerTitle: {
     fontSize: 20,

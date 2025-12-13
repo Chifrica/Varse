@@ -16,7 +16,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import Svg, { Path } from "react-native-svg";
 import { getItemsForBuyers } from "../../../../api/varse";
-import { categories, categoriesItems, featuredShops, popularItems, trendingProducts } from "./_data";
+import { categoriesItems } from "./_data";
 
 
 const Home = () => {
@@ -27,7 +27,6 @@ const Home = () => {
   const [fashions, setFashion] = useState([]);
   const [accessories, setAccessories] = useState([]);
   const [homeAppliancies, setHomeAppliancies] = useState([]);
-
   const [loading, setLoading] = useState(true);
 
 
@@ -77,55 +76,48 @@ const Home = () => {
     fetchItems();
   }, []);
 
-
   // Combine all searchable data into one unified array
-  const allItems = [
-    ...categories.map((item) => ({
-      id: `cat-${item.id}`,
-      name: item.name,
-      image: { uri: item.image },
+  const allDisplayedItems = [
+    ...popularMeals.map((item) => ({
+      id: item.id,
+      name: item.productName,
+      image: item.image_url ? { uri: item.image_url } : require("../../../../../assets/images/image 5.png"),
       price: null,
+      category: "Popular Meals"
     })),
-    ...featuredShops.map((item) => ({
-      id: `shop-${item.id}`,
-      name: item.name,
+    ...fashions.map((item) => ({
+      id: item.id,
+      name: item.productName,
       image: { uri: item.image },
       price: item.review,
+      category: "Fashion"
     })),
-    ...trendingProducts.map((item) => ({
-      id: `trend-${item.id}`,
-      name: item.name,
+    ...electronics.map((item) => ({
+      id: item.id,
+      name: item.productName,
       image: { uri: item.image },
       price: item.price,
+      category: "Electronics "
     })),
-    ...popularItems.map((item) => ({
-      id: `pop-${item.id}`,
-      name: item.name,
-      image: item.image,
+    ...accessories.map((item) => ({
+      id: item.id,
+      name: item.productName,
+      image: { uri: item.image_url },
       price: item.price,
-    })),...popularItems.map((item) => ({
-      id: `pop-${item.id}`,
-      name: item.name,
-      image: item.image,
-      price: item.price,
+      category: "Accessories"
     })),
-    // ...categoriesItems.map((item) => ({
-    //   id: `pop-${item.id}`,
-    //   name: item.name,
-    //   image: item.image,
-    //   price: item.price,
-    // })),
-    ...popularItems.map((item) => ({
-      id: `pop-${item.id}`,
-      name: item.name,
-      image: item.image,
+    ...homeAppliancies.map((item) => ({
+      id: item.id,
+      name: item.productName,
+      image: { uri: item.image_url },
       price: item.price,
+      category: "Home Appliances"
     })),
   ];
 
   const filteredItems =
     searchQuery.trim().length > 0
-      ? allItems.filter((item) =>
+      ? allDisplayedItems.filter((item) =>
         item.name.toLowerCase().includes(searchQuery.toLowerCase())
       )
       : [];
@@ -140,7 +132,7 @@ const Home = () => {
 
   const router = useRouter()
 
-  const handleProductPress = (item) => {
+  const handleProductReview = (item) => {
     router.push({
       pathname: "/buyer/src/product/productsReview",
       params: {
@@ -152,6 +144,7 @@ const Home = () => {
         vendorName: item.shopName,
         category: item.category,
         location: item.location,
+        vendorId: item.vendor_id,
       },
     });
   };
@@ -189,7 +182,7 @@ const Home = () => {
               <Text style={styles.noResults}>No items found</Text>
             }
             renderItem={({ item }) => (
-              <TouchableOpacity style={styles.resultItem}>
+              <TouchableOpacity style={styles.resultItem} onPress={() => handleProductReview(item)}>
                 <Image source={item.image} style={styles.itemImage} />
                 <View>
                   <Text style={styles.itemName}>{item.name}</Text>
@@ -269,7 +262,7 @@ const Home = () => {
               <TouchableOpacity
                 key={item.id}
                 style={styles.popularCard}
-                onPress={() => handleProductPress(item)}
+                onPress={() => handleProductReview(item)}
               >
                 <Image
                   source={{ uri: item.image_url }}
@@ -305,7 +298,7 @@ const Home = () => {
               <TouchableOpacity
                 key={item.id}
                 style={styles.popularCard}
-                onPress={() => handleProductPress(item)}
+                onPress={() => handleProductReview(item)}
               >
                 <Image
                   source={{ uri: item.image_url }}
@@ -337,7 +330,7 @@ const Home = () => {
               <TouchableOpacity
                 key={item.id}
                 style={styles.popularCard}
-                onPress={() => handleProductPress(item)}
+                onPress={() => handleProductReview(item)}
               >
                 <Image
                   source={{ uri: item.image_url }}
@@ -356,70 +349,6 @@ const Home = () => {
             <Text style={{ color: "#888" }}>No electronics found</Text>
           )}
         </ScrollView>
-
-        {/* Accossories
-        <Text style={styles.sectionTitle}>Accessories</Text>
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          style={styles.popularScroll}
-        >
-          {accessories.length > 0 ? (
-            accessories.map((item) => (
-              <TouchableOpacity
-                key={item.id}
-                style={styles.popularCard}
-                onPress={() => handleProductPress(item)}
-              >
-                <Image
-                  source={{ uri: item.image_url }}
-                  style={styles.popularImage}
-                />
-                <View style={styles.popularInfo}>
-                  <Text style={styles.popularName}>{item.productName}</Text>
-                  <Text style={styles.shopName}>{item.shopName}</Text>
-                  <Text style={styles.popularPrice}>
-                    {formatCurrency(item.price, "NGN")}
-                  </Text>
-                </View>
-              </TouchableOpacity>
-            ))
-          ) : (
-            <Text style={{ color: "#888" }}>No fashions found</Text>
-          )}
-        </ScrollView> */}
-
-        {/* Home Appliances
-        <Text style={styles.sectionTitle}>Home Appliances</Text>
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          style={styles.popularScroll}
-        >
-          {homeAppliancies.length > 0 ? (
-            homeAppliancies.map((item) => (
-              <TouchableOpacity
-                key={item.id}
-                style={styles.popularCard}
-                onPress={() => handleProductPress(item)}
-              >
-                <Image
-                  source={{ uri: item.image_url }}
-                  style={styles.popularImage}
-                />
-                <View style={styles.popularInfo}>
-                  <Text style={styles.popularName}>{item.productName}</Text>
-                  <Text style={styles.shopName}>{item.shopName}</Text>
-                  <Text style={styles.popularPrice}>
-                    {formatCurrency(item.price, "NGN")}
-                  </Text>
-                </View>
-              </TouchableOpacity>
-            ))
-          ) : (
-            <Text style={{ color: "#888" }}>No electronics found</Text>
-          )}
-        </ScrollView> */}
       </ScrollView>
     </SafeAreaView>
   );

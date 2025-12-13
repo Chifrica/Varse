@@ -16,6 +16,8 @@ const Checkout = () => {
     const [cartItems, setCartItems] = useState([]);
     const [promoCode, setPromoCode] = useState("");
 
+const unpaidItems = cartItems.filter(item => !item.paid);
+
     // Load cart items
     useEffect(() => {
         const loadCart = async () => {
@@ -40,13 +42,13 @@ const Checkout = () => {
     };
 
     // Calculations
-    const subtotal = cartItems.reduce((sum, item) => sum + (item.totalPrice || 0), 0);
+    const subtotal = unpaidItems.reduce((sum, item) => sum + (item.totalPrice || 0), 0);
     const deliveryFee = 500;
     const discount = 0; // Add real logic later
     const finalTotal = subtotal + deliveryFee - discount;
 
     const handleProceed = () => {
-        router.push(
+        router.navigate(
             {
                 pathname: "/buyer/src/checkout/cardTransfer",
                 params: {finalTotal}
@@ -85,10 +87,10 @@ const Checkout = () => {
             <View style={{ marginBottom: 25 }}>
                 <Text style={styles.sectionTitle}>Order Summary</Text>
 
-                {cartItems.length === 0 ? (
+                {unpaidItems.length === 0 ? (
                     <Text style={{ marginTop: 10 }}>No items found in cart.</Text>
                 ) : (
-                    cartItems.map((item) => (
+                    unpaidItems.map((item) => (
                         <View key={item.id} style={styles.orderItem}>
                             <Text style={styles.orderItemName}>{item.name}</Text>
                             <Text style={styles.orderItemPrice}>

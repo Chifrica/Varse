@@ -27,6 +27,7 @@ const ProductsReview = () => {
         vendorName,
         category,
         location,
+        vendorId,
     } = useLocalSearchParams();
 
     const parsedPrice = Number(price) || 0;
@@ -74,6 +75,8 @@ const ProductsReview = () => {
                 // price: price || 0,
                 qty: qty,
                 totalPrice: totalPrice,
+                vendor_id: vendorId,
+                paid: false,
             };
 
             // Fetch existing cart items
@@ -112,7 +115,7 @@ const ProductsReview = () => {
         <SafeAreaView style={styles.container}>
             {/* Header */}
             <View style={styles.header}>
-                <TouchableOpacity onPress={() => router.navigate("/buyer/homePage/home")}>
+                <TouchableOpacity onPress={() => router.back()}>
                     <Ionicons name="arrow-back" size={24} />
                 </TouchableOpacity>
                 <Text style={styles.headerTitle}>Product</Text>
