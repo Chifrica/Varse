@@ -25,18 +25,26 @@ const Index = () => {
     try {
       setLoading(true);
 
-      // Sign user in with Supabase Auth
-      const { data: { session }, error } = await supabase.auth.signInWithPassword({
+      const res = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
+      const { data, error } = res;
+      const session = data?.session;
+
       if (error) {
-        if (error.message.include("Network")) {
+        const msg = error?.message || "";
+        if (msg.includes("Network")) {
           Alert.alert("Network error. Please check your internet connection.");
         } else {
           Alert.alert("Missing credentials or invalid credentials.");
         }
+        return;
+      }
+
+      if (!session) {
+        Alert.alert("Something went wrong. No session returned.");
         return;
       }
 
@@ -73,15 +81,17 @@ const Index = () => {
         return;
       }
 
-      // Correct role, now navigate to vendor home
+      // Correct role, now navigate to buyer home
       router.push("/buyer/(root)/(tab)/homePage/home");
 
     } catch (err) {
       Alert.alert("Something went wrong.");
+      console.error("signIn error", err);
     } finally {
       setLoading(false);
     }
   }
+
 
   const handleSignUp = () => {
     router.push("/buyer/signup");

@@ -21,22 +21,31 @@ const Index = () => {
 
   const router = useRouter();
 
-  async function signInWithEmail() {
+    async function signInWithEmail() {
     try {
       setLoading(true);
 
-      // Sign user in with Supabase Auth
-      const { data: { session }, error } = await supabase.auth.signInWithPassword({
+      // safer handling similar to buyer sign-in
+      const res = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
+      const { data, error } = res;
+      const session = data?.session;
+
       if (error) {
-        if(error.message.include("Network")){
+        const msg = error?.message || "";
+        if (msg.includes("Network")) {
           Alert.alert("Network error. Please check your internet connection.");
         } else {
-        Alert.alert("Missing credentials or invalid credentials.");
+          Alert.alert("Missing credentials or invalid credentials.");
         }
+        return;
+      }
+
+      if (!session) {
+        Alert.alert("Something went wrong. No session returned.");
         return;
       }
 
@@ -79,6 +88,7 @@ const Index = () => {
 
     } catch (err) {
       Alert.alert("Something went wrong.");
+      console.error("vendor signIn error", err);
     } finally {
       setLoading(false);
     }
