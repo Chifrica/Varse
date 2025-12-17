@@ -25,7 +25,6 @@ const Index = () => {
     try {
       setLoading(true);
 
-      // safer handling similar to buyer sign-in
       const res = await supabase.auth.signInWithPassword({
         email,
         password,
@@ -83,12 +82,11 @@ const Index = () => {
         return;
       }
 
-      // Correct role, now navigate to vendor home
-      router.push("/vendor/(root)/(tab)/homePage/home");
+      router.replace("/vendor/(root)/(tab)/homePage/home");
 
     } catch (err) {
       Alert.alert("Something went wrong.");
-      console.error("vendor signIn error", err);
+      console.error("Vendor signIn error", err);
     } finally {
       setLoading(false);
     }

@@ -81,7 +81,6 @@ const Index = () => {
         return;
       }
 
-      // Correct role, now navigate to buyer home
       router.replace("/buyer/(root)/(tab)/homePage/home");
 
     } catch (err) {
@@ -91,7 +90,6 @@ const Index = () => {
       setLoading(false);
     }
   }
-
 
   const handleSignUp = () => {
     router.push("/buyer/signup");

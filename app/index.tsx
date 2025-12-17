@@ -8,12 +8,10 @@ const Index = () => {
   const router = useRouter();
 
   const handleSignInAsBuyer = () => {
-    console.log("Buyer Sign In Pressed");
     router.replace('/buyer/signin');
   }
 
   const handleSignInAsVendor = () => {
-    console.log("Vendor Sign In Pressed");
     router.replace('/vendor/signin');
   }
 

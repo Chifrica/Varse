@@ -48,7 +48,7 @@ const unpaidItems = cartItems.filter(item => !item.paid);
     const finalTotal = subtotal + deliveryFee - discount;
 
     const handleProceed = () => {
-        router.navigate(
+        router.push(
             {
                 pathname: "/buyer/src/checkout/cardTransfer",
                 params: {finalTotal}
