@@ -8,11 +8,11 @@ const Index = () => {
   const router = useRouter();
 
   const handleSignInAsBuyer = () => {
-    router.replace('/buyer/signin');
+    router.push('/buyer/signin');
   }
 
   const handleSignInAsVendor = () => {
-    router.replace('/vendor/signin');
+    router.push('/vendor/signin');
   }
 
   return (
