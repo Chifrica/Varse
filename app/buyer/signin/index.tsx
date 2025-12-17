@@ -5,11 +5,13 @@ import {
   Alert,
   Image,
   KeyboardAvoidingView,
+  Platform,
   Text,
   TextInput,
   TouchableOpacity,
   View
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import supabase from "../../utils/supabase";
 import styles from "./style";
 
@@ -96,78 +98,80 @@ const Index = () => {
   };
 
   return (
-    <KeyboardAvoidingView behavior="padding" style={styles.container}>
-      <View style={styles.header}>
-        <Image source={require("../../../assets/icons/logo.png")} />
-        <Text style={styles.title}>Welcome Back!</Text>
-        <Text style={styles.subTitle}>Shop Smart. Shop Easy.</Text>
-      </View>
-
-      <View>
-        {/* Email */}
-        <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <FontAwesome
-            name="envelope"
-            size={20}
-            color="#888"
-            style={{ position: "absolute", left: 20, top: 15 }}
-          />
-
-          <TextInput
-            placeholder="Enter Email"
-            style={[styles.input, { flex: 1 }]}
-            value={email}
-            onChangeText={setEmail}
-          />
+    <SafeAreaView style={{ flex: 1 }}>
+      <KeyboardAvoidingView behavior={Platform.OS == "ios" ? "padding" : "height"} style={styles.container}>
+        <View style={styles.header}>
+          <Image source={require("../../../assets/icons/logo.png")} />
+          <Text style={styles.title}>Welcome Back!</Text>
+          <Text style={styles.subTitle}>Shop Smart. Shop Easy.</Text>
         </View>
 
-        {/* Password */}
-        <View style={{ position: "relative", justifyContent: "center" }}>
-          <FontAwesome
-            name="lock"
-            size={20}
-            color="#888"
-            style={{ position: "absolute", left: 20, top: 15 }}
-          />
-
-          <TextInput
-            placeholder="Enter Password"
-            secureTextEntry={!showPassword}
-            style={styles.input}
-            value={password}
-            onChangeText={setPassword}
-          />
-
-          <TouchableOpacity
-            onPress={() => setShowPassword(!showPassword)}
-            style={{ position: "absolute", right: 20, top: 15 }}
-          >
+        <View>
+          {/* Email */}
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
             <FontAwesome
-              name={showPassword ? "eye" : "eye-slash"}
+              name="envelope"
               size={20}
               color="#888"
+              style={{ position: "absolute", left: 20, top: 15 }}
             />
-          </TouchableOpacity>
+
+            <TextInput
+              placeholder="Enter Email"
+              style={[styles.input, { flex: 1 }]}
+              value={email}
+              onChangeText={setEmail}
+            />
+          </View>
+
+          {/* Password */}
+          <View style={{ position: "relative", justifyContent: "center" }}>
+            <FontAwesome
+              name="lock"
+              size={20}
+              color="#888"
+              style={{ position: "absolute", left: 20, top: 15 }}
+            />
+
+            <TextInput
+              placeholder="Enter Password"
+              secureTextEntry={!showPassword}
+              style={styles.input}
+              value={password}
+              onChangeText={setPassword}
+            />
+
+            <TouchableOpacity
+              onPress={() => setShowPassword(!showPassword)}
+              style={{ position: "absolute", right: 20, top: 15 }}
+            >
+              <FontAwesome
+                name={showPassword ? "eye" : "eye-slash"}
+                size={20}
+                color="#888"
+              />
+            </TouchableOpacity>
+          </View>
         </View>
-      </View>
 
-      {/* Sign In Button */}
-      <TouchableOpacity style={styles.button} onPress={signInWithEmail}>
-        <Text style={styles.buttonText}>
-          {loading ? "Signing in..." : "Sign in"}
-        </Text>
-      </TouchableOpacity>
+        {/* Sign In Button */}
+        <TouchableOpacity style={styles.button} onPress={signInWithEmail}>
+          <Text style={styles.buttonText}>
+            {loading ? "Signing in..." : "Sign in"}
+          </Text>
+        </TouchableOpacity>
 
-      {/* Sign Up */}
-      <View style={{ marginTop: 15, flexDirection: "row", alignItems: "center" }}>
-        <Text style={styles.signUpTxt1}>
-          Don't have an account?
-          <TouchableOpacity onPress={handleSignUp}>
-            <Text style={styles.signUpText2}> SignUp</Text>
-          </TouchableOpacity>
-        </Text>
-      </View>
-    </KeyboardAvoidingView>
+        {/* Sign Up */}
+        <View style={{ marginTop: 15, flexDirection: "row", alignItems: "center" }}>
+          <Text style={styles.signUpTxt1}>
+            Don't have an account?
+            <TouchableOpacity onPress={handleSignUp}>
+              <Text style={styles.signUpText2}> SignUp</Text>
+            </TouchableOpacity>
+          </Text>
+        </View>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 };
 
