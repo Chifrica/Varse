@@ -82,7 +82,7 @@ const Index = () => {
       }
 
       // Correct role, now navigate to buyer home
-      router.push("/buyer/(root)/(tab)/homePage/home");
+      router.replace("/buyer/(root)/(tab)/homePage/home");
 
     } catch (err) {
       Alert.alert("Something went wrong.");

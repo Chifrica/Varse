@@ -1,6 +1,5 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import { navigate } from "expo-router/build/global-state/routing";
 import React, { useEffect, useState } from "react";
 import {
   FlatList,
@@ -16,8 +15,6 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import Svg, { Path } from "react-native-svg";
 import { getItemsForBuyers } from "../../../../api/varse";
-import { categoriesItems } from "./_data";
-
 
 const Home = () => {
 
@@ -28,7 +25,6 @@ const Home = () => {
   const [accessories, setAccessories] = useState([]);
   const [homeAppliancies, setHomeAppliancies] = useState([]);
   const [loading, setLoading] = useState(true);
-
 
   // Fetch popular meals from Supabase
   useEffect(() => {
@@ -196,7 +192,7 @@ const Home = () => {
         )}
 
         {/* Category Section */}
-        <Text style={styles.sectionTitle}>Categories</Text>
+        {/* <Text style={styles.sectionTitle}>Categories</Text>
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
@@ -210,7 +206,7 @@ const Home = () => {
               <Text style={styles.categoryText}>{item.name}</Text>
             </TouchableOpacity>
           ))}
-        </ScrollView>
+        </ScrollView> */}
 
         {/* Promo Banner */}
         <View style={styles.promoContainer}>
