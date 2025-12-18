@@ -100,7 +100,7 @@ const CardTransfer = () => {
                 setVisible(false);
 
                 // 5. Navigate back to cart
-                router.replace("/buyer/(root)/(tab)/order/order");
+                router.replace("/buyer/order/order");
               }}
             >
               <Text style={styles.closeText}>Okay</Text>

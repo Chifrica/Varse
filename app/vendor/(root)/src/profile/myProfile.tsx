@@ -3,12 +3,12 @@ import { useFocusEffect } from '@react-navigation/native';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import {
-  Image,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
+    Image,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import supabase from '../../../../utils/supabase';
@@ -42,7 +42,7 @@ const MyProfile = () => {
   );
 
 
-  const handleBackArrow = () => router.navigate("/vendor/(root)/(tab)/menu/menu");
+  const handleBackArrow = () => router.navigate("/vendor/menu/menu");
   const handleEditProfile = () => router.navigate("/vendor/(root)/src/profile/editProfile");
 
   return (

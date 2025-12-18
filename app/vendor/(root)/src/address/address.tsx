@@ -7,7 +7,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 const Address = () => {
   const router = useRouter();
 
-  const handleBackArrow = () => router.navigate("/vendor/(root)/(tab)/menu/menu");
+  const handleBackArrow = () => router.navigate("/vendor/menu/menu");
 
   const addresses = [
     {

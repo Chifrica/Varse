@@ -2,13 +2,13 @@ import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React, { useState } from "react";
 import {
-  Alert,
-  Image,
-  ScrollView,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
+    Alert,
+    Image,
+    ScrollView,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import styles from "./style";
@@ -32,7 +32,7 @@ const KYCSetUp = () => {
     ) {
       Alert.alert("Incomplete Form", "Please fill out all fields before proceeding.");
     } else {
-      router.push("/vendor/(root)/(tab)/homePage/home");
+      router.push("/vendor/homePage/home");
     }
   };
 

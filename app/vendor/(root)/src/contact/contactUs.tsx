@@ -8,7 +8,7 @@ const ContactUs = () => {
   const router = useRouter();
 
   const handleBackArrow = () => {
-    router.navigate("/vendor/(root)/(tab)/menu/menu");
+    router.navigate("/vendor/menu/menu");
   };
 
   const handleEmailScreen = () => {

@@ -115,7 +115,7 @@ const ProductsItemAddition = () => {
                         text: "OK",
                         onPress: () =>
                             router.push({
-                                pathname: "/buyer/(root)/(tab)/order/order",
+                                pathname: "/buyer/order/order",
                                 params: {totalPrice, name}
                             }),
                     },

@@ -83,7 +83,7 @@ const Index = () => {
         return;
       }
 
-      router.replace("/buyer/(root)/(tab)/homePage/home");
+      router.replace("/buyer/homePage/home");
 
     } catch (err) {
       Alert.alert("Something went wrong.");

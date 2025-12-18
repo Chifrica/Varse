@@ -84,7 +84,7 @@ const Index = () => {
         return;
       }
 
-      router.replace("/vendor/(root)/(tab)/homePage/home");
+      router.replace("/vendor/homePage/home");
 
     } catch (err) {
       Alert.alert("Something went wrong.");
