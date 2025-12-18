@@ -12,6 +12,7 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import icons from "../../../constants/_data";
 import supabase from "../../../utils/supabase";
 import styles from "./style";
 
@@ -102,7 +103,7 @@ const Index = () => {
     <SafeAreaView style={{ flex: 1 }}>
       <KeyboardAvoidingView behavior={Platform.OS == "ios" ? "padding" : "height"} style={styles.container}>
         <View style={styles.header}>
-          <Image source={require("../../../../assets/icons/logo.png")} />
+          <Image source={icons[0].logo} />
           <Text style={styles.title}>Welcome Back !</Text>
           <Text style={styles.subTitle}>Your Marketplace, Your Control.</Text>
         </View>

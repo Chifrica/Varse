@@ -1,6 +1,7 @@
 import { useRouter } from "expo-router";
 import { Image, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import icons from "../constants/_data";
 import styles from "./style";
 
 const Index = () => {
@@ -18,7 +19,7 @@ const Index = () => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <Image source={require("../../assets/icons/logo.png")} />
+        <Image source={icons[0].logo} />
         <Text style={styles.title}>Welcome to Varse</Text>
         <Text style={styles.subTitle}>{`Your Market, Your Control.`}</Text>
       </View>

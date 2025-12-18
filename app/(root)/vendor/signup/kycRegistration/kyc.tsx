@@ -11,6 +11,7 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import icons from "../../../../constants/_data";
 import styles from "./style";
 
 const KYCSetUp = () => {
@@ -41,7 +42,7 @@ const KYCSetUp = () => {
       <ScrollView showsVerticalScrollIndicator={false}>
         {/* Logo */}
         <Image
-          source={require("../../../../../assets/icons/logo.png")}
+          source={icons[0].logo}
           style={styles.image}
         />
 

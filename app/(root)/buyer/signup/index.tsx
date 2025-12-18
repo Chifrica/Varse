@@ -14,6 +14,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import icons from "../../../constants/_data";
 import supabase from "../../../utils/supabase";
 import styles from "./style";
 
@@ -107,7 +108,7 @@ const SignUp = () => {
     <KeyboardAvoidingView behavior="padding" style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.header}>
-          <Image source={require("../../../../assets/icons/logo.png")} />
+          <Image source={icons[0].logo} />
           <Text style={styles.title}>Welcome to Varse Buyer</Text>
           <Text style={styles.subTitle}>Your Marketplace, Your Control</Text>
         </View>
