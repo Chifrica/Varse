@@ -89,9 +89,9 @@ const ProductsItemAddition = () => {
                 name: name || "Unnamed Product",
                 qty,
                 basePrice: price,
-                extras: extras,               // <--- Added
-                extrasTotal: extrasTotal,     // <--- Added
-                totalPrice: finalTotal,       // <--- Updated
+                extras: extras,               
+                extrasTotal: extrasTotal,     
+                totalPrice: finalTotal,      
                 vendorName,
                 category,
                 location,
