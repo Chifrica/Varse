@@ -98,6 +98,12 @@ const Home = () => {
 
   }, []);
 
+  const formatCurrency = (amount, currency = "NGN") => {
+    if (isNaN(amount)) return "₦0";
+    const formatted = amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    return currency === "NGN" ? `₦ ${formatted}` : formatted;
+  };
+
   const router = useRouter();
 
   const handleAddProduct = () => {
@@ -159,7 +165,7 @@ const Home = () => {
               <Text style={styles.cardTitle}>
                 Wallet Balance
               </Text>
-              <Text style={styles.cardValue}>{` ₦ ${walletBalance}`}</Text>
+              <Text style={styles.cardValue}>{formatCurrency(walletBalance)}</Text>
             </View>
           </View>
         </View>
@@ -217,7 +223,7 @@ const Home = () => {
                   <View>
                     <Text style={styles.orderTitle}>{order.name}</Text>
                     <Text style={styles.orderDetails}>
-                      {`Price: ₦ ${order.total_price} \nProduct ID: ${order.product_id}`}
+                      {`Price: ${formatCurrency(order.total_price)} \nProduct ID: ${order.product_id}`}
                     </Text>
                   </View>
                 </View>
