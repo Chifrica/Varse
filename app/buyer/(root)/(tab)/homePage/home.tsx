@@ -129,7 +129,7 @@ const Home = () => {
   const router = useRouter()
 
   const handleProductReview = (item) => {
-    router.push({
+    router.replace({
       pathname: "/buyer/src/product/productsReview",
       params: {
         productId: item.id,

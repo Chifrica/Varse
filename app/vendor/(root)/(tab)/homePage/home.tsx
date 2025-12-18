@@ -35,10 +35,11 @@ const Home = () => {
 
       if (error) {
         console.error("Error fetching orders:", error.message);
-      } else {
-        console.log("Fetched orders:", data); // Debug log
-        console.log("User ID:", user.id); // Debug log
-      }
+      } 
+      // else {
+      //   console.log("Fetched orders:", data); // Debug log
+      //   console.log("User ID:", user.id); // Debug log
+      // }
 
       setRecentOrders(data || []);
 

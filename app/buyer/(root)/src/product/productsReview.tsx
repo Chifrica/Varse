@@ -98,7 +98,7 @@ const ProductsReview = () => {
                     {
                         text: "OK",
                         onPress: () =>
-                            router.push({
+                            router.replace({
                                 pathname: "/buyer/order/order",
                                 params: {parsedPrice}
                             }),
