@@ -46,7 +46,7 @@ const Settings = () => {
               await supabase.auth.signOut();
 
               Alert.alert("Deleted", "Your account has been permanently removed.");
-              router.replace("/vendor/signin/signin");
+              router.replace("/vendor/signin");
             } catch (err) {
               Alert.alert("Error", "Something went wrong.");
             }

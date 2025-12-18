@@ -21,7 +21,7 @@ const Products = () => {
 
   const handleBackArrow = () => router.back();
 
-  // 🧠 Fetch the latest product from Supabase
+  // Fetch the latest product from Supabase
   const fetchLatestProduct = async () => {
     try {
       setLoading(true);
