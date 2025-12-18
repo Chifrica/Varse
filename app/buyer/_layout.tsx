@@ -1,5 +1,5 @@
 import { Stack } from "expo-router";
 
-export default function VendorFilesRootLayout() {
+export default function BuyerLayout() {
   return <Stack screenOptions={{ headerShown: false }} />;
 }
