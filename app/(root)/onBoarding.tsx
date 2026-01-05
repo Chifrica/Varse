@@ -13,7 +13,11 @@ const Index = () => {
   }
 
   const handleSignInAsVendor = () => {
-    router.replace('/vendor/signin');
+    try {
+          router.replace('/vendor/signin');
+    } catch (error) {
+      console.error("Navigation error:", error);
+    }
   }
 
   return (
