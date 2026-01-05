@@ -38,7 +38,7 @@ export function GlobalProvider({ children }: { children: React.ReactNode }) {
         loadSession();
 
         const { data: listener } = supabase.auth.onAuthStateChange(
-            (_event, session) => {
+            (_event: Event, session: Session | null) => {
                 setSession(session);
                 setRole(session?.user?.user_metadata?.role ?? null);
             }
