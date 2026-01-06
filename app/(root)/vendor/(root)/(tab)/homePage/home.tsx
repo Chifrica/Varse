@@ -180,16 +180,16 @@ const Home = () => {
           </View>
 
           <View style={styles.actionItem}>
-            <View style={styles.iconWrapper}>
+            <TouchableOpacity style={styles.iconWrapper}>
               <Ionicons name="wallet-outline" size={26} color="#FF8800" />
-            </View>
+            </TouchableOpacity>
             <Text style={styles.actionText}>Withdraw Earnings</Text>
           </View>
 
           <View style={styles.actionItem}>
-            <View style={styles.iconWrapper}>
+            <TouchableOpacity style={styles.iconWrapper} onPress = {() => router.push('/(root)/vendor/(root)/(tab)/order/order')}>
               <Ionicons name="list-outline" size={26} color="#FF8800" />
-            </View>
+            </TouchableOpacity>
             <Text style={styles.actionText}>View Orders</Text>
           </View>
         </View>

@@ -14,13 +14,13 @@ export default function Index() {
   }
 
   if (isLoggedIn && role === "buyer") {
-    return <Redirect href="/buyer/homePage/home" />;
+    return <Redirect href="/(root)/buyer/(root)/(tab)/homePage/home" />;
   }
 
   if (isLoggedIn && role === "vendor") {
-    return <Redirect href="/vendor/homePage/home" />;
+    return <Redirect href="/(root)/vendor/(root)/(tab)/homePage/home" />;
   }
 
   // Fallback safety
-  return <Redirect href="/onBoarding" />;
+  return <Redirect href="/(root)/onBoarding" />;
 }

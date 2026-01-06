@@ -12,7 +12,6 @@ import {
   View
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import icons from "../../../constants/_data";
 import supabase from "../../../utils/supabase";
 import styles from "./style";
 
@@ -41,7 +40,7 @@ const Index = () => {
         if (msg.includes("Network")) {
           Alert.alert("Network error. Please check your internet connection.");
         } else {
-          Alert.alert("Missing credentials or invalid credentials.");
+          Alert.alert("Incorrect credentials or invalid credentials.");
         }
         return;
       }
@@ -80,15 +79,14 @@ const Index = () => {
 
       // Restrict login
       if (profile.role !== "buyer") {
-        Alert.alert("You're not Buyer'.");
+        Alert.alert("You're not a Buyer.");
         return;
       }
 
-      router.replace("/buyer/homePage/home");
+      router.replace("/(root)/buyer/(root)/(tab)/homePage/home");
 
     } catch (err) {
       Alert.alert("Something went wrong.");
-      console.error("signIn error", err);
     } finally {
       setLoading(false);
     }
@@ -102,7 +100,10 @@ const Index = () => {
     <SafeAreaView style={{ flex: 1 }}>
       <KeyboardAvoidingView behavior={Platform.OS == "ios" ? "padding" : "height"} style={styles.container}>
         <View style={styles.header}>
-          <Image source={icons[0].logo} />
+          <Image 
+            source={require("../../../../assets/icons/logo.png")}
+            style={{ width: 80, height: 80 }}
+          />
           <Text style={styles.title}>Welcome Back!</Text>
           <Text style={styles.subTitle}>Shop Smart. Shop Easy.</Text>
         </View>

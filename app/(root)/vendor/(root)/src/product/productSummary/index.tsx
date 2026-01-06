@@ -33,13 +33,11 @@ const Products = () => {
         .single();
 
       if (error) {
-        console.error("Error fetching product:", "There's an error in fetching products.");
         Alert.alert("Error", "Unable to fetch latest product.");
       } else {
         setProduct(data);
       }
     } catch (err) {
-      console.error("Unexpected error:", err.message);
       Alert.alert("Error", "Something went wrong while fetching product.");
     } finally {
       setLoading(false);

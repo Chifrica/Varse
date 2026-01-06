@@ -59,7 +59,6 @@ const AddProduct = () => {
               await deleteItem(id); // delete from Supabase
               setProducts((prev) => prev.filter((item) => item.id !== id)); // update UI
             } catch (error) {
-              console.error("Error deleting product:", error.message);
               Alert.alert("Error", "Failed to delete the product. Try again.");
             }
           },
