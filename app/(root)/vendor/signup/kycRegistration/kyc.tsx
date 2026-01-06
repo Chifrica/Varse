@@ -33,7 +33,7 @@ const KYCSetUp = () => {
     ) {
       Alert.alert("Incomplete Form", "Please fill out all fields before proceeding.");
     } else {
-      router.push("/vendor/homePage/home");
+      router.push("/(root)/vendor/(root)/(tab)/homePage/home");
     }
   };
 

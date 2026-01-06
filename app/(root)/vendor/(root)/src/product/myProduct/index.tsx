@@ -67,7 +67,6 @@ const AddProduct = () => {
     );
   };
 
-
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false}>
@@ -141,7 +140,7 @@ const AddProduct = () => {
 
       <TouchableOpacity
         style={styles.fab}
-        onPress={() => router.navigate("/vendor/src/product/addProduct")}
+        onPress={() => router.navigate("/(root)/vendor/(root)/src/product/addProduct")}
       >
         <Ionicons name="add" size={28} color="#fff" />
       </TouchableOpacity>

@@ -107,7 +107,7 @@ const Home = () => {
   const router = useRouter();
 
   const handleAddProduct = () => {
-    router.push("/vendor/src/product/myProduct");
+    router.push("/(root)/vendor/(root)/src/product/myProduct");
   }
 
   return (

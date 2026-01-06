@@ -93,7 +93,7 @@ const Index = () => {
   }
 
   const handleSignUp = () => {
-    router.push("/buyer/signup");
+    router.push("/(root)/buyer/signup");
   };
 
   return (

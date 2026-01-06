@@ -90,19 +90,19 @@ const Order = () => {
 
 
   const handleCancelledOrder = () => {
-    router.navigate("/vendor/src/order/cancelOrder/cancelledOrder")
+    router.navigate("/(root)/vendor/(root)/src/order/cancelOrder/cancelledOrder")
   }
 
   const handleCompletedOrder = () => {
-    router.navigate("/vendor/src/order/completedOrder/completedOrder")
+    router.navigate("/(root)/vendor/(root)/src/order/completedOrder/completedOrder")
   }
 
   const handleInProgressOrder = () => {
-    router.navigate("/vendor/src/order/inProgressOrder/inProgressOrder")
+    router.navigate("/(root)/vendor/(root)/src/order/inProgressOrder/inProgressOrder")
   }
 
   const handlePendingOrder = () => {
-    router.navigate("/vendor/src/order/pendingOrder/pendingOrder")
+    router.navigate("/(root)/vendor/(root)/src/order/pendingOrder/pendingOrder")
   }
 
   const stats = [
