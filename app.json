@@ -10,7 +10,7 @@
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.galaxies.firebase"
+      "bundleIdentifier": "com.varse.app"
     },
     "android": {
       "adaptiveIcon": {
@@ -19,9 +19,13 @@
         "backgroundImage": "./assets/icons/splash-icon.png",
         "monochromeImage": "./assets/icons/logo.png"
       },
+      "permissions": [
+        "android.permission.INTERNET",
+        "android.permission.ACCESS_NETWORK_STATE"
+      ],
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
-      "package": "com.galaxies.firebase"
+      "package": "com.varse.app"
     },
     "web": {
       "output": "static",

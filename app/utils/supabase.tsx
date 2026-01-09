@@ -6,14 +6,16 @@ const { createClient, processLock } = require("@supabase/supabase-js");
 const supabaseURL = process.env.EXPO_PUBLIC_SUPABASE_URL
 const supabaseKey = process.env.EXPO_PUBLIC_SUPABASE_KEY
 
+console.log("Supabase Init:", {
+  "Supabase URL": supabaseURL ? "Loaded" : "Not Found",
+  "Supabase Key": supabaseKey ? "Loaded" : "Not Found"
+});
+
 if (!supabaseURL || !supabaseKey) {
-  console.error("Missing Supabase credentials in environment variables");
+  console.error("EXPO_PUBLIC_SUPABASE_URL and EXPO_PUBLIC_SUPABASE_KEY");
 }
 
-let supabase: any = null;
-
-try {
-  supabase = createClient(supabaseURL, supabaseKey, {
+  let supabase = createClient(supabaseURL, supabaseKey, {
     auth: {
       storage: AsyncStorage,
       autoRefreshToken: true,
@@ -33,8 +35,6 @@ try {
       }
     })
   }
-} catch (error) {
-  console.error("Error initializing Supabase:", error);
-}
+  console.log("Supabase initialized successfully.");
 
 export default supabase;
