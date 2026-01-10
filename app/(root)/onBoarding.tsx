@@ -9,7 +9,7 @@ const Index = () => {
 
   const handleSignInAsBuyer = () => {
     try {
-      router.replace('/(root)/buyer/signin');
+      router.push('/(root)/buyer/signin');
     } catch (error) {
       console.error("Navigation error:", error);
     }
@@ -17,7 +17,7 @@ const Index = () => {
 
   const handleSignInAsVendor = () => {
     try {
-      router.replace('/(root)/vendor/signin');
+      router.push('/(root)/vendor/signin');
     } catch (error) {
       console.error("Navigation error:", error);
     }
@@ -36,13 +36,13 @@ const Index = () => {
 
       <View>
         <TouchableOpacity style={styles.button} onPress={handleSignInAsBuyer}>
-          <Text style={styles.buttonText}>Login as Buyer</Text>
+          <Text style={styles.buttonText}>Get Started as Buyer</Text>
         </TouchableOpacity>
       </View>
 
       <View>
         <TouchableOpacity style={styles.button} onPress={handleSignInAsVendor}>
-          <Text style={styles.buttonText}>Login as Vendor</Text>
+          <Text style={styles.buttonText}>Get Started as Vendor</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>
